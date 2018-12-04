@@ -1,0 +1,121 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>首页</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <!--此页面不会被浏览器缓存-->
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Cache-Control" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <!--此页面不会被浏览器缓存END-->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="/app/framework/css/light7.min.css">
+    <link rel="stylesheet" type="text/css" href="/images/icon/iconfont.css">
+    <link href="/app/framework/styleApp.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/app/framework/css/light7-swiper.min.css" type="text/css">
+
+
+
+    <link rel="stylesheet" href="/app/framework/swiper.min.css" type="text/css">
+    <link rel="stylesheet" href="/app/framework/newapp.css" type="text/css">
+
+</head>
+
+ <body >
+<div class="page-group">
+  <!----任务开始----->
+ <div class="page renwu" id="renwu">
+  <!--界面标题-->
+
+  <header class="bar bar-nav">
+        <a class="button button-link button-nav pull-left back" href="../homenew.html">
+                  <span class="icon  iconfont icon-shangyiye2"></span>
+                  返回
+        </a>
+      <!--  <span class="button button-link button-nav pull-right"><span class="iconfont icon-shaixuan"></span>
+                  <select id="peixunrenwujd" style="-webkit-appearance: none;border: 0;outline: 0;background-color: transparent;" >
+                      <option value="1">全部</option>
+                      <option value="2">进行中</option>
+                      <option value="3">未开始</option>
+                      <option value="4">已完成</option>
+                      <option value="5">已过期</option>
+                      <option value="6">规划</option>
+                  </select>
+        </span>-->
+        <h1 class="title">学习任务</h1>
+    </header>
+
+<!--  <header class="bar bar-nav" id="renwuheader">
+            <a class="button button-link button-nav pull-left back" href="/app/homenew.html">
+                  <span class="icon icon-left"></span>
+                  返回
+              </a>
+          <h1 class="title">任务</h1>
+    </header>-->
+    <div class="bar bar-header-secondary">
+              <div class="searchbar">
+                <a class="searchbar-cancel">取消</a>
+                <div class="search-input"><form target="#" id="search_from">
+                  <label class="icon iconfont icon-sousuo1" for="search"></label>
+                  <input type="search" id='search' placeholder='输入关键字...'  onclick="this.focus()"/>
+                </form>
+                </div>
+              </div>
+            </div>
+
+    <!--界面内容-->
+  <div class="content renwu pull-to-refresh-content"><!--pull-to-refresh-content"可下拉刷新-->
+      <!-- 默认的下拉刷新层 -->
+        <div class="pull-to-refresh-layer">
+            <div class="preloader"></div>
+            <div class="pull-to-refresh-arrow"></div>
+       </div>
+
+       <div class="buttons-tab" style="overflow-x: auto;">
+                <a href="#tab1" class="tab-link active button" id="renwu_all">全部</a>
+                <a href="#tab1" class="tab-link button" id="renwu_jxz">学习中</a>
+                <a href="#tab1" class="tab-link button" id="renwu_ywce">已完成</a>
+
+                <!--
+                <a href="#tab1" class="tab-link button" id="renwu_ygq">已过期</a>
+                <a href="#tab1" class="tab-link button" id="renwu_wks">未学习 </a>
+
+                <a href="#tab1" class="tab-link button" id="renwu_gh">规划</a>-->
+      </div>
+
+     <div class="tabs" style=" margin-bottom:2.4rem;">
+        <div id="tab1" class="tab active">
+        <div class="list-block" style="margin: -0.1rem 0;">
+          <ul class="renwulist">
+            <!--等待追加_全部-->
+          </ul>
+        </div>
+        <!--分页-->
+        <div id="stagePageIndex"  style=" display:none;">1</div>
+        <div id="stageLoadMore" style="margin-bottom: 3rem; text-align: center; margin-top: 1rem; display:none;  " onlick="stageLoadMore()">点击加载更多</div>
+       </div>
+  </div>
+</div>
+</div>
+
+</div>
+
+
+<script type='text/javascript' src='/app/framework/zepto.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='/app/framework/js/light7.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='/app/framework/js/i18n/cn.min.js'></script>
+<script src="/images/icon/iconfont.js" type="text/javascript"></script>
+<script src="/app/framework/js/jquery-1.10.2.min.js" type="text/javascript"></script>
+<script type='text/javascript' src="/app/peixun/train.js"></script>
+<script>
+    $.config = {
+        autoInit: true //no recommend
+    }
+    $.init();
+</script>
+</body>
+</html>

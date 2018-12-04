@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1,IE=edge">
+  <title>课程评估</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <!--此页面不会被浏览器缓存-->
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Cache-Control" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <!--此页面不会被浏览器缓存END-->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="/app/framework/css/light7.min.css">
+    <link rel="stylesheet" type="text/css" href="/images/icon/iconfont.css">
+    <link rel="stylesheet" href="/app/framework/swiper.min.css" type="text/css">
+    <link rel="stylesheet" href="/app/framework/ypynewapp.css" type="text/css">
+</head>
+<body>
+
+<div class="page" id="iframeques">
+        <!--界面标题-->
+        <header class="bar bar-nav">
+            <a class="button button-link button-nav pull-left back" href="/app/class/assessment.html">
+                      <span class="icon  iconfont icon-shangyiye2 "></span>
+                      返回
+                  </a>
+            <h1 class="title">财政部明确2019年会计管理...</h1>
+        </header>
+        <!--界面内容-->
+        <div class="content" style=" background-color:#fff;">
+            <!--拼接html-->
+            <iframe id="iframe1" src="../wenjuan/wenjuan_info.html?key=2a77ec45-5354-227f-687e-17c330f01dd5" style="width:100%; height:100%; border:0px;">
+            </iframe>
+        </div>
+</div>
+<!-- popup, panel 等放在这里 -->
+<div class="panel-overlay"></div>
+
+<script src="/app/framework/js/jquery-1.10.2.min.js" type="text/javascript"></script>
+<script type='text/javascript' src='/app/framework/js/light7.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='/app/framework/js/i18n/cn.min.js'></script>
+<script type='text/javascript' src='/app/class/assessment.js' charset='utf-8'></script>
+<script>
+  $.config = {
+    autoInit: true //no recommend
+  }
+  $.init();
+</script>
+
+</body>
+</html>

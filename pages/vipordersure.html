@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>医管通APP</title>
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/ygtcommon.css">
+    <style type="text/css">
+        .wkshow {
+            margin: 0 auto;
+            overflow: visible;
+            background: #fafafa;
+        }
+        /*banner*/
+
+        .banner {
+            overflow: hidden;
+            position: relative;
+            padding: 10px;
+            background: #fff;
+            margin-top: 75px;
+        }
+
+        .banner img {
+            width: 30%;
+            vertical-align: top;
+            height: 70px;
+            border-radius: 10px;
+        }
+
+        .banner .left {
+            display: inline-block;
+            width: 66%;
+            margin-left: 2%;
+        }
+
+        .banner .left h5 {
+            font-size: 1.1rem;
+            font-weight: normal;
+            margin: 0;
+            padding: 0;
+            line-height: 30px;
+        }
+
+        .banner .left span {
+            color: #ff9913;
+            font-size: 1rem;
+            display: inline-block;
+        }
+        /*中间*/
+
+        .pay {
+            background: #fff;
+            margin-top: 10px;
+            padding: 10px 10px 0 10px;
+        }
+
+        .pay dt {
+            border-left: 4px solid #ff9913;
+            padding-left: 10px;
+            margin: 10px 0;
+        }
+
+        .pay dd {
+            height:43px;
+            line-height: 35px;
+            position: relative;
+        }
+
+        .pay dd img {
+            width: auto;
+            height: 25px;
+            margin-right: 10px;
+        }
+
+        .pay dd .radio{
+            display: inline-block;
+            float: right;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            border: 1px solid #999;
+            position: relative;
+            top: 15px;
+            right: 10px;
+        }
+        .pay dd input{
+            width: 100%;
+            height: 40px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+        }
+        input:checked+.radio {
+            background: rgba(255, 153, 19, .5);
+            border: 1px solid rgba(255, 153, 19, .5);
+        }
+        #niuchongzhi{background: #ff9913;color: #fff;position: relative;z-index: 11;margin-left: 10px;padding: 3px 5px;border-radius: 3px;}
+        /*课程详情*/
+
+        .class {
+            margin-top: 10px;
+            background: #fff;
+            padding: 10px 0;
+        }
+
+        .class h5 {
+            text-align: center;
+            color: #666;
+            font-size: 1.1rem;
+            font-weight: normal;
+            padding: 0;
+            margin: 0;
+        }
+        /*底部*/
+
+        .footer {
+            border: none;
+            bottom: 0;
+            min-height: 50px;
+            width: 100%;
+            background: #ff9913;
+            box-sizing: border-box;
+            display: block;
+            position: fixed;
+            left: 0;
+            right: 0;
+            margin: 0 auto;
+            color: #fff;
+            font-size: 1.1rem;
+            text-align: center;
+            line-height: 50px;
+            font-weight: 500;
+        }
+
+        @media screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+            .banner {
+                margin-top: 95px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="top" id="header">
+        <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span class="title">安全支付</span>
+        </h1>
+    </header>
+    <div class="banner">
+        <img src="../img/membervip.png" id="coursethumb" />
+        <div class="left">
+            <h5 id="titleh5">医管通线上会员</h5>
+            <span>需支付：<b id="courseprice">￥1998元</b></span>
+        </div>
+    </div>
+    <section class="wkshow">
+        <dl class="pay paytypedl" id="paytypedl" style="border-bottom:1px solid #eee;">
+            <dt>支付方式</dt>
+            <!-- <dd style="border-top: 1px solid #eee;" id="weixinpaydd" onclick="checkradio(this)">
+                <img src="../img/pay.png" /> 微信支付
+                <input type="radio" name="paytype" checked value="wxpay" />
+                <span class="radio"></span>
+            </dd> -->
+
+            <dd style="border-top: 1px solid #eee;" id="iospaydd" >
+                <img src="../img/niupay.png" /> 牛贝  (已有<em id="niucoin">0.00</em>)<a onclick="niupay();" id="niuchongzhi">充值</a>
+                <input type="radio"  name="paytype" value="niupay" checked/>
+                <span class="radio"></span>
+
+            </dd>
+        </dl>
+        <dl class="pay" id='buyknow'>
+            <dt>会员权益</dt>
+            <dd>免费学习线上课程</dd>
+            <dd>线下公开课门票</dd>
+            <dd>线下论坛研讨会门票</dd>
+            <dd>课程安排解释权归医管通所有</dd>
+            <dd style="color:#ff9913;">注：机构用户可在会员介绍页面申请对公转账汇款</dd>
+        </dl>
+    </section>
+    <footer class="footer" tapmode>
+        确认付款
+    </footer>
+    <script src="../js/lib/jquery-2.1.4.js"></script>
+    <script type="application/javascript" src="../js/lib/fastclick.js"></script>
+    <script src="../script/api.js"></script>
+
+    <script type="text/javascript">
+        var classroomid = 0;
+        var type = '';
+        var apihost = $api.getStorage('apihost');
+        if (apihost == undefined || apihost == '') {
+            apihost = 'http://member.ygt.cm';
+            $api.setStorage('apihost', apihost);
+        }
+        var ygtuserinfo = '';
+        var systemtype = '';
+        var iswxpay = $api.getStorage('iswxpay');
+
+        apiready = function() {
+            var header = $api.byId('header');
+            $api.fixStatusBar(header);
+
+            classroomid = 'vip';//api.pageParam.id;
+            ygtuserinfo = $api.getStorage('ygtuserinfo');
+            type = api.pageParam.type;
+            systemtype = api.systemType;
+
+
+            api.addEventListener({name: 'viewappear'}, function(ret, err){
+                    $(".loading").show();
+                   getordersuredata();
+              });
+            //getordersuredata();
+        }
+
+        function getordersuredata() {
+            // 医管通线上会员一年
+            if (ygtuserinfo.id == -1) {
+                api.ajax({
+                    url: apihost + '/api/tourist/checkvip',
+                    method: 'post',
+                    headers: {
+                        'UUID': ygtuserinfo.deviceid
+                    },
+                    data: {
+                        values: {
+                            uuid: ygtuserinfo.deviceid
+                        }
+                    }
+                }, function(ret, err) {
+                    console.log(JSON.stringify(ret));
+                    console.log(JSON.stringify(err));
+                    $(".loading").hide();
+                    if (ret) {
+                        //alert( JSON.stringify( ret ) );
+                        if (ret.data.isvip == 1) {
+                            //alert('tttisvip')
+                            //$('.footer').html('已经是会员');
+                            $api.html($api.dom('.footer'), '您已是会员');
+
+                            //$api.attr($api.dom('.footer'), 'disabled', 'disabled');
+                            //$api.attr($api.dom('.footer'), 'onclick', '');
+                            $api.rmEvt($api.dom('.footer'), 'click');
+                        } else {
+                            $api.addEvt($api.dom('.footer'), 'click', function() {
+                                payOrdermoney();
+                            });
+                        }
+
+                    } else {
+                        alert(JSON.stringify(err));
+                    }
+                });
+            }else {
+                api.ajax({
+                    url: apihost + '/api/wtk/classroom/checkvip',
+                    method: 'post',
+                    headers: {
+                        'TOKEN': ygtuserinfo.token
+                    },
+                    data: {
+                        values: {
+                            uid: ygtuserinfo.id
+                        }
+                    }
+                }, function(ret, err) {
+                    console.log(JSON.stringify(ret));
+                    console.log(JSON.stringify(err));
+                    $(".loading").hide();
+                    if (ret) {
+                        //alert( JSON.stringify( ret ) );
+                        if (ret.data.isvip == 1) {
+                            //alert('tttisvip')
+                            //$('.footer').html('已经是会员');
+                            $api.html($api.dom('.footer'), '您已是会员');
+
+                            //$api.attr($api.dom('.footer'), 'disabled', 'disabled');
+                            //$api.attr($api.dom('.footer'), 'onclick', '');
+                            $api.rmEvt($api.dom('.footer'), 'click');
+                        } else {
+                            $api.addEvt($api.dom('.footer'), 'click', function() {
+                                payOrdermoney();
+                            });
+                        }
+
+                    } else {
+                        alert(JSON.stringify(err));
+                    }
+                });
+            }
+
+            var date = new Date();
+            var yearlater = (date.getFullYear() + 1) + '-' + (date.getMonth() + 1) + '-' + (date.getDate());
+
+
+            if (systemtype == 'ios' && iswxpay == 0) {
+
+            }else {
+                var buyhtml = '<dt>会员权益</dt>' +
+                    //'<dd style="border-top: 1px solid #eee;">会员有效期至' + yearlater + '</dd>' +
+                    '<dd>线上会员免费学习全部线上课程</dd>' +
+                    '<dd>课程安排解释权归医管通所有</dd>' +
+                    '<dd>机构用户可在会员介绍页面申请对公转账汇款</dd>' ;
+                $api.html($api.byId('buyknow'), buyhtml);
+            }
+
+            // 检查 牛币是否充足
+            if (ygtuserinfo.id == -1) {
+                api.confirm({
+                    title: '购买会员需要登录',
+                    msg: '购买会员需要登录，请前往登录！',
+                    buttons: ['取消', '登录']
+                },function (ret, err) {
+                    if (ret.buttonIndex == 2) {
+                        // 跳到充值页面
+                        api.openWin({
+                            name: 'loginframe',
+                            url: './loginframe.html',
+
+                        });
+
+                    }
+                });
+            }else {
+                api.ajax({
+                    url: apihost + '/api/wtk/myhome/getCoin',
+                    method: 'post',
+                    headers:{
+                        'TOKEN':ygtuserinfo.token
+                    },
+                    data: {
+                        values: {
+                            uid: ygtuserinfo.id
+                        }
+                    }
+                },function(ret, err){
+                    console.log('getcoin:');
+                    console.log(JSON.stringify(ret));
+                    console.log(JSON.stringify(err));
+                    if (ret) {
+                        // 牛币不足
+                        if (ret.data.result == null || ret.data.result.coin < 199800) {
+                            api.confirm({
+                                title: '充值牛贝可购买在线课程',
+                                msg: '牛贝余额仅有'+ret.data.result.coin/100+'，请前往充值！',
+                                buttons: ['取消', '充值']
+                            }, function(ret, err){
+                                if( ret ){
+                                    if (ret.buttonIndex == 2) {
+                                        // 跳到充值页面
+                                        api.openWin({
+                                            name: 'niupay',
+                                            url: './niupay.html',
+                                            pageParam: {
+
+                                            }
+                                        });
+
+                                    }
+                                }else{
+
+                                }
+                            });
+                            $api.html($api.byId('niucoin'), ret.data.result.coin/100+'牛贝');
+                        }else {
+                            $api.html($api.byId('niucoin'), ret.data.result.coin/100+'牛贝');
+                        }
+                        //alert( JSON.stringify( ret ) );
+                    }else {
+                        api.confirm({
+                            title: '充值牛贝可购买在线课程',
+                            msg: '牛贝余额仅有0.00，请前往充值！',
+                            buttons: ['取消', '充值']
+                        }, function(ret, err){
+                            if( ret ){
+                                if (ret.buttonIndex == 2) {
+                                    // 跳到充值页面
+                                    api.openWin({
+                                        name: 'niupay',
+                                        url: './niupay.html',
+                                        pageParam: {
+
+                                        }
+                                    });
+
+                                }
+                            }else{
+
+                            }
+                        });
+                        $api.html($api.byId('niucoin'), '0.00牛贝');
+                    }
+                });
+            }
+        }
+
+        function payOrdermoney() {
+
+            var classroomidarg = 'vip';
+
+            if (systemtype == 'ios' && iswxpay == 0 ) {
+                // ios手机的vip购买
+                if (ygtuserinfo.id == -1) {
+                    api.confirm({
+                        title: '购买会员需要登录',
+                        msg: '购买会员需要登录，请前往登录！',
+                        buttons: ['取消', '登录']
+                    },function (ret, err) {
+                        if (ret.buttonIndex == 2) {
+                            // 跳到充值页面
+                            api.openWin({
+                                name: 'loginframe',
+                                url: './loginframe.html',
+
+                            });
+
+                        }
+                    });
+                }
+                else {
+                    api.ajax({
+                        url: apihost + '/api/wtk/myhome/getCoin',
+                        method: 'post',
+                        headers:{
+                            'TOKEN':ygtuserinfo.token
+                        },
+                        data: {
+                            values: {
+                                uid: ygtuserinfo.id
+                            }
+                        }
+                    },function(ret, err){
+                        console.log('getcoin:');
+                        console.log(JSON.stringify(ret));
+                        console.log(JSON.stringify(err));
+                        if (ret) {
+                            // 牛币不足
+                            if (ret.data.result == null || ret.data.result.coin < 199800) {
+                                api.confirm({
+                                    title: '充值牛贝可购买在线课程',
+                                    msg: '牛贝余额仅有'+ret.data.result.coin/100+'，请前往充值！',
+                                    buttons: ['取消', '充值']
+                                }, function(ret, err){
+                                    if( ret ){
+                                        if (ret.buttonIndex == 2) {
+                                            // 跳到充值页面
+                                            api.openWin({
+                                                name: 'niupay',
+                                                url: './niupay.html',
+                                                pageParam: {
+
+                                                }
+                                            });
+
+                                        }
+                                    }else{
+
+                                    }
+                                });
+
+                            }else {
+                                api.ajax({
+                                    url: apihost + '/api/wtk/myhome/iosbuyvip2',
+                                    method: 'post',
+                                    headers: {
+                                        'TOKEN': ygtuserinfo.token
+                                    },
+                                    data: {
+                                        values: {
+                                            uid: ygtuserinfo.id
+                                        }
+                                    }
+                                }, function(ret, err) {
+                                    if (ret) {
+                                        console.log(JSON.stringify(ret));
+                                        if (ret.code == 1) {
+                                            api.closeWin({
+                                                name: 'vipordersure'
+                                            });
+
+
+                                        }else if (-1 == ret.code){
+                                            // 牛币不够 跳到充值页面
+                                            api.confirm({
+                                                title: '充值牛贝可购买会员',
+                                                msg: '牛贝余额仅有'+ret.data.coin/100+'，请前往充值！',
+                                                buttons: ['取消', '充值']
+                                            }, function(ret, err){
+                                                if( ret ){
+                                                    if (ret.buttonIndex == 2) {
+                                                        // 跳到充值页面
+                                                        api.openWin({
+                                                            name: 'niupay',
+                                                            url: './niupay.html',
+                                                            pageParam: {
+
+                                                            }
+                                                        });
+
+                                                    }
+                                                }else{
+
+                                                }
+                                            });
+                                        }else {
+                                            $api.toast('警告', '支付失败', 3000);
+                                        }
+                                    } else {
+                                        // alert('购买失败');
+                                        $api.toast('警告', '购买失败', 3000);
+                                        // alert(JSON.stringify(err));
+                                        console.log(JSON.stringify(err));
+                                    }
+                                });
+                            }
+                            //alert( JSON.stringify( ret ) );
+                        }else {
+                            api.confirm({
+                                title: '充值牛贝可购买在线课程',
+                                msg: '牛贝余额仅有'+ret.data.coin/100+'，请前往充值！',
+                                buttons: ['取消', '充值']
+                            }, function(ret, err){
+                                if( ret ){
+                                    if (ret.buttonIndex == 2) {
+                                        // 跳到充值页面
+                                        api.openWin({
+                                            name: 'niupay',
+                                            url: './niupay.html',
+                                            pageParam: {
+
+                                            }
+                                        });
+
+                                    }
+                                }else{
+
+                                }
+                            });
+                        }
+                    });
+
+
+                    // ios购买vip，现在改为微信支付 废弃
+
+
+                }
+
+
+
+
+
+            } else {
+                var wx = api.require("wx");
+                wx.isInstalled(function(ret, err) {
+                    if (ret.installed) {
+                        api.ajax({
+                            url: apihost + '/api/wtk/classroom/getTicketAppParameters',
+                            method: 'post',
+                            headers: {
+                                'TOKEN': ygtuserinfo.token
+                            },
+                            data: {
+                                values: {
+                                    uid: ygtuserinfo.id,
+                                    classroomid: classroomidarg
+                                    //price:1999
+                                }
+                            }
+                        }, function(ret, err) {
+                            console.log(JSON.stringify(ret));
+                            console.log(JSON.stringify(err));
+                            if (ret) {
+
+                                //paytitcket(data.data);
+                                if (ret.code == 1) {
+                                    console.log(JSON.stringify(ret));
+                                    var wxPay = api.require("wxPay");
+                                    wxPay.payOrder({
+                                        apiKey: ret.data.appid,
+                                        orderId: ret.data.prepayid,
+                                        mchId: ret.data.partnerid,
+                                        nonceStr: ret.data.noncestr,
+                                        timeStamp: ret.data.timestamp,
+                                        package: ret.data.package,
+                                        sign: ret.data.sign
+                                    }, function(payret, payerr) {
+                                        if (payret.status) {
+                                            if (classroomid == 'my') {
+                                                api.openWin({
+                                                    name: 'my',
+                                                    url: './my.html',
+                                                    pageParam: {
+                                                    }
+                                                });
+                                            }else {
+                                                api.openWin({
+                                                    name: 'guide',
+                                                    url: './guide.html',
+                                                    pageParam: {
+                                                        id: classroomid
+                                                    },
+                                                    reload:true
+                                                });
+                                            }
+
+
+                                        } else {
+                                            if (payerr.code == -2) {
+                                                api.toast({
+                                                    msg: '您取消了支付！',
+                                                    duration: 3000,
+                                                    location: 'middle'
+                                                });
+                                            } else {
+                                                $api.toast('警告', '支付失败', 5000);
+                                            }
+                                        }
+                                    });
+                                } else {
+                                    api.alert({
+                                        title: '提示',
+                                        msg: ret.msg,
+                                    }, function(ret, err) {
+                                        if (ret) {
+                                            api.closeWin({
+                                                name: 'vipordersure'
+                                            });
+
+                                        } else {
+                                            alert(JSON.stringify(err));
+                                        }
+                                    });
+                                }
+
+
+
+
+                            } else {
+                                alert('支付失败');
+                                //alert( JSON.stringify( err ) );
+                                console.log(JSON.stringify(err));
+                            }
+                        });
+                    } else {
+                        //alert('当前设备未安装微信客户端');
+                    }
+                });
+            }
+
+        }
+        //支付教程
+        function pay() {
+            api.openWin({
+                name: 'payteach',
+                url: './payteach.html',
+                pageParam: {
+                    name: 'test'
+                },
+                animation:{
+                  type:'none'
+                }
+            });
+        }
+        //niupay
+        function niupay() {
+            api.openWin({
+                name: 'niupay',
+                url: './niupay.html',
+                pageParam: {
+                }
+            })
+        }
+    </script>
+</body>
+
+</html>

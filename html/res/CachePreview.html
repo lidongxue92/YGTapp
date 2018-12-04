@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../../res/icon/iconfont.css">
+      <style type="text/css">
+        body {
+         padding: 0px;
+         margin: 0px;
+        }
+  </style>
+  </head>
+  <body scroll="no" style="background-color: #f7f7f8;">
+  <div style="background-color:#f7f7f8; height:49px;  position:fixed; width: 100%; z-index:2; color:#3d4145;line-height:49px; text-align:center;border-bottom: 1px solid #ddd; ">
+      <span style=" position:absolute;line-height:49px; left:10px; display:inline-block; color:#39f" onclick="closew()">  <i class="iconfont icon-shangyiye2"></i>返回</span>
+      <div id="title"  style="line-height:49px;font-weight: bold;"></div>
+  </div>
+  <div class="yulanContent"></div>
+  <script type="text/javascript" src="../../res/config.js"></script>
+  <script type="text/javascript" src="../../res/zepto.min.js"></script>
+  <script type="text/javascript">
+      var bPlayer = null;
+      var APPCourseCacheList = GetlocalStorage("APPCourseCacheList");
+      var newStudyDetailsJson={timeStart:"",timeEnd:"",cousreid:"",csid:"",sectionName:"",courseType:"",dateLearn:""};
+
+      var currentCourse = null; //当前观看的课程对象
+      apiready = function(){
+        $("body").css("margin-top",api.safeArea.top+"px");
+
+        api.addEventListener({
+            name: 'keyback'
+        }, function(ret, err) {
+            closew();
+            return;
+        });
+        api.addEventListener({
+            name:'pause'
+        }, function(ret, err){
+            closew();
+        });
+        bPlayer = api.require('videoPlayer');  //实例化百度播放器
+        if(api.pageParam.title.length > 10)
+        {
+          api.pageParam.title = api.pageParam.title.substring(0,10);
+        }
+          var title = api.pageParam.title;
+          var downid = api.pageParam.downid;
+          document.getElementById("title").innerHTML=api.pageParam.title;
+          var VideoInfo = api.pageParam.VideoInfo;
+          //alert(JSON.stringify(VideoInfo));
+          if(VideoInfo != null || VideoInfo != ""){
+            VideoInfo = strToJson(VideoInfo);
+            $.each(APPCourseCacheList, function (i, item) {  //计时业务
+              if(item.downid == downid){
+                currentCourse = item;
+                newStudyDetailsJson.timeStart = new Date().format("yyyy-MM-dd hh:mm:ss");
+                newStudyDetailsJson.cousreid = item.csid;
+                newStudyDetailsJson.csid = item.pid;
+                newStudyDetailsJson.sectionName = api.pageParam.title;
+                newStudyDetailsJson.courseType = item.ptype;
+                newStudyDetailsJson.dateLearn = newStudyDetailsJson.timeStart;
+              }
+            });
+            if(VideoInfo.mimeType.toLowerCase().indexOf('mp4')>0 || VideoInfo.mimeType.toLowerCase().indexOf('mov')>0){ //视频格式
+              VideoInit(VideoInfo.savePath, currentCourse);
+            }else if(VideoInfo.mimeType == "application/pdf" || VideoInfo.mimeType.toLowerCase().indexOf('pdf')>0){ //文档预览
+                PdfInit(VideoInfo.savePath,currentCourse);
+            }else if(VideoInfo.mimeType == "image/png" || VideoInfo.mimeType == "image/jpeg" || VideoInfo.mimeType.toLowerCase().indexOf('jpeg')>0 || VideoInfo.mimeType.toLowerCase().indexOf('png')>0 || VideoInfo.mimeType.toLowerCase().indexOf('jpg')>0){
+               $(".yulanContent").html(" <div style=\"padding-top:50px;\"><img id='fileimg'  src='" + VideoInfo.savePath + "'   style='width:100%' /></div> ");
+            }
+            else {
+              alert("无法打开本文件"+VideoInfo.mimeType);
+            }
+            //文件打开之后，潘大U呢时候需要计时服务
+            if(currentCourse != null && currentCourse != "null" && currentCourse != ""){
+              GetServerData();
+            }
+          }
+      };
+      //判断有无网络，有的话先获取数据库中当前小结的最新数据存入缓存中，再进行计时
+      function GetServerData(){
+        if(api.connectionType != "none" && api.connectionType != "unknown" && api.connectionType != "ethernet"){
+          getAjax(javaserver + "/course/findCourseStudyRecord", {courseId:currentCourse.csid,userId:currentCourse.userid,arrangeId:currentCourse.renwuid}, function(rs){
+            rs = strToJson(rs);
+            if(rs.errorcode == "0"){
+              if(rs.hasOwnProperty("data")){
+              var json_details = strToJson(rs.data.json_details);
+              var playjson = strToJson(json_details.list);
+              $.each(playjson, function(index, item){
+                if(item.pid == currentCourse.pid){
+                  APPCourseCacheList.splice(index, 1); //清掉此记录
+                  item.csid = currentCourse.csid;
+                  item.userid = currentCourse.userid;
+                  item.orgid = currentCourse.orgid;
+                  item.renwuid = currentCourse.renwuid;
+                  item.downid = currentCourse.downid;
+                  APPCourseCacheList.push(item);
+                  return false;
+                }
+              });
+              }
+            }
+          });
+        }
+      }
+      //返回事件
+      function closew(){
+        bPlayer.stop();
+        bPlayer.hide();
+        bPlayer.close();
+        bPlayer.hide();
+        if(currentCourse != null && currentCourse != "null" && currentCourse != ""){
+          window.clearInterval(cacheJSQ); //清除计时器
+          UploadLearing(currentCourse);
+        }
+        api.closeWin();
+      }
+      //视频播放初始化
+      function VideoInit(videoFile, currentCourse){
+
+        bPlayer.open({
+              rect: {
+                  x: 0,
+                  y: api.safeArea.top+50,
+                  w: api.winWidth,
+                  h: api.winHeight - (api.safeArea.top+50),
+              },
+              path: videoFile,//mima.replace('\\', '/'),
+              autoPlay: true
+          }, function(ret, err) {
+              if (ret) {
+                //bPlayer.full();
+                if(currentCourse != null && currentCourse != "null" && currentCourse != "" && currentCourse != undefined && currentCourse != "undefined"){
+                  var pstate = currentCourse.pstate; //1表示完成，完成后不需要计时
+                  if(pstate != 1){
+                    BDPlayerLoader();
+                    console.log(JSON.stringify(currentCourse));
+                    CacheJishiqi(currentCourse);
+                  }
+                }
+              }
+        });
+      }
+      //文档播放初始化
+      function PdfInit(pdfFile, currentCourse){
+        var pdfReader = api.require('pdfReader');
+        pdfReader.openView({
+            rect:{
+              x:0,
+              y:api.safeArea.top+50,
+              w:'auto',
+              h:'auto'
+            },
+            path:pdfFile,
+            fixedOn:api.frameName,
+            fixed:true,
+            showLoading:true
+        },function(ret){
+
+          //  alert(JSON.stringify(ret));
+        });
+        if(currentCourse != null && currentCourse != "null" && currentCourse != "" && currentCourse != undefined && currentCourse != "undefined"){
+          var pstate = currentCourse.pstate; //1表示完成，完成后不需要计时
+          if(pstate != 1){
+            BDPlayerLoader();
+            CacheJishiqi(currentCourse);
+          }
+        }
+      }
+      function BDPlayerLoader(){
+        bPlayer.addEventListener({name : ['all','click','playbackState']}, function(ret) {
+          var EventType = eval(ret);
+          if(EventType.eventType == "click"){
+            console.log("aaaa");
+           }
+         });
+      }
+      //看视频的主要计时业务
+      var cacheJSQ = null; //声明一个缓存观看的计时器
+      function CacheJishiqi(currentCourse) {
+          cacheJSQ = setInterval(function(){
+            if(currentCourse.pstate != 1){
+              currentCourse.learnTime = parseInt(currentCourse.learnTime) + 1;
+              if(parseInt(currentCourse.learnTime) >= parseInt(currentCourse.cstime)*60)//未学完
+              {
+                currentCourse.pstate = 1;
+              }
+              $.each(APPCourseCacheList, function (index, item) {
+                //保证一个课程在多个任务中时，计时不会乱掉
+                if(item.pid == currentCourse.pid && item.renwuid == currentCourse.renwuid){
+                  APPCourseCacheList.splice(index, 1); //清掉此记录
+                  APPCourseCacheList.push(currentCourse);
+                  return false;
+                }
+              });
+              SetlocalStorage("APPCourseCacheList", JSON.stringify(APPCourseCacheList));
+              console.log(JSON.stringify(GetlocalStorage("APPCourseCacheList")));
+            }
+          }, 1000);
+      }
+      //更新进度至服务器
+      function UploadLearing(currentCourse) {
+        //先确保网络畅通
+        if(api.connectionType != "none" && api.connectionType != "unknown" && api.connectionType != "ethernet"){
+          var smallJson={};
+          smallJson.datetime = new Date().format("yyyy-MM-dd hh:mm:ss");//结束时间
+          smallJson.key = currentCourse.csid;
+          smallJson.list = [];
+          var newcmsjson = {};
+          newcmsjson.cstime = currentCourse.cstime;
+          newcmsjson.learnTime = currentCourse.learnTime;
+          newcmsjson.pid = currentCourse.pid;
+          newcmsjson.playTime = currentCourse.playTime;
+          newcmsjson.pstate = currentCourse.pstate;
+          newcmsjson.ptype = currentCourse.ptype;
+          smallJson.list.push(newcmsjson);
+          newStudyDetailsJson.timeEnd = smallJson.datetime;
+          var StudyDetailsJsonList = [];
+          StudyDetailsJsonList.push(newStudyDetailsJson);
+          var canshu ={
+               jsonDetails : JSON.stringify(smallJson),//课程学习记录
+               studyDetailsId : "",//存档ID
+               courseId : currentCourse.csid,//课程ID
+               dateTime:"[]",//暂无用处
+               arrangeId : currentCourse.renwuid,//培训任务ID
+               orgId : currentCourse.orgid,//组织架构ID
+               newStudyDetailsJson :JSON.stringify(StudyDetailsJsonList) ,//学习时段
+               userId :  currentCourse.userid, //学习人员ID
+               uploadType: "APP"
+           };
+           //javaserver
+          getAjax(javaserver+"/coursedetailed/Uploadprogress",canshu,function(data){
+            console.log(data);
+              data = strToJson(data);
+               if (data.errorcode == "0") {
+                 bottomtoast("学习记录同步成功！");
+                 $.each(APPCourseCacheList, function (index, item) {
+                   //保证一个课程在多个任务中时，计时不会乱掉
+                   if(item.pid == currentCourse.pid && item.renwuid == currentCourse.renwuid){
+                     APPCourseCacheList.splice(index, 1); //清掉此记录
+                     return false;
+                   }
+                 });
+               }else{
+                 bottomtoast("学习记录同步失败，请重试");
+               }
+           },'','','',false);
+        }
+      }
+      function strToJson(str){
+          //如果本来就是对象，强转会异常
+         try {
+               if(str!=null&&str!=""&&str!=undefined){
+                  return JSON.parse(str);
+              }else{
+                  return null;
+              }
+          } catch (e) {
+              return str;
+          }
+      }
+      function GetlocalStorage(name) {
+        // / <summary>
+        // / 获得本地数据
+        // / </summary>
+        if (window.localStorage) {
+            // 获取token
+            if(name == "userinfo_token"){
+                return getToKen();
+            }
+            //获取本地缓存
+            var value = localStorage.getItem(name);
+            if (value != null&&value!=""&&value!=undefined) {
+                    //如果获取的值已经是对象，强转会报错，直接返回
+                   try {
+                       return JSON.parse(value);
+                   } catch (e) {
+                        return value;
+                  }
+           } else {
+                  return value;
+             }
+
+        } else {
+           bottomtoast("您的浏览器不支持本系统，或开启了隐身模式");
+        }
+    }
+    function SetlocalStorage(name, obj) {
+        // / <summary>
+        // / 重写本地数据
+        // / </summary>
+        if (window.localStorage) {
+
+            try {
+                if(name == "userinfo_token"){
+                    var tokenObj = { token: obj, outTime: "" };
+                    tokenObj.outTime = new Date().getTime();
+                    localStorage.setItem("userinfo_token", JSON.stringify(tokenObj));
+                }else{
+                    //localStorage.setItem(name, JSON.stringify(obj));
+                    localStorage.setItem(name, obj);
+                }
+            }
+            catch (oException) {
+                if (oException.name  == 'QuotaExceededError') {
+                    api.toast({
+                        msg: '超出本地存储限额！',
+                        duration: 2000,
+                        location: 'bottom'
+                    });
+                    //如果历史信息不重要了，可清空后再设置
+                    localStorage.clear();
+                    if(name == "userinfo_token"){
+                        var tokenObj = { token: obj, outTime: "" };
+                        tokenObj.outTime = new Date().getTime();
+                        localStorage.setItem("userinfo_token", JSON.stringify(tokenObj));
+                    }else{
+                        //localStorage.setItem(name, JSON.stringify(obj));
+                        localStorage.setItem(name, obj);
+                    }
+                }
+            }
+        } else {
+           api.toast({
+               msg: '您的浏览器不支持本系统，或开启了隐身模式',
+               duration: 2000,
+               location: 'bottom'
+           });
+        }
+    }
+    function getAjax(url, parm, callBack, callBackError, callBackType, mode,istongbu) {
+      console.log(url + "||" + JSON.stringify(parm));
+        var token = "userinfo_token is none";
+        if (callBackType == null || callBackType == "" || callBackType == undefined)
+            callBackType = "text";
+        if (mode == null || mode == "" || mode == undefined)
+            mode = "get";
+        if (istongbu!=undefined&&!istongbu){
+            istongbu =false;
+      	}else{
+      		  istongbu =true;
+      	}
+      try{
+          $.ajax({
+              type: mode,
+              beforeSend: function (xhr) {
+                 if(!QueryString("courseId")){
+                      token = strToJson(GetlocalStorage("userinfo_token"),token);
+                      xhr.setRequestHeader("X-Session-Token",token);
+                  }
+              },
+              //手机端需要加上token验证
+              headers: {
+                  "Accept": "application/json, text/javascript, */*; charset=utf-8",
+                  "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
+              },
+              async:istongbu,
+              url: url,
+              data: parm,
+              dataType: callBackType,
+              cache: false,
+              success: function (msg, status, xhr) {
+                pedding=false;
+                callBack(msg);
+              },
+              error: function (err) {
+                  if(callBackError != undefined && callBackError != null && callBackError != "")
+                  callBackError(err);
+                  console.log('请求服务器错误！');
+                  pedding=false;
+                  console.error("服务器访问异常：" + JSON.stringify(err));
+              }
+          });
+
+      }
+      catch(error) {
+        api.toast({
+            msg: '请求错误, 请刷新重试！',
+            duration: 2000,
+            location: 'bottom'
+        });
+        console.log("error" + error);
+      }
+    }
+    function bottomtoast(msg){
+      api.toast({
+          msg: msg,
+          duration: 2000,
+          location: 'bottom'
+      });
+      console.log(msg);
+    }
+    function QueryString(fieldName) {
+        /// <summary>
+        ///   获得URL GET参数
+        /// </summary>
+        /// <param name="fieldName" type="String">
+        ///   参数名
+        /// </param>
+        /// <returns type="void" />如果不存在返回NULL
+        var reg = new RegExp("(^|&)" + fieldName.toLowerCase() + "=([^&]*)(&|$)", "i");
+        var r = window.location.search.toLowerCase().substr(1).match(reg);
+        if (r != null) return unescape(r[2]); return null;
+    }
+    // 获取token
+    function getToKen (){
+        var localtoken={};
+        try{
+            var localtoken = JSON.parse(localStorage.getItem("userinfo_token"));
+        }catch(e){
+            return null;
+        }
+        var exp = 1000 * 60 * 60 * 24; // 过期时间 1 天
+        if (localtoken == undefined || localtoken == null || localtoken == "") {
+            localtoken = "";
+        } else if (!localtoken.hasOwnProperty('outTime') || !localtoken.hasOwnProperty('token')) {
+            localtoken = "";
+        } else if (localtoken.hasOwnProperty('outTime') && parseInt(new Date().getTime() - exp) > new Date(localtoken.outTime).getTime()) {
+            localtoken = "";
+        } else if (localtoken.hasOwnProperty('token')) {
+            localtoken = localtoken.token.toString();
+        }
+        return localtoken;
+    }
+    // 格式话时间
+    Date.prototype.format = function(fmt) {
+            var o = {
+               "M+" : this.getMonth()+1,                 //月份
+               "d+" : this.getDate(),                    //日
+               "h+" : this.getHours(),                   //小时
+               "m+" : this.getMinutes(),                 //分
+               "s+" : this.getSeconds(),                 //秒
+               "q+" : Math.floor((this.getMonth()+3)/3), //季度
+               "S"  : this.getMilliseconds()             //毫秒
+           };
+           if(/(y+)/.test(fmt)) {
+                   fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
+           }
+            for(var k in o) {
+               if(new RegExp("("+ k +")").test(fmt)){
+                    fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
+                }
+            }
+           return fmt;
+    }
+  </script>
+  </html>

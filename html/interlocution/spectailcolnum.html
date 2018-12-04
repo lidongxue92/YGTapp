@@ -1,0 +1,103 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>问答</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <!--此页面不会被浏览器缓存-->
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Cache-Control" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <!--此页面不会被浏览器缓存END-->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="/app/framework/css/light7.min.css">
+    <link rel="stylesheet" type="text/css" href="/images/icon/iconfont.css">
+    <link href="/app/framework/styleApp.css" rel="stylesheet" type="text/css" />
+</head>
+
+ <body >
+
+<div class="page-group">
+    <!--问答列表------>
+ <div class="page interlocution" id="interlocution" style=" background:#fff;">
+        <!--界面标题-->
+        <header class="bar bar-nav">
+          <a class="button button-link button-nav pull-left back" href="/app/home.html#renwu">
+                    <span class="icon  iconfont icon-shangyiye2"></span>
+                    返回
+          </a>
+          <a id="tiwenbtn" class="button button-link button-nav pull-right" onclick="$.popup('.popup-interlocution2')">
+                <i class="iconfont" style="font-size: 1.2rem;">&#xe65b;</i>
+            </a>
+            <h1 class="title"><span  class='open-popover' data-popover="#knowledgeSort"  onclick="" style="color: #39f;"><span class="iconfont icon-liebiao2"></span>全部</span>
+           <span class="sp_knowname"></span></h1>
+
+        </header>
+
+        <div class="bar bar-header-secondary"  id="interlocution_sosoShow">
+            <div class="searchbar">
+            <a class="searchbar-cancel" >取消</a>
+            <div class="search-input"><form>
+                <label class="icon  iconfont icon-sousuo1" for="search"></label>
+                <input type="search" id='interlocutionTxt' placeholder='输入关键字...'/></form>
+            </div>
+            </div>
+         </div>
+
+  <div class="content interlocution pull-to-refresh-content"><!--pull-to-refresh-content可下拉刷新-->
+      <!-- 默认的下拉刷新层 -->
+        <div class="pull-to-refresh-layer">
+            <div class="preloader"></div>
+            <div class="pull-to-refresh-arrow"></div>
+       </div>
+
+       <div class="buttons-tab" style="border-bottom: 1px solid #d0d0d0;overflow-x: scroll;" id="zhuanlantab">
+      </div>
+
+     <div style=" margin-bottom:2.4rem;">
+        <div id="spinterlocution">
+        <div class="list-block" style="margin: -0.1rem 0;">
+
+        </div>
+        <!--分页-->
+        <div id="SpectailColnumIndex"  style=" display:none;">1</div>
+        <div id="SpectailColnumLoadMore" style="margin-bottom: 3rem; text-align: center; margin-top: 1rem; display:none;  ">点击加载更多</div>
+       </div>
+  </div>
+  
+</div>
+    </div>
+
+    <!--分类列表框-->
+    <div class="popover" id="knowledgeSort" style="top: 40px;left: 14px;">
+        <div class="popover-angle no-top "></div>
+        <div class="popover-inner">
+            <div class="list-block ">
+                <li class="list-button item-link  close-popover" onclick="setParentId()" >全部分类</li>
+                <ul style="max-height: 20rem;">
+
+                    <li><a href="#" class="list-button item-link close-popover" data-popover="#knowledgeSort" >暂无下级分类</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type='text/javascript' src='/app/framework/zepto.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='/app/framework/js/light7.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='/app/framework/js/i18n/cn.min.js'></script>
+<script src="/images/icon/iconfont.js" type="text/javascript"></script>
+<script type='text/javascript' src="/app/common.js"></script>
+<script type='text/javascript' src="/app/interlocution/interlocution.js"></script>
+<script>
+    $.config = {
+        autoInit: true //no recommend
+    }
+    $.init();
+</script>
+</body>
+</html>

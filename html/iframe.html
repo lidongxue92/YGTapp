@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+      <link rel="stylesheet" type="text/css" href="../res/icon/iconfont.css">
+      <style type="text/css">
+        body {
+         padding: 0px;
+         margin: 0px;
+        }
+  </style>
+  </head>
+  <body scroll="no">
+
+  <div style="background-color:#f7f7f8; height:40px;  position:fixed; width: 100%; z-index:2;    border-bottom: 1px solid #e7e7e7; color:#3d4145;line-height:40px; text-align:center;">
+      <span style=" position:absolute;line-height:40px; left:10px; display:inline-block;" onclick="closew()">  <i class="iconfont icon-shangyiye2"></i> 返回</span>
+    <span id="title"></span>
+  </div>
+  <div style=" position: absolute; top:30%; width:100%; text-align:center;" id="loading">
+    <center><img src="../images/loading_more.gif" /><br />正在载入</center>
+  </div>
+
+  <script type="text/javascript" src="../script/api.js"></script>
+  <script type="text/javascript">
+      apiready = function(){
+          document.title = api.pageParam.title;
+        //  $("body").css("","px");
+          document.body.style="margin-top:"+api.safeArea.top+"px;";
+          //document.getElementById("iframepage").src=api.pageParam.url;
+          document.getElementById("title").innerHTML=api.pageParam.title;
+          api.openFrame({
+              name: 'iframepage',
+              url: api.pageParam.url,
+              scaleEnabled:true,
+              rect: {
+                  x: 0,
+                  y: api.safeArea.top+41,
+                  w: 'auto',
+                  h: 'auto'
+              }
+          });
+          api.setFrameClient({
+              frameName: 'iframepage'
+          }, function(ret, err) {
+              switch (ret.state) {
+                  case 0:
+                      break;
+                  case 1:
+                      break;
+                  case 2:
+                      frameload();
+                      document.getElementById('loading').style.display ='none';
+                      break;
+                  case 3:
+                      break;
+                  case 4:
+                      break;
+                  default:
+                      break;
+              }
+          });
+        //  setTimeout(function(){
+
+        //  },3000);
+
+      };
+      function frameload(){
+        //alert(api.pageParam.url);
+        if(api.pageParam.url.indexOf("xylink") >0) //当打开界面为小鱼直播，则运行隐藏方法
+        {
+          var classnames = "try{$(\".mobile__live--title\").hide();}catch(e){}"
+        //  var jsfun = "var fbl = (window.screen.availWidth);var yemian = (document.documentElement.scrollWidth || document.body.scrollWidth);	var bili = fbl/yemian;	if(bili<1){	document.body.style.zoom = bili;"+classnames+"}";
+           api.execScript({
+             frameName: 'iframepage', //winName
+             script: classnames
+           });
+        }
+
+      }
+      function closew(){
+        //alert("x");
+          api.closeWin();
+      }
+  </script>
+  </html>

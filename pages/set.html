@@ -1,0 +1,291 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>医管通APP</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/ygtcommon.css">
+
+    <style type ="text/css">
+    .usercenter{position: relative;background: #29292d;min-height: 200px;}
+    .usercenter .back{position: absolute;width: 50px;height: 30px;background: url(../img/back.png);right: 0px;top: 30px;background-size: auto 100%;background-repeat: no-repeat;}
+    .usercenter .headimg{display: inline-block;border: 4px solid #535256;border-radius: 50%;margin-top: 70px;margin-left: 50px;}
+    .usercenter .headimg img{width: 60px;border-radius: 50%;height: 60px;border: 3px solid #fefefe;}
+    .loginout img{width: 25px;height: auto;position: absolute;top: 90px;}
+    .foot{z-index: 1111;}
+    .foot .tab p{line-height: 30px;height: 30px;}
+    .left{display: inline-block;text-align: left;margin-left: 10px;color:#fefefe;width: 60%;}
+    .left a{color: #fefefe;width: 100%;}
+    .left a .goset{width: 15px;transform: rotate(180deg);float: right;}
+    .middle{background: #f5f5f5;padding-bottom: 65px;margin-top: 80px;}
+    .middle .mt10{margin-top: 10px;}
+    .middle ul{padding: 0;margin: 0;}
+    .middle ul li{padding: 0 15px;background: #fff;height: 60px;line-height: 60px;position: relative;font-size: 14px;border-bottom: 1px solid #ebebeb;letter-spacing:1.5px;}
+    .middle ul li img{width: 25px;margin-right: 15px;}
+    .middle ul li .right{right: 15px;position: absolute;top: 22px;color: #b8b8b8;line-height: 18px;}
+    .middle ul li .right img{width: 9px;position: relative;top: -2px;}
+    .middle .loginout{text-align: center;margin-top: 60px;}
+    #nicknamep{line-height: 25px;height: 25px;font-size: 15px;font-weight: 600;color: #fefefe;}
+    #cacheSize{font-weight: normal;}
+    @media screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+        .middle{margin-top: 100px;}
+    }
+   </style>
+
+
+<body >
+    <header class="top" id="header">
+        <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span class="title">设置</span>
+        </h1>
+    </header>
+  <div class="middle">
+      <ul>
+        <li onclick="member();">
+            个人资料
+            <span class="right"><img  src="../img/back_right.png" /></span>
+        </li>
+        <!-- <li>
+            发票与报销
+            <span class="right"><img  src="../img/back_right.png" /></span>
+        </li> -->
+      </ul>
+      <ul>
+        <li tapmode="" onclick="fnClearCache();">
+            清理缓存
+            <span class="right"><b id='cacheSize'></b>&emsp;<img  src="../img/back_right.png" /></span>
+        </li>
+        <li tapmode id="versionli" >
+            版本号
+            <span id="versionspan" class="right">3.1.2&emsp;<img  src="../img/back_right.png" /></span>
+        </li>
+      </ul>
+      <ul class="mt10">
+        <li tapmode="" onclick="toygt();">
+            关于我们
+            <span class="right"><img  src="../img/back_right.png" /></span>
+        </li>
+        <li tapmode="" onclick="resAgreement();">
+            服务协议
+            <span class="right"><img  src="../img/back_right.png" /></span>
+        </li>
+      </ul>
+      <ul class="loginout" tapmode="" onclick="fnLogout();">
+        <li>
+            退出登录
+        </li>
+      </ul>
+  </div>
+</body>
+<script type="application/javascript" src="../script/api.js"></script>
+<script type="application/javascript" src="../js/lib/fastclick.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        var header = $api.byId('header');
+
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+        //  禁止左右滑动
+        $api.fixStatusBar(header);
+        var ygtuserinfo = $api.getStorage('ygtuserinfo');
+        // console.log(JSON.stringify(ygtuserinfo))
+        $api.html($api.byId('versionspan'), api.appVersion+'&emsp;<img  src="../img/back_right.png" />');
+        api.ajax({
+            url: apihost + '/api/user/index',
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json',
+                'TOKEN':ygtuserinfo.token
+            },
+            data: {
+                values: {
+                  uid:ygtuserinfo.id
+                }
+            }
+        }, function(ret, err) {
+          console.log(JSON.stringify(ret)+'zhengque');
+          console.log(JSON.stringify(err));
+            if (ret) {
+            }else {
+                // api.openWin({
+                //     name:'login',
+                //     url:'../login.html',
+                //     animation:{
+                //       type:'none'
+                //     }
+                // });
+            }
+
+        });
+        getCacheSize();
+
+
+
+
+    };
+    $api.addEvt($api.byId('versionli'), 'click', checkversion);
+    function checkversion() {
+        var mam = api.require('mam');
+            mam.checkUpdate(function(ret, err) {
+                console.log(JSON.stringify(ret));
+                console.log(JSON.stringify(err));
+                if (ret) {
+                    var result = ret.result;
+                    if (result.update == true && result.closed == false) {
+                        var str = '新版本型号:' + result.version + ';更新提示语:' + result.updateTip + ';下载地址:' + result.source + ';发布时间:' + result.time;
+                        api.confirm({
+                            title : '有新的版本,是否下载并安装 ',
+                            msg : str,
+                            buttons : ['取消', '确认']
+                        }, function(ret, err) {
+                            if (ret.buttonIndex == 2) {
+                                if (api.systemType == "android") {
+                                    api.download({
+                                        url : result.source,
+                                        report : true
+                                    }, function(ret, err) {
+                                        if (ret && 0 == ret.state) {/* 下载进度 */
+                                            api.toast({
+                                                msg : "正在下载应用" + ret.percent + "%",
+                                                duration : 2000
+                                            });
+                                        }
+                                        if (ret && 1 == ret.state) {/* 下载完成 */
+                                            var savePath = ret.savePath;
+                                            api.installApp({
+                                                appUri : savePath
+                                            });
+                                        }
+                                    });
+                                }
+                                if (api.systemType == "ios") {
+                                    api.installApp({
+                                        appUri : result.source
+                                    });
+                                }
+                            }
+                        });
+                    } else {
+                        $api.rmEvt($api.byId('versionli'), 'click', checkversion);
+                        alert('已经是最新版本');
+                    }
+                } else {
+                    api.alert({
+                        msg : err.msg
+                    });
+                }
+            });
+    }
+    //关于我们
+    function toygt() {
+        api.openWin({
+            name: 'ygt',
+            url: './ygt.html',
+            pageParam: {
+                name: 'test'
+            },
+            bgColor: 'rgba(0,0,0,0)',
+            animation: {
+                type: 'none'
+            }
+        })
+    }
+    //用户协议
+    function resAgreement() {
+        api.openWin({
+            name: 'resAgreement',
+            url: './resAgreement.html',
+            pageParam: {
+                name: 'test'
+            },
+            animation:{
+              type:'none'
+            }
+        });
+    }
+    //个人资料
+    function member() {
+        api.openWin({
+          name: 'member',
+          url: './member.html',
+          pageParam: {name: 'test'},
+          bgColor: 'rgba(0,0,0,0)',
+          animation:{
+            type:'none'
+          }
+        })
+    }
+  //退出登录
+  function fnLogout() {
+    api.confirm({
+        title: '提示',
+        msg: '是否退出登录',
+        buttons: ['取消', '确认']
+    }, function(ret, err) {
+        if (ret) {
+            if (ret.buttonIndex == 2) {
+                $api.rmStorage('ygtuserinfo');
+                api.openWin({
+                  name: 'login',
+                  url: '../login.html',
+                  animation:{
+                    type:'none'
+                  }
+                })
+            }
+        }
+    });
+  }
+//清除缓存
+  function getCacheSize() {
+    api.getCacheSize(function(ret) {
+        var size = ret.size;
+        var cacheSize = $api.byId('cacheSize');
+        size = parseInt((size / 1024 / 1024) * 100) / 100;
+        //cacheSize.innerHTML = size + ' M';
+        $api.html(cacheSize, size+' M');
+    });
+}
+
+function fnClearCache() {
+    $api.rmStorage('curposition');
+
+
+    api.clearCache(function() {
+        api.alert({
+            title: '提示',
+            msg: '缓存清除完毕',
+        }, function(ret, err){
+            if( ret ){
+                 getCacheSize();
+            }
+        });
+    });
+}
+
+//暂未开通页面
+function nomount() {
+  api.toast({
+      msg: '暂未开通请耐心等待',
+      duration: 2000,
+      location: 'middle'
+  });
+
+}
+</script>
+
+</html>

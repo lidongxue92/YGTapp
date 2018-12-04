@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>关于我们</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/ygtcommon.css" />
+    <style>
+
+    body{height: 100%;text-align: center;background: rgba(0,0,0,.5);position: relative;}
+    .top{padding-top: 25px;}
+    p{padding: 0 15px;font-size: .9rem;line-height: 25px;color: #999;text-align: left;}
+    .mt20{margin-top: 20px;}
+    section{margin-top: 75px;padding-top: 20px;}
+    .titlprice{display: none;}
+    section .poster{display: none;}
+    section .sh{display: block;}
+    section h5{line-height: 30px;color: #fff;font-weight: normal;}
+    section img{width: 65%;}
+    footer{position:fixed;bottom:0;width: 100%;text-align: left;bottom: 10px;}
+    footer h5{line-height: 30px;background: #ff9913;color: #fff;text-align: center;}
+    footer .footicon{width: 100%;white-space: nowrap;overflow: auto;background: #fff;padding: 10px 0;}
+    footer span{display: inline-block;width: 20%;margin-right: 10px;font-size: 0;}
+    footer span b{display: none;}
+    footer span img{width: 100%;}
+
+    .active{position: relative;}
+    .active b{position: absolute;display: inline-block;width: 100%;height: 100%;top: 0;left: 0;background: rgba(0,0,0,.5);text-align: center;}
+    .active b img{width:60%;vertical-align: middle;margin-top: 20%;}
+
+    .sharetoast{position: fixed;width: 100%;left: 0;background: #f4f4f4;z-index: 113;bottom: 0;padding-top: 20px;display:none;min-height: 180px;text-align: left;}
+    .sh{display: block;}
+    .sharetoast h5{color:#666;text-align: center;font-weight: normal;padding: 0;margin: 0;font-size: 1rem;}
+    .sharetoast li{display:inline-block;padding: 0 20px;text-align: center;padding-bottom: 10px;margin-top: 20px;}
+    .sharetoast li p{margin-top: 10px;color: #999;}
+    .sharetoast li img{width: 3rem;}
+    .sharetoast #opentool{background: #fff;text-align: center;line-height: 50px;position: absolute;bottom: 0;width: 100%;padding: 0;}
+    .bg{position: absolute;width: 100%;height: 150%;top: -100px;left: 0;background: rgba(0,0,0,.3);z-index: 111;display:none;}
+    @media screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+        .top{padding-top: 45px;}
+        section{margin-top: 95px;}
+        .sharetoast{padding-bottom: 10px;min-height: 220px;}
+        .sharetoast li{margin-top: 30px;}
+        .sharetoast #opentool{bottom: 20px;line-height: 50px;}
+    }
+    </style>
+</head>
+
+<body>
+    <header class="top" id="header">
+        <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span class="title">分享邀请好友</span>
+            <span class="share"  id="share"></span>
+        </h1>
+    </header>
+    <section>
+        <h5 class="titlprice">每成功邀请一名好友，即可赚取<em id="cutprice">0.00</em>元学费</h5>
+      <div class="poster sh" data-src="">
+          <img id="posterimg" src="../img/poster.png" />
+      </div>
+    </section>
+    <footer>
+        <div class="footicon">
+        </div>
+    </footer>
+
+    <div class='sharetoast'>
+        <h5>邀请好友一起来听课吧~</h5>
+        <ul>
+            <li id='share_friend' onclick="sharefriend();">
+                  <a href="javascript:void(0)" id="shareFriends">
+                      <img src="../img/frend.png" />
+                      <p>微信好友</p>
+                  </a>
+              </li>
+              <li id="share" onclick="sharefriends();">
+                  <a href="javascript:void(0)" id="shareCFriends">
+                      <img src="../img/frends.png" />
+                      <p>朋友圈</p>
+                  </a>
+              </li>
+        </ul>
+        <p id='opentool'>取消<p>
+    </div>
+    <div class="bg" id="bg"></div>
+</body>
+<script src="../js/lib/jquery-2.1.4.js"></script>
+<script type="text/javascript" src="../js/fastclick.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+
+<script type="text/javascript">
+
+var apihost = $api.getStorage('apihost');
+if (apihost == undefined || apihost == '') {
+    apihost = 'http://member.ygt.cm';
+    $api.setStorage('apihost', apihost);
+}
+var userinfo = '';
+var classroomid = 0;
+var imgobj = '';
+var objecttype = '';
+
+apiready = function() {
+    //  禁止左右滑动
+    api.setWinAttr({
+        slidBackEnabled : false
+    });
+    //  禁止左右滑动
+    h = $(window).height();
+    $('body').css('height',h);
+
+    userinfo = $api.getStorage('ygtuserinfo');
+
+    objecttype = api.pageParam.objecttype;
+    var fs = api.require('fs');
+
+    var ret = fs.existSync({
+        path: 'fs://file.txt'
+    });
+    if (ret.exist) {
+        fs.remove({
+            path: 'fs://contenturl.png'
+        }, function(ret, err) {
+            if (ret.status) {
+                console.log(JSON.stringify(ret));
+            } else {
+                console.log(JSON.stringify(err));
+            }
+        });
+    } 
+
+
+
+    createposter();
+}
+//创建poster
+function createposter() {
+    if (userinfo.id == -1) {
+        // 游客
+        api.openWin({
+            name: 'loginframe',
+            url: './loginframe.html',
+            pageParam: {
+                name: 'test'
+            }
+        });
+    }else {
+        var classroomid = api.pageParam.id;
+        api.ajax({
+            url: apihost + '/api/wtk/classroom/createposter',
+            method: 'post',
+            timeout:120,
+            headers:{
+                'TOKEN':userinfo.token
+            },
+            data: {
+                values: {
+                    'classroomid' : classroomid,
+                     'object_type':objecttype,
+                    'uid':userinfo.id
+                }
+            }
+        },function(ret, err){
+            console.log(JSON.stringify(ret));
+            console.log(JSON.stringify(err));
+            if (ret.data.cutprice != 0) {
+                $(".titlprice").show();
+                $('#cutprice').html(ret.data.cutprice);
+            }
+            if (ret) {
+                var foothtml = '';
+                var defaultindex = 1;
+                for (var i in ret.data.imglist) {
+                    if (defaultindex==1) {
+
+                        foothtml += '<span class="active" onclick="add(this);" data-src="'+ ret.data.imglist[i]+'">' +
+                            '<img src="../img/postericon'+i+'.jpg">' +
+                            '<b>' +
+                                '<img src="../img/select_fill.png">' +
+                            '</b>' +
+                        '</span>';
+                        $('#posterimg').attr('src',  ret.data.imglist[i]);
+                        defaultindex = 0;
+                    }else {
+                        foothtml += '<span onclick="add(this);" data-src="'+ ret.data.imglist[i]+'">' +
+                            '<img src="../img/postericon'+i+'.jpg">' +
+                            '<b>' +
+                                '<img src="../img/select_fill.png">' +
+                            '</b>' +
+                        '</span>';
+                    }
+                }
+                $('.footicon').html(foothtml);
+                console.log( JSON.stringify( ret ) );
+            } else {
+                console.log( JSON.stringify( err ) );
+            }
+        });
+    }
+
+
+}
+
+//分享
+$('#share').bind('click',function(){
+
+  $('#bg').show();
+  $(".sharetoast").addClass('sh');
+});
+//分享关闭
+$('#opentool').bind('click',function(e){
+  $('#bg').hide();
+  $(".sharetoast").removeClass('sh');
+});
+
+$('#bg').bind('click',function(e){
+  $('#bg').hide();
+  $(".sharetoast").removeClass('sh');
+  $('#bg').hide();
+});
+  function sharefriend() {
+      var wx = api.require('wx');
+      var imgsrc = $('.footicon .active').attr('data-src');
+      var thumb = $('.footicon .active img').attr('src');
+     if (api.systemType == 'ios') {
+
+         wx.shareImage({
+             scene: 'session',
+             thumb:'widget://img/1.png',
+             contentUrl:imgsrc
+         }, function(ret, err) {
+             if (ret.status) {
+                 alert('分享成功');
+                 $('#bg').hide();
+                 $(".sharetoast").removeClass('sh')
+             } else {
+                 alert('分享失败');
+                 console.log(JSON.stringify(err));
+             }
+         });
+
+
+    }else {
+        api.download({
+            url: imgsrc,
+            savePath: 'fs://contenturl.png',
+            //report: true,
+            cache: true,
+            allowResume: true
+        }, function(dret, derr) {
+            console.log(JSON.stringify(dret));
+            console.log(JSON.stringify(derr));
+            if (dret.state == 1) {
+                //下载成功
+                wx.shareImage({
+                    scene: 'session',
+                    thumb:'widget://img/1.png',
+                    contentUrl:'fs://contenturl.png'
+                }, function(ret, err) {
+                    if (ret.status) {
+                        alert('分享成功');
+                        $('#bg').hide();
+                        $(".sharetoast").removeClass('sh')
+                        var fs = api.require('fs');
+                        fs.remove({
+                            path: 'fs://contenturl.png'
+                        }, function(ret, err) {
+                            if (ret.status) {
+                                console.log(JSON.stringify(ret));
+                            } else {
+                                console.log(JSON.stringify(err));
+                            }
+                        });
+                    } else {
+                        alert('分享失败');
+                        console.log(JSON.stringify(err));
+                    }
+                });
+            } else {
+
+            }
+        });
+
+    }
+
+  }
+
+  function sharefriends() {
+      var wx = api.require('wx');
+      var imgsrc = $('.footicon .active').attr('data-src');
+       wx.shareImage({
+           apiKey: '',
+           scene: 'timeline',
+           thumb: 'widget://img/1.png',
+           contentUrl:imgsrc
+       }, function(ret, err) {
+           if (ret.status) {
+               alert('分享成功');
+               $('#bg').hide();
+               $(".sharetoast").removeClass('sh')
+           } else {
+               alert('分享失败');
+               console.log(JSON.stringify(err));
+           }
+       });
+  }
+
+  function add(obj) {
+      $(".footicon span").removeClass('active');
+      $('#posterimg').attr('src', $(obj).attr('data-src'));
+      $api.addCls(obj, 'active');
+  }
+
+</script>
+
+</html>

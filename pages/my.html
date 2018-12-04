@@ -1,0 +1,498 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>医管通APP</title>
+    <link rel="stylesheet" type="text/css" href="./css/api.css" />
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/ygtcommon.css">
+    <script src="../js/lib/jquery2.js"></script>
+    <style type="text/css">
+        .usercenter {
+            position: relative;
+            background: #29292d;
+            min-height: 200px;
+        }
+
+        .usercenter .back {
+            position: absolute;
+            width: 50px;
+            height: 30px;
+            background: url(../img/back.png);
+            right: 0px;
+            top: 30px;
+            background-size: auto 100%;
+            background-repeat: no-repeat;
+        }
+
+        .usercenter .headimg {
+            display: inline-block;
+            border: 4px solid #535256;
+            border-radius: 50%;
+            margin-top: 70px;
+            margin-left: 50px;
+        }
+
+        .usercenter .headimg img {
+            width: 60px;
+            border-radius: 50%;
+            height: 60px;
+            border: 3px solid #fefefe;
+        }
+
+        .loginout img {
+            width: 25px;
+            height: auto;
+            position: absolute;
+            top: 90px;
+        }
+
+        .foot {
+            z-index: 1111;
+        }
+
+
+        .left {
+            display: inline-block;
+            text-align: left;
+            margin-left: 10px;
+            color: #fefefe;
+            width: 60%;
+        }
+
+        .left a {
+            color: #fefefe;
+            width: 100%;
+        }
+
+        .left a .goset {
+            width: 15px;
+            transform: rotate(180deg);
+            float: right;
+        }
+
+        .middle {
+            background: #f5f5f5;
+            padding-bottom: 65px;
+        }
+
+        .middle .mt10 {
+            margin-top: 10px;
+        }
+
+        .middle ul {
+            padding: 0;
+            margin: 0;
+        }
+
+        .middle ul li {
+            padding: 0 15px;
+            background: #fff;
+            height: 60px;
+            line-height: 60px;
+            position: relative;
+            font-size: 14px;
+            border-bottom: 1px solid #ebebeb;
+            letter-spacing: 1px;
+        }
+
+        .middle ul li img {
+            width: 25px;
+            margin-right: 15px;
+        }
+
+        .middle ul li .right {
+            right: 15px;
+            position: absolute;
+            top: 22px;
+            color: #b8b8b8;
+            line-height: 18px;
+        }
+
+        .middle ul li .right img {
+            width: 9px;
+            position: relative;
+            top: -2px;
+        }
+
+        #nicknamep {
+            line-height: 25px;
+            height: 25px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #fefefe;
+        }
+
+        @media screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+            .middle {
+                padding-bottom: 85px;
+            }
+        }
+    </style>
+
+
+    <body>
+        <div class="usercenter">
+            <div class="info">
+                <!-- <span class="back" onclick="fnLogout();"></span> -->
+                <p class="headimg" onclick="headpic();"><img src="" class="head"></p>
+                <div class="left">
+                    <p id="nicknamep">点击登录</p>
+                    <!-- <a onclick="member();">完善个人资料<img class='goset' src="../img/backwhite.png"/></a> -->
+                </div>
+            </div>
+        </div>
+        <div class="middle">
+            <ul>
+                <li onclick="buylog();">
+                    <img src="../img/buylog.png" />消费记录
+                    <span class="right"><img  src="../img/back_right.png" /></span>
+                </li>
+                <li onclick="profit();">
+                    <img src="../img/Profit.png" />收益中心
+                    <span class="right"><img  src="../img/back_right.png" /></span>
+                </li>
+                <li onclick="vip();">
+                    <img src="../img/mymember.png" />开通会员
+                    <span class="right">预存全年梦想&emsp;<img  src="../img/back_right.png" /></span>
+                </li>
+                <li id='money' onclick="niupay();">
+                    <img src="../img/money.png" />牛贝
+                    <span class="right"><img  src="../img/back_right.png" /></span>
+                </li>
+                <li onclick="concerned();">
+                    <img src="../img/heart-fill.png" />我的收藏
+                    <span class="right"><img  src="../img/back_right.png" /></span>
+                </li>
+            </ul>
+            <ul class="mt10">
+                <li onclick="tel();">
+                    <img src="../img/phone.png" />电话咨询
+                    <span class="right">周一至周日 9:00-18:00&emsp;<img  src="../img/back_right.png" /></span>
+                </li>
+
+            </ul>
+            <ul class="mt10">
+                <li onclick="set();">
+                    <img src="../img/set.png" />设置
+                    <span class="right"><img  src="../img/back_right.png" /></span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 底部导航栏 -->
+        <footer class="foot" id="footer">
+            <span class="tab"  tapmode onclick="index();">
+                  <img src='../img/faxian-3.png'/>
+                  <p>发现</p>
+              </span>
+              <span class="tab" tapmode onclick="study();">
+                <img src='../img/yigou-3.png'/>
+                <p>学习</p>
+            </span>
+
+                    <span class="tab">
+                  <img src='../img/wode-2.png'/>
+                  <p class='c-2577e3'>我的</p>
+              </span>
+        </footer>
+    </body>
+    <script src="../js/jquery-weui.min.js"></script>
+    <script type="application/javascript" src="../js/lib/fastclick.js"></script>
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript">
+        var apihost = $api.getStorage('apihost');
+        if (apihost == undefined || apihost == '') {
+            apihost = 'http://trade.ygt.cm';
+            $api.setStorage('apihost', apihost);
+        }
+        var ygtuserinfo = '';
+        var iswxpay = $api.getStorage('iswxpay');
+
+        apiready = function() {
+            //输出Log，Log将显示在APICloud Studio控制台
+            console.log("Hello World! Hello APICloud!");
+            //  禁止左右滑动
+            api.setWinAttr({
+                slidBackEnabled: false
+            });
+            //  禁止左右滑动
+            ygtuserinfo = $api.getStorage('ygtuserinfo');
+            console.log(JSON.stringify(ygtuserinfo))
+            if (ygtuserinfo.avatar != '') {
+                $('.head').attr('src', ygtuserinfo.avatar);
+            } else {
+                $('.head').attr('src', '../img/noavatar.png');
+            }
+            // 判断是否显示牛币
+            var systemtype = api.systemType;
+            if (systemtype != 'ios' || iswxpay == 1) {
+                $api.byId('money').remove();
+
+            }
+            api.ajax({
+                url: apihost + '/api/user/index',
+                method: 'post',
+                headers: {
+                    'TOKEN': ygtuserinfo.token
+                },
+                data: {
+                    values: {
+                        uid: ygtuserinfo.id
+                    }
+                }
+            }, function(ret, err) {
+                console.log('ygtuserinfodata:');
+                console.log(JSON.stringify(ygtuserinfo));
+                console.log(JSON.stringify(ret));
+                console.log(JSON.stringify(err));
+                if (ret) {
+                    $('#nicknamep').html(ret.data.welcome);
+                } else {
+                    // alert(err.msg);
+                    $api.addEvt($api.byId('nicknamep'), 'click', function(){
+                        api.openWin({
+                            name: 'login',
+                            url: '../login.html',
+                            animation: {
+                                type: 'none'
+                            }
+                        });
+
+                    });
+
+                }
+
+            });
+        };
+        //首页
+        function index() {
+            api.openWin({
+                name: 'root',
+                url: '../index.html',
+                pageParam: {
+                    name: 'test'
+                },
+                bgColor: 'rgba(0,0,0,0)',
+                animation: {
+                    type: 'none'
+                }
+            })
+
+            setTimeout('api.closeWin();', '200');
+        }
+        //底部学习
+        function study() {
+            api.openWin({
+                name: 'Study',
+                url: './Study.html',
+                pageParam: {
+                    name: 'test'
+                },
+                bgColor: 'rgba(0,0,0,0)',
+                animation: {
+                    type: 'none'
+                }
+            });
+            setTimeout('api.closeWin();', '200');
+        }
+
+        //个人资料
+        function member() {
+          api.openWin({
+            name: 'member',
+            url: './member.html',
+            pageParam: {name: 'test'},
+            bgColor: 'rgba(0,0,0,0)',
+            animation:{
+              type:'none'
+            }
+          })
+        }
+        //牛币
+        function niupay() {
+            api.openWin({
+                name: 'niupay',
+                url: './niupay.html',
+                pageParam: {
+                    name: 'test'
+                },
+                bgColor: 'rgba(0,0,0,0)',
+                animation: {
+                    type: 'none'
+                }
+            })
+        }
+
+        //我的收藏
+        function concerned() {
+            ygtuserinfo = $api.getStorage('ygtuserinfo');
+            if (ygtuserinfo.id == -1) {
+                api.openWin({
+                    name: 'loginframe',
+                    url: './loginframe.html',
+                    animation: {
+                        type: 'none'
+                    }
+                });
+
+            }else {
+                api.openWin({
+                    name: 'concerned',
+                    url: './concerned.html',
+                    pageParam: {
+                        name: 'test'
+                    },
+                    bgColor: 'rgba(0,0,0,0)',
+                    animation: {
+                        type: 'none'
+                    },
+                    reload:true
+                });
+            }
+        }
+        //线上课购买记录
+        function buylog() {
+            ygtuserinfo = $api.getStorage('ygtuserinfo');
+            if (ygtuserinfo.id == -1) {
+                api.openWin({
+                    name: 'loginframe',
+                    url: './loginframe.html',
+                    animation: {
+                        type: 'none'
+                    }
+                });
+
+            }else {
+                api.openWin({
+                    name: 'buylog',
+                    url: './buylog.html',
+                    pageParam: {
+                        name: 'test'
+                    },
+                    bgColor: 'rgba(0,0,0,0)',
+                    animation: {
+                        type: 'none'
+                    },
+                    reload:true
+                });
+            }
+        }
+
+        //我的收益
+        function profit() {
+            ygtuserinfo = $api.getStorage('ygtuserinfo');
+            if (ygtuserinfo.id == -1) {
+                api.openWin({
+                    name: 'loginframe',
+                    url: './loginframe.html',
+                    animation: {
+                        type: 'none'
+                    }
+                });
+
+            }else {
+                api.openWin({
+                    name: 'profit',
+                    url: './profit.html',
+                    pageParam: {
+                        name: 'test'
+                    },
+                    bgColor: 'rgba(0,0,0,0)',
+                    animation: {
+                        type: 'none'
+                    },
+                    reload:true
+                });
+            }
+        }
+        //会员
+        function vip() {
+            api.openWin({
+                name: 'vip',
+                url: './vip.html',
+                pageParam: {
+                    id: 'my'
+                },
+                animation: {
+                    type: 'none'
+                }
+            })
+        }
+        //个人资料
+        function member() {
+            api.openWin({
+                name: 'member',
+                url: './member.html',
+                animation: {
+                    type: 'none'
+                },
+            })
+
+        }
+        //设置
+        function set() {
+            api.openWin({
+                name: 'set',
+                url: './set.html',
+                pageParam: {
+                    name: 'test'
+                },
+                bgColor: 'rgba(0,0,0,0)',
+                animation: {
+                    type: 'none'
+                }
+            })
+        }
+        //关于我们
+        function towtk() {
+            api.openWin({
+                name: 'wtk',
+                url: './wtk.html',
+                pageParam: {
+                    name: 'test'
+                },
+                bgColor: 'rgba(0,0,0,0)',
+                animation: {
+                    type: 'none'
+                }
+            })
+        }
+
+        //暂未开通页面
+        function nomount() {
+            api.toast({
+                msg: '暂未开通请耐心等待',
+                duration: 2000,
+                location: 'middle'
+            });
+
+        }
+
+        //拨打电话
+        function tel() {
+            api.call({
+                type: 'tel_prompt',
+                number: '4008955676'
+            });
+        }
+
+        //头像修改
+        function headpic() {
+            api.openWin({
+              name: 'headpic',
+              url: './headpic.html',
+              pageParam: {name: 'test'},
+              bgColor: 'rgba(0,0,0,0)',
+              animation:{
+                type:'none'
+              }
+            })
+
+        }
+    </script>
+
+</html>

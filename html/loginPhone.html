@@ -1,0 +1,344 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Hello APP</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" href="../css/weui.min.css">
+    <link rel="stylesheet" href="../css/jquery-weui.css">
+    <link rel="stylesheet" href="../css/common.css">
+    <style type="text/css">
+      body{font-family: '微软雅黑';padding: 0 10px;width: 100%;height: 80%;}
+      input, button, textarea:focus {
+          outline: none !important;
+          border:0;
+      }
+      header {
+            width: 100%;
+            height: 50px;
+            /*background-color: #2577E3;*/
+            color: #999;
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            margin-top: 10px;
+            width: 100%;
+            height: 50px;
+            line-height: 50px;
+            text-align: center;
+            color: #999;
+            font-size: 20px;
+            font-weight: normal;;
+        }
+        header .back {
+          position:absolute;
+          bottom: 10px;
+          left: 10px;;
+          width: 25px;
+          height: 25px;
+          background: url(../image/back2.png);
+          /*background-position: 12px 16px;*/
+          background-size: 100% ;
+          background-repeat: no-repeat;
+          z-index: 222;
+        }
+        .btn {
+            width: auto;
+            height: 50px;
+            margin-left: 32px;
+            margin-right: 32px;
+            margin-top: 230px;
+            background-color: #fff;
+            line-height: 50px;
+            font-size: 15px;
+            color: #FF9931;
+            text-align: center;
+            border-radius: 8px;
+        }
+
+        .btn-third-party {
+            display: inline-block;
+            position: auto;
+            margin-top: 300px;
+            width: auto;
+            height: 44px;
+            box-sizing: border-box;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 10px 30px 10px 56px;
+            font-size: 18px;
+            background-color: #2DB159;
+            color: #fff;
+            line-height: 24px;
+            text-align: left;
+            background-image: url(./image/share_friend.png);
+            background-repeat: no-repeat;
+            background-size: auto 22px;
+            background-position: 30px center;
+            border-radius: 8px;
+        }
+        .weui-cell:before{width: 94%;left: 3%;border-top: 0;}
+        .weui-vcode-btn{position: relative;border-left: 0;}
+        /*.weui-vcode-btn:before{position: absolute;content: '';width: 1px;height: 60%;background: #ddd;top: 20%;left: 0;}*/
+        .weuicell{padding: 10px 15px;}
+        .weui-vcode-btn{color: #2577E3;height: 30px;}
+        .weui-vcode-btn:active{color: #2577E3;}
+        .bth{background:#ddd ;line-height: 40px;text-align: center;width: 100%;color: #999;border-radius: 50px;-webkit-appearance:none;
+	      outline:none;margin-top: 40px;}
+        .add{background:#2577E3;color: #fff;}
+        .weui-cell{border-bottom: 1px solid #ddd;padding: 10px 0;}
+        .weui-input{padding-left: 10px;font-size: 15px;line-height: 25px;height: 25px;}
+        @media screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+          #header{margin-top: 40px;}
+        }
+    </style>
+
+
+    <body>
+        <header id="header">
+            <div class="back" tapmode onclick="api.closeWin();"></div>
+            <h1>登录</h1>
+        </header>
+        <div class="weui-cell">
+            <div class="weui-cell__bd">
+                <input class="weui-input" id="mobile" type="number" pattern="[0-9]*" placeholder="手机号">
+            </div>
+        </div>
+        <div class="weui-cell weui-cell_vcode">
+
+            <div class="weui-cell__bd" >
+                <input class="weui-input" type="number" id="catpta" placeholder="请输入验证码"  />
+            </div>
+            <div class="weui-cell__ft">
+                <button class="weui-vcode-btn" onclick="sendmsg();" id="getcapta">获取验证码</button>
+            </div>
+        </div>
+        <div class="weuicell">
+            <div class="weui-cell__bd">
+                <input class="bth add" type="submit" id="submitform" onclick="submitwxloginphone();" value="登录" />
+            </div>
+        </div>
+    </body>
+    <script type="text/javascript" src="./script/api.js"></script>
+    <script type="text/javascript">
+        var apihost = $api.getStorage('apihost');
+        if (apihost == undefined || apihost == '') {
+            apihost = 'http://member.ygt.cm';
+            $api.setStorage('apihost', apihost);
+        }
+        apiready = function() {
+            var header = $api.byId('header');
+            $api.fixStatusBar(header);
+            // api.setStatusBarStyle({
+            //     style: 'dark',
+            // });
+            //输出Log，Log将显示在APICloud Studio控制台
+            console.log("Hello World! Hello APICloud!");
+
+            var param = api.pageParam;
+
+
+            $api.val($api.dom('#mobile'), param.mobile);
+
+            //  禁止左右滑动
+
+            let self = this;
+            document.addEventListener('touchstart', function(e) {
+                self.moveY = e.targetTouches[0].pageY;
+            })
+            document.addEventListener('touchmove', function(e) {
+                e.preventDefault();
+                let moveWidth = self.moveY - e.targetTouches[0].pageY;
+                if (moveWidth !== 0) {
+                    document.body.scrollTop += moveWidth;
+                }
+            })
+            document.addEventListener('touchmove', function(e) {
+                e.preventDefault();
+            })
+            api.openSlidPane({
+                type: 'right'
+            });
+            api.lockSlidPane();
+            api.closeDrawerPane();
+            //  禁止左右滑动
+
+
+        };
+
+
+        var sendmsgint = '';
+        // 发送验证码
+        function sendmsg() {
+            var mobilev = $api.val($api.dom('#mobile'));
+            if (mobilev == '') {
+                $api.dom('#mobile')
+                api.toast({
+                    msg: '手机号码不能为空！',
+                    duration: 2000,
+                    location: 'middle'
+                });
+                return false;
+            }
+            if (!mobilev.match(/^1[3-9]\d{9}$/)) {
+              api.toast({
+                  msg: '请输入正确的手机号码！',
+                  duration: 2000,
+                  location: 'middle'
+              });
+                return false;
+            }
+            api.ajax({
+                url: apihost + '/api/sms/send',
+                method: 'post',
+                data: {
+                    values: {
+                        mobile: mobilev,
+                        'event': 'ygtyzm'
+                    }
+                }
+            }, function(ret, err) {
+                if (ret) {
+                    clearInterval(sendmsgint);
+                    var seconds = 60;
+                    // 提示发送了验证码
+                    sendmsgint = setInterval(function() {
+                        seconds--;
+                        if (seconds <= 0) {
+                            clearInterval(sendmsgint);
+                            $api.html($api.byId('getcapta'), '发送验证码');
+                            $api.removeCls($api.byId('getcapta'), 'disabled');
+                        } else {
+                            $api.html($api.byId('getcapta'), seconds + "秒后可再次发送");
+                            $api.addCls($api.byId('getcapta'), 'disabled');
+                        }
+                    }, 1000);
+                } else {
+                    $api.html($api.byId('getcapta'), '发送验证码');
+                    $api.removeCls($api.byId('getcapta'), 'disabled');
+                    api.toast({
+                        msg: err.msg,
+                        duration: 2000,
+                        location: 'middle'
+                    });
+
+                    console.log(JSON.stringify(err));
+                }
+            });
+
+        }
+        // 提交绑定手机
+        function submitwxloginphone() {
+            // 检测手机号
+            var mobilev = $api.val($api.dom('#mobile'));
+            // alert(mobilev);
+            if (mobilev == '') {
+                api.toast({
+                    msg: '手机号码不能为空！',
+                    duration: 2000,
+                    location: 'middle'
+                });
+                return false;
+            }
+            if (!mobilev.match(/^1[3-9]\d{9}$/)) {
+              api.toast({
+                  msg: '请输入正确的手机号码！',
+                  duration: 2000,
+                  location: 'middle'
+              });
+                return false;
+            }
+            // 检测验证码
+            var catpta = $api.val($api.dom('#catpta'));
+            if (catpta == '') {
+              api.toast({
+                  msg: '验证码不能为空！',
+                  duration: 2000,
+                  location: 'middle'
+              });
+                return false;
+            }
+
+            var param2 = api.pageParam;
+            console.log(JSON.stringify(param2));
+            api.ajax({
+                url: apihost + '/api/user/wxbindmobile',
+                method: 'post',
+                data: {
+                    values: {
+                        unionid: param2.unionid,
+                        'headimgurl': param2.headimgurl,
+                        nickname: param2.nickname,
+                        openid: param2.openid,
+                        mobile: mobilev,
+                        mobilecaptcha: catpta
+                    }
+                }
+            }, function(ret, err) {
+                if (ret) {
+                  console.log(JSON.stringify(ret)+'555555555');
+                  if (ret.data == null) {
+                    api.toast({
+                        msg: ret.msg,
+                        duration: 2000,
+                        location: 'middle'
+                    });
+                  }else{
+                    var userinfo = ret.data.userinfo;
+                    $api.setStorage('userinfo', userinfo);
+                    api.closeFrame();
+                  }
+                } else {
+                  console.log(JSON.stringify(err)+'111111111');
+                  $api.html($api.byId('getcapta'), '发送验证码');
+                  $api.removeCls($api.byId('getcapta'), 'disabled');
+                  api.toast({
+                      msg: err.msg,
+                      duration: 2000,
+                      location: 'middle'
+                  });
+                }
+            });
+        }
+
+        function openindex() {
+            api.openWin({
+                name: 'index',
+                url: './pages/index.html',
+                pageParam: {
+                    name: 'test'
+                },
+                animation:{
+                  type:'none'
+                }
+            });
+
+        }
+
+        function lginWithPhoneNumber() {
+            api.openWin({
+                name: 'loginPhone',
+                url: './html/loginPhone.html',
+                pageParam: {
+                    name: 'test'
+                },
+                animation:{
+                  type:'none'
+                }
+            });
+
+        }
+
+        //检测 输入框
+        function input() {
+          //alert('2222');
+          $("#submitform").attr('background')
+          //$(".bth").addClass('add')
+        }
+    </script>
+
+</html>

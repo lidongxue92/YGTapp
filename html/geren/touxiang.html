@@ -1,0 +1,207 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui" />
+<title>头像更换</title>
+<link rel="stylesheet" href="../../res/weui.min.css">
+<style>
+body {
+	margin: 0;
+	text-align: center;
+}
+#clipArea {
+	height: 300px;
+  background-color: #fff;
+}
+#file,
+#clipBtn {
+	margin: 20px;
+}
+#view {
+	margin: 0 auto;
+	width: 120px;
+	height: 120px;
+	background-color: #eee;
+  border-radius: 50%;
+  border:1px #ccc dotted;
+  margin-top: 30px;
+}
+</style>
+</head>
+<body ontouchstart="" style="background-color:#eee">
+<div id="clipArea"></div>
+
+<div id="view"></div>
+
+<div style="position: absolute; top:310px; left:0; width:120px; height:30px;">
+  <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_default">选择图片</a>
+  <input id="file" class="weui-uploader__input" type="file" accept="image/*" multiple="" style="margin:0">
+</div>
+
+<a href="javascript:;"  id="clipBtn" class="weui-btn  weui-btn_primary">保存</a>
+<div class="weui-article">
+<small>注意：可以通过双指放大、缩小、旋转操作图片</small>
+</div>
+<div style="position: absolute; right: 5px; top: 30px;" id="exitLogin" onclick="api.closeWin({name:'touxiang'})">
+    <i class="weui-icon-cancel" style="font-size: 1.5rem;color: #fff"></i>
+</div>
+<div id="loadingToast"  style="display:none">
+        <div class="weui-mask_transparent"></div>
+        <div class="weui-toast">
+            <i class="weui-loading weui-icon_toast"></i>
+            <p class="weui-toast__content">处理中,请稍后</p>
+        </div>
+</div>
+<script src="../../res/zepto.min.js"></script>
+<script src="../../script/hammer.min.js"></script>
+<script src="../../script/iscroll-zoom-min.js"></script>
+<script src="../../script/lrz.all.bundle.js"></script>
+<script src="../../script/PhotoClip.js"></script>
+<script src="../../res/config.js"></script>
+
+<script>
+apiready = function(){
+
+		$("body").css("margin-top",api.safeArea.top+"px");
+}
+window.onload =function(){
+  var user = JSON.parse(localStorage.getItem('userinfo'));
+  var img ='../../res/img/avatar.png';
+  if(user.user_Img.indexOf('http')>=0)
+  {
+    img = user.user_Img;
+  }
+	try {
+		var photo = new PhotoClip('#clipArea', {
+			size: 260,
+			outputSize: 260,
+			//adaptive: ['60%', '80%'],
+			file: '#file',
+			view: '#view',
+			ok: '#clipBtn',
+			img: img,
+			loadStart: function() {
+				console.log('开始读取照片');
+	      $('#loadingToast').show();
+			},
+			loadComplete: function() {
+				console.log('照片读取完成');
+	      $('#loadingToast').hide();
+			},
+			loadError: function(event) {
+				  $('#loadingToast').hide();
+			},
+			done: function(dataURL) {
+				//console.log(dataURL);
+
+	    //  alert(javafile);//http://192.168.1.148:8080
+	      $.post(javafile+"/file/avatarCover",{blob:dataURL,userid:user.user_ID},function(data){
+
+	        var data = JSON.parse(data);
+	        if(data.errorcode == "0"){
+	          var imgurl = data.errormsg;
+	          user.user_Img = imgurl+"?t="+Date.parse(new Date());
+	          api.sendEvent({
+	              name: 'setuserIMG',
+	              extra: {
+	                  img: user.user_Img
+	              }
+	          });
+	          getajaxs(javaserver+"/exampaper/updateStuInfo",{
+	            userid:user.user_ID,
+	            email:user.email,
+	            userImg:user.user_Img,
+	            identifyCard:user.identifyCard,
+	            phone:user.phone
+	          },function(data){
+	              var data = JSON.parse(data);
+	                  if(data.errorcode == "0"){
+
+	                      alert("头像保存成功");
+	                      localStorage.setItem('userinfo',JSON.stringify(user));
+	                      api.closeWin({name:'touxiang'});
+	                  }
+	                  else {
+	                      alert("头像保存失败："+data.errormsg);
+	                  }
+	          });
+	          //alert(JSON.stringify(data));
+	        }
+	        else {
+	          alert("头像上传失败："+data.errormsg);
+	        }
+
+
+	      });
+
+			},
+			fail: function(msg) {
+				//alert(msg);
+			}
+		});
+	} catch (e) {
+		$('#loadingToast').hide();
+	}
+
+
+}
+function dataURLtoBlob(dataurl) {
+  var arr = dataurl.split(','),
+  mime = arr[0].match(/:(.*?);/)[1],
+  bstr = atob(arr[1]),
+  n = bstr.length,
+  u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return JSON.stringify(new Blob([u8arr], { type: mime }));
+}
+function getajaxs(url,parm,fun){
+  $('#loadingToast').show();
+  var token = "userinfo_token is none";
+  token = getToKen();
+  //alert(url);
+  $.ajax({
+    type:'POST',
+    url:url,
+    beforeSend: function (xhr) {
+      xhr.setRequestHeader("X-Session-Token",token);
+    },
+    data:parm,
+    success:function (msg, status, xhr) {
+        fun(msg);
+        $('#loadingToast').hide();
+    },
+    error: function (XMLHttpRequest, textStatus, errorThrown) {
+        $('#loadingToast').hide();
+        console.error("服务器访问异常：" + JSON.stringify(XMLHttpRequest)+','+textStatus+','+errorThrown);
+    }
+  })
+}
+
+function getToKen(){
+    var localtoken={};
+    try{
+        var localtoken = JSON.parse(localStorage.getItem("userinfo_token"));
+    }catch(e){
+        return null;
+    }
+    var exp = 1000 * 60 * 60 * 24; // 过期时间 1 天
+    if (localtoken == undefined || localtoken == null || localtoken == "") {
+        localtoken = "";
+    } else if (!localtoken.hasOwnProperty('outTime') || !localtoken.hasOwnProperty('token')) {
+        localtoken = "";
+    } else if (localtoken.hasOwnProperty('outTime') && parseInt(new Date().getTime() - exp) > new Date(localtoken.outTime).getTime()) {
+        localtoken = "";
+    } else if (localtoken.hasOwnProperty('token')) {
+        localtoken = localtoken.token.toString();
+    }
+    return localtoken;
+}
+	// 加载的图片必须要与本程序同源，否则无法截图
+	//pc.load('img/mm.jpg');
+
+</script>
+</body>
+</html>

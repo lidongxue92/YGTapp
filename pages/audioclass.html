@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>音频模块</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+     <meta name="format-detection" content="telephone=no"/>
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/ygtcommon.css">
+    <link rel="stylesheet" href="../css/audio.css">
+    <script type="text/javascript" src="../js/jweixin.js"></script>
+    <script type="text/javascript" src="../script/api.js"></script>
+</head>
+<style type="text/css">
+body{width: 100%;height: 100%;}
+    #audioplay{opacity: 0;position: absolute;}
+    #title{color: #fff;}
+    #audio .classlist .toptitle{line-height: 30px;background: #f8f8f8;position: fixed;width: 100%;border-bottom: 1px solid #eee;padding-left: 10px;z-index: 11;height: 40px;padding-top: 10px;font-size: 13px;}
+    #audio .titleshow{height: 50px;}
+</style>
+
+<body ontouchstart id="audio" data-url='audioclass'>
+    <header class="header top" id="header" >
+          <img class='bgimg' src="" />
+          <span class="back" onclick="toback();"></span>
+          <span class='share' onclick="share();"></span>
+          <img class="backimg" src="" />
+          <p id="title"></p>
+    </header>
+    <div class="audio">
+        <audio id="audioplay" controls="true" src="" style="width:25%" onended="over()"></audio>
+        <button id="prev"  ><img class="prev " src="../img/next.png" /></button>
+        <button class="fullopciaty"><img class="play"  id="play" imgpage ='0' onclick="togglePlay();" data-id ='' src="../img/play.png" /></button>
+        <button id="next"  ><img class="next"  src="../img/next.png"/></button>
+        <input id="page" value="" />
+    </div>
+    <footer class="foot">
+        <p onclick="category();" >
+            <img id="Category" src="../img/Category.png" />
+            <b>查看课程</b>
+        </p>
+        <p onclick="edit();" >
+            <img id="edit" src="../img/edit.png" />
+            <b>文稿</b>
+        </p>
+        <p onclick="speed();">
+            <span class="speed"><b id="speed">1</b></span>
+            <b>倍速播放</b>
+        </p>
+        <p onclick="dofavorite();" class="dofavorite">
+            <img id="dofavorite" src="../img/Collection.png" />
+            <b>收藏</b>
+        </p>
+    </footer>
+    <div class="bg" id="bg"></div>
+    <div class="choosespeed" id="choosespeed">
+        <ul>
+            <li class='active' onclick="control(this);">x<span class="one">1</span></li>
+            <li onclick="control(this);">x<span class="one">1.3</span></li>
+            <li onclick="control(this);">x<span class="one">1.5</span></li>
+            <li onclick="control(this);">x<span class="one">2</span></li>
+            <li class="close" onclick="clos();">关闭</li>
+        </ul>
+    </div>
+    <div class="classlist" id="classlist">
+        <p class="toptitle">课程列表</p>
+        <p class="titleshow"></p>
+    </div>
+    <div class='sharetoast'>
+        <h5>邀请好友一起来听课吧~</h5>
+        <ul>
+            <li id='share_friend' onclick="sharefriend();">
+                  <a href="javascript:void(0)" id="shareFriends">
+                      <img src="../img/frend.png" />
+                      <p>微信好友</p>
+                  </a>
+              </li>
+              <li id="share" onclick="sharefriends();">
+                  <a href="javascript:void(0)" id="shareCFriends">
+                      <img src="../img/frends.png" />
+                      <p>朋友圈</p>
+                  </a>
+              </li>
+              <!-- <li id="share" onclick="poster();">
+                  <a href="javascript:void(0)" id="Invitation">
+                      <img src="../img/Invitation.png" />
+                      <p>邀请卡</p>
+                  </a>
+              </li> -->
+        </ul>
+        <p id='opentool' onclick="opentool();">取消<p>
+    </div>
+    <div class="loading">
+        <span>
+            <img src="../img/loading.gif" />
+        </span>
+    </div>
+    <div class="audiocontent">
+        <h5>
+            <span class="back">
+                <img src="../img/back_light.png" />
+            </span>
+            文稿
+        </h5>
+    </div>
+    <script>
+        var curcourse = [];
+    </script>
+    <script src="../js/lib/jquery-2.1.4.js"></script>
+    <script src="../js/jquery-weui.js"></script>
+    <script src="../js/swiper.min.js" charset='utf-8'></script>
+    <script src="../js/audioclass.js"></script>
+    <script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+
+    var sharetitle = '';
+    var sharedesc = '';
+    var shareicon = '';
+    var shareurl ='';
+    var srcstr = '';
+    var audiourl = '';
+    var classroomid = '';
+    var classroomid1 ='';
+    var timebegin ='';
+    var timend ='';
+    var specialid = '';
+    apiready = function() {
+        api.closeWin({
+            name: 'Specialguide'
+        });
+
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled: false
+        });
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        specialid = api.pageParam.specialid
+        var wit = $(window).width();
+
+        var w = $(window).width()/2-parseFloat(25)
+        $('#audio .header .back').css('left',w)
+        var h = $(window).height()
+        $('body').css('height',h)
+        if (wit >360) {
+            var wid = $(window).width()/2-parseFloat(115)
+            $('#audio .audio').css('left',wid)
+        }else{
+            var wid = $(window).width()/2-parseFloat(90)
+            $('#audio .audio').css('left',wid)
+        }
+        api.addEventListener({
+            name:'viewappear'
+        }, function(ret, err){
+            var time = new Date().getTime();
+            timebegin= Math.floor(time/1000);
+        });
+        loadData();
+        api.addEventListener({
+            name:'pause'
+        }, function(ret, err){
+            var time = new Date().getTime();
+            timend= Math.floor(time/1000);
+            var timelog = (timend)-(timebegin);
+            classroomid = api.pageParam.id;
+            api.ajax({
+                url: apihost + '/api/wtk/classroom/setlog',
+                method: 'post',
+                headers: {
+                    'TOKEN':ygtuserinfo.token
+                },
+                data: {
+                    values: {
+                        classroomid:specialid,
+                        specialid:1,
+                        timelength:timelog,
+                        uid:ygtuserinfo.id
+                    }
+                }
+            },function(ret, err){
+                console.log(JSON.stringify(ret));
+                console.log(JSON.stringify(err));
+                if (ret) {
+                    console.log( JSON.stringify( ret ) );
+                } else {
+                    console.log( JSON.stringify( err ) );
+                }
+            });
+        });
+        api.addEventListener({
+            name: 'keyback'
+        }, function(ret, err) {
+            toback();
+        });
+        $api.addEvt($api.byId('prev'), 'click', function(){
+            if ($api.hasCls($api.byId('prev'), 'fullopciaty')) {
+                prev();
+            }
+        });
+
+        $api.addEvt($api.byId('next'), 'click', function(){
+            if ($api.hasCls($api.byId('next'), 'fullopciaty')) {
+                next();
+            }
+        });
+
+        api.addEventListener({
+            name:'offline'
+        }, function(ret, err){
+            var audioElm = $api.byId("audioplay");
+            audioElm.pause();//暂停
+            $api.attr($api.byId('play'),'src','../img/play.png');
+            var offline = false;
+            $api.setStorage('offline', offline);
+        });
+    };
+    function toback() {
+        var time = new Date().getTime();
+        timend= Math.floor(time/1000);
+        var timelog = parseInt((timend)-(timebegin));
+        // alert(timend+'sssss'+timebegin);
+
+        api.ajax({
+            url: apihost + '/api/wtk/classroom/setlog',
+            method: 'post',
+            headers: {
+                'TOKEN':ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    classroomid:specialid,
+                    specialid:specialid,
+                    timelength:timelog,
+                    uid:ygtuserinfo.id
+                }
+            }
+        },function(ret, err){
+            console.log(JSON.stringify(ret));
+            console.log(JSON.stringify(err));
+            if (ret) {
+                console.log( JSON.stringify( ret ) );
+            } else {
+                console.log( JSON.stringify( err ) );
+            }
+        });
+        tourl = $("#audio").attr('data-url');
+        $api.setStorage('tourl', tourl);
+        url = $api.getStorage('url');
+        var audiosta = $('#play').attr('src')
+        $api.setStorage('audiosta', audiosta);
+        var audioupdata = true;
+        $api.setStorage('audioupdata', audioupdata);
+        var classroomid1 = api.pageParam.specialid;
+        if (url == 'index') {
+            api.openWin({
+                name: 'root',
+                url: '../'+url+'.html',
+                pageParam: {
+                    name: 'test',
+                },
+                animation:{
+                    type:"reveal",                //动画类型（详见动画类型常量）
+                    subType:"from_top",       //动画子类型（详见动画子类型常量）
+                    duration:300
+                }
+            });
+        }else{
+            if (url == 'Specialguide') {
+                api.openWin({
+                    name: url,
+                    url:url+'.html',
+                    pageParam: {
+                        name: 'test',
+                        id:classroomid1
+                    },
+                    bgColor: 'rgba(0,0,0,0)',
+                    animation:{
+                        type:"reveal",                //动画类型（详见动画类型常量）
+                        subType:"from_top",       //动画子类型（详见动画子类型常量）
+                        duration:300
+                    },
+                    reload:true
+                });
+            }else{
+                api.openWin({
+                    name: url,
+                    url:url+'.html',
+                    pageParam: {
+                        name: 'test',
+                        id:classroomid1
+                    },
+                    bgColor: 'rgba(0,0,0,0)',
+                    animation:{
+                        type:"reveal",                //动画类型（详见动画类型常量）
+                        subType:"from_top",       //动画子类型（详见动画子类型常量）
+                        duration:300
+                    }
+                });
+            }
+        }
+    }
+    function edit() {
+        api.openWin({
+            name: 'Manuscript',
+            url: 'Manuscript.html',
+            pageParam: {
+                name: 'test',
+                id:curcourse.id
+            },
+            reload:true
+        });
+    }
+    function classlist() {
+        api.openWin({
+            name: 'classlist',
+            url: 'classlist.html',
+            pageParam: {
+                name: 'test'
+            },
+            animation: {
+                type: 'none'
+            }
+        });
+    }
+
+    //邀请卡
+    function poster() {
+        classroomid = api.pageParam.id;
+        api.openWin({
+            name: 'poster',
+            url: './poster.html',
+            pageParam: {
+                id: classroomid
+            },
+            animation: {
+                type: 'none'
+            }
+        });
+    }
+
+    function funcGoto() {
+        var audioElm = $api.byId("audioplay");
+        audioElm.pause();
+        $api.attr($api.byId('play'),'src','../img/play.png');
+    }
+    </script>
+</body>
+
+</html>

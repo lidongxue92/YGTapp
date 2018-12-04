@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="apple-mobile-web-app-status-bar-style"  content="black"/>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>医管通APP</title>
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/ygtcommon.css">
+    <style type="text/css">
+    .top{position: fixed;top: 0;background: #fff;text-align: center;width: 100%;border-bottom: 1px solid #fafafa;z-index: 17;padding-top: 25px;}
+    .top h1{font-size:1.3rem;font-weight: normal;background: #fff;height: 50px;line-height: 50px;position: relative;padding: 0;margin: 0;}
+    .top h1 .title{display: inline-block;width: 80%;font-weight: 500;overflow: hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .top h1 .back{position: absolute;width: 50px;height: 25px;display: inline-block;left: 10px;background:url('../img/back_light.png');background-size: auto 100%;z-index: 5;background-repeat: no-repeat;top: 10px;}
+    .top h1 .bth{color: #ff9913;position: absolute;right:10px;font-size: .9rem;}
+    input,button,textarea:focus {
+        outline: none !important;
+        border: 0;
+    }
+    #pagecontent{margin-top: 75px;}
+    #pagecontent label{line-height: 50px;height: 50px;display: block;position: relative;top: 20px;background: #fff;}
+    #pagecontent input{width: 100%;border:0;padding-left: 15px;background: transparent;font-size: 1rem;}
+    @media screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+        .top{padding-top: 45px;}
+        #pagecontent{margin-top: 85px;}
+    }
+    </style>
+</head>
+<body>
+    <header class="top" id="header">
+        <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span class="title"  id="name">个人资料修改</span>
+            <span class="bth">完成</span>
+        </h1>
+    </header>
+    <section id="pagecontent">
+        <div class="change">
+            <label>
+                <input class="input" id="input" />
+            </label>
+        </div>
+    </section>
+
+<script src="../js/lib/jquery-2.1.4.js"></script>
+<script type="application/javascript" src="../js/lib/fastclick.js"></script>
+
+<script src="../script/api.js"></script>
+
+<script type="text/javascript">
+    var ststem = '';
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = '';
+    var title = '';
+    apiready=function(){
+        title = api.pageParam.title;
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+
+        $('.input').attr('placeholder',title)
+        $("#name").html(title+'修改')
+
+        if (title == '城市') {
+            $(".change").hide();
+            opencity();
+        }else{
+            $(".change").show();
+        }
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+    }
+    function opencity() {
+        toph = parseInt($api.offset($api.byId('header')).h)
+        var UICityList = api.require('UICityList');
+        UICityList.open({
+            rect: {
+                x: 0,
+                y: toph,
+                w: api.frameWidth,
+                h: api.frameHeight
+            },
+            resource: 'widget://res/cityList.json',
+            styles: {
+                searchBar: {
+                    bgColor: '#696969',
+                    cancelColor: '#E3E3E3'
+                },
+                location: {
+                    color: '#696969',
+                    size: 12
+                },
+                sectionTitle: {
+                    bgColor: '#eee',
+                    color: '#000',
+                    size: 12
+                },
+                item: {
+                    bgColor: '#fff',
+                    activeBgColor: '#696969',
+                    color: '#000',
+                    size: 14,
+                    height: 40
+                },
+                indicator: {
+                    bgColor: '#fff',
+                    color: '#696969'
+                }
+            },
+            currentCity: '北京',
+            locationWay: 'GPS',
+            hotTitle: '热门城市',
+            fixedOn: api.frameName,
+            placeholder: '输入城市名或首字母查询',
+            searchType:'initial'
+        }, function(ret, err) {
+            if (ret) {
+                alert(JSON.stringify(ret));
+            } else {
+                alert(JSON.stringify(err));
+            }
+        });
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>医管通APP</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" href="../css/ygtcommon.css">
+    <script src="../js/lib/jquery2.js"></script>
+    <style type ="text/css">
+        .top .right{float: right;font-size: 12px;color: #999;margin-right: 20px;}
+   </style>
+
+
+<body >
+    <header class="top" id="header">
+        <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span class="title" >文档</span>
+        </h1>
+    </header>
+    <!--主要内容  -->
+    <section>
+
+    </section>
+</body>
+<script src="../js/jquery-weui.min.js"></script>
+<script type="application/javascript" src="../js/lib/fastclick.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    var page = 1
+    var pagesize = 4;
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+        var top = $api.offset($api.byId('header')).h;
+        api.openFrame({
+            name: 'wordframe',
+            url: './wordframe.html',
+            rect: {
+                marginLeft:0,    //相对父 window 左外边距的距离
+                marginTop:top,    //相对父 window 上外边距的距离
+                marginBottom:0,    //相对父 window 下外边距的距离
+                marginRight:0
+            },
+            pageParam: {
+                name: 'test'
+            },
+            bounces: true,
+            vScrollBarEnabled: false,
+            hScrollBarEnabled: false
+        });
+        // 上拉刷新 滚动加载
+    };
+
+
+
+</script>
+
+</html>

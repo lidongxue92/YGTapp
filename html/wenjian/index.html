@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>知识库-首页</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <link rel="shortcut icon" href="favicon.ico">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="../../res/css/light7.min.css">
+    <link rel="stylesheet" type="text/css" href="../../res/icon/iconfont.css">
+  </head>
+  <body>
+    <div class="page-group">
+      <!-- 你的html代码 -->
+      <div class="page ziliao" id="ziliao">
+
+           <!--界面标题-->
+        <header class="bar bar-nav">
+                <a class="icon pull-left" id="zhiliaoback" style="display:none;"><i class="iconfont icon-shangyiye2"></i></a>
+                <!--<a class="icon iconfont icon-jia pull-left create-actions" id="zhiliaoadd" style="display:none;"></a>-->
+                <span class="icon iconfont pull-right" id="zhiliaoshuaxin"><i class="iconfont icon-shuaxin3"></i></span>
+              <!--  <a class="icon iconfont icon-jia pull-left ios-is-show" id="ios-create"></a>-->
+                <h1 class="title">资料</h1>
+          </header>
+
+      <div class="bar bar-header-secondary" style="background: #eee;color: white;line-height: 2.2rem;text-align: center;">
+          <div class="buttons-row">
+            <div class="tab-link button" id="wenjian_paixu"><i class="iconfont icon-paixuicon"></i> 名称</div>
+            <div class="tab-link button" id="lable_color" onclick="openTag()"><i class="iconfont icon-xueyuanpinglun"></i> 标签</div>
+
+            <div class="tab-link button" onclick="showSoInupt(1)"><i class="iconfont icon-sousuo-sousuo"></i> 搜索</div>
+              <div class="tab-link button" id="zhiliaoadd"  > <i class="iconfont icon-jia create-actions"></i> 添加</div>
+  </div>
+      </div>
+      <div class="bar bar-header-secondary theme-dark" style="line-height: 2.2rem;text-align: center;display:none; " id="deleteblock">
+        <div class="row">
+            <div class="col-50" id="renamefile"><span class="iconfont icon-iconzhongmingming-06"></span> 重命名</div>
+            <div class="col-50" id="deletefile"><span class="icon icon-remove"></span> 删除</div>
+        </div>
+      </div>
+      <div class="bar bar-header-secondary" style="display:none;" id="SosoShow">
+                    <div class="searchbar searchbar-active">
+                      <a class="searchbar-cancel" onclick="showSoInupt(2)">取消</a>
+                      <div class="search-input"><form target="#" id="search_from">
+                        <label class="icon" for="search"><i class="iconfont icon-sousuo"></i></label>
+                        <input type="search" id="searchFileName" placeholder="回车发起搜索" autofocus="autofocus" onclick="this.focus()">
+    </form>
+                      </div>
+                    </div>
+      </div>
+          <!--界面内容-->
+        <div class="content ziliao pull-to-ref../resh-content infinite-scroll infinite-scroll-bottom" >
+        <!--pull-to-ref../resh-content"可下拉刷新,infinite-scroll可无限滚动（分页异步加载）-->
+           <div id="uploadprogress" class="upload-progress"><span></span></div>
+              <div class="list-block" style="margin-top: -0.1rem;">
+                  <ul class="ios-is-show" style="display:none"><li>
+                  苹果使用的上传插件
+                  <input type="file" id="fileIosId"/></li></ul>
+                <ul id="filelist">
+
+                  <!--开始追加-->
+
+                </ul>
+                <!--分页加载器，加载提示符,注意需要程序验证下，大于一屏幕数据量再显示-->
+              <!--<div class="infinite-scroll-preloader" >
+                <div class="preloader"></div>
+              </div>-->
+              </div>
+             <div id="filepage" style=" display:none;">1</div>
+             <div id="loadMore" style=" margin-bottom: 3.0rem;text-align: center;margin-top: -1.0rem;" >点击加载更多</div>
+        </div>
+
+      </div>
+      <!--文件首页结束-->
+
+
+
+  </div>
+
+   <script type='text/javascript' src='../../res/zepto.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='../../res/js/light7.min.js' charset='utf-8'></script>
+<script src="../../res/js/webuploader.min.js" type="text/javascript"></script>
+<script type='text/javascript' src="../../res/jisupeixun.js"></script>
+  </body>
+</html>

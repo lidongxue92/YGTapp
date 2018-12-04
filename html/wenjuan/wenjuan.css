@@ -1,0 +1,153 @@
+body{    background-color: #f0f0f0; color: #666}
+#app{ width: 1170px;  margin: 10px auto; background-color: #fff; padding:50px 10px; border:1px #eee solid; border-radius: 5px;padding-top: 70px;}
+h1{ text-align: center; font-size: 24px;     color: rgb(51, 51, 51);    font-weight: normal;    word-break: break-word;}
+.container{ margin: 20px auto; max-width: 960px }
+ol{    margin-left: 20px; padding-bottom: 40px;}
+ol li{  padding: 10px; line-height: 1.5em; }
+ol li:hover{ background-color: #eee; }
+ol li:hover .danxuan span{ background-color: #09bb07; }
+.weui-icon-cancel{ cursor:  pointer; }
+.weui-icon-cancel:hover{ font-weight: bold; }
+.fenshu{ width: 40px; }
+.danti{  position: relative;  padding: 10px; border:1px #fff solid; border-radius: 5px; overflow: hidden;}
+.weui-textarea{ border: 1px #ddd solid; margin: 10px 0;  }
+.liaobiao{margin: 10px 0;  }
+.liaobiao span{display: inline-block; padding: 0 10px;}
+.timu_tool{display: none; position: absolute; bottom: 0; background-color: #eee; width: 97%; left: 0; padding:0 2%;}
+.danti:hover{ border:1px #ddd solid;}
+.danti:hover .timu_tool{ display: block; }
+.weui-navbar span{display: block; font-size: 12px; color: #999}
+.weui-navbar__item{ cursor: pointer; }
+.minibtn{display:inline-block;width: 28px; height: 28px; border-radius: 50%; background-color: #09BB07; color: #fff; font-size: 24px; text-align: center; line-height: 25px; cursor: pointer;    margin-top: -7px;  float: right;}
+
+@media (max-width: 768px) {
+	#app{width: 100%; padding: 50px 0;}
+}
+
+.danxuaninput{
+	background-color: #fafafa;
+	border: 1px solid #cacece;
+	padding: 9px;
+	border-radius: 50%;
+	display: inline-block;
+	position: relative;
+}
+.danxuaninput:checked{
+	background-color: #39f;
+	border: 1px solid #39f;
+	color: #39f;
+}
+
+label {
+	display: inline;
+}
+.regular-checkbox {
+	display: none;
+}
+.regular-checkbox + label {
+	background-color: #fafafa;
+	border: 1px solid #cacece;
+	box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05);
+	padding: 9px;
+	border-radius: 3px;
+	display: inline-block;
+	position: relative;
+}
+.regular-checkbox + label:active, .regular-checkbox:checked + label:active {
+	box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px 1px 3px rgba(0,0,0,0.1);
+}
+.regular-checkbox:checked + label {
+	background-color: #e9ecee;
+	border: 1px solid #adb8c0;
+	box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05), inset 15px 10px -12px rgba(255,255,255,0.1);
+	color: #1aad19;
+}
+.regular-checkbox:checked + label:after {
+	content: '\2714';
+	font-size: 14px;
+	position: absolute;
+	top: 0px;
+	left: 3px;
+	color: #1aad19;
+}
+
+.big-checkbox + label {
+    padding: 18px;
+}
+
+.big-checkbox:checked + label:after {
+	font-size: 28px;
+	left: 6px;
+}
+
+.tag {
+	font-family: Arial, sans-serif;
+	width: 200px;
+	position: relative;
+	top: 5px;
+	font-weight: bold;
+	text-transform: uppercase;
+	display: block;
+	float: left;
+}
+
+.radio-1 {
+	width: 193px;
+}
+
+.button-holder {
+	float: left;
+}
+
+/* RADIO */
+
+.regular-radio {
+	display: none;
+}
+
+.regular-radio + label {
+	-webkit-appearance: none;
+	background-color: #fafafa;
+	border: 1px solid #cacece;
+	box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05);
+	padding: 9px;
+	border-radius: 50px;
+	display: inline-block;
+	position: relative;
+}
+
+.regular-radio:checked + label:after {
+	content: ' ';
+	width: 12px;
+	height: 12px;
+	border-radius: 50px;
+	position: absolute;
+	top: 3px;
+	background: #1aad19;
+	box-shadow: inset 0px 0px 10px rgba(0,0,0,0.3);
+	text-shadow: 0px;
+	left: 3px;
+	font-size: 32px;
+}
+
+.regular-radio:checked + label {
+	background-color: #e9ecee;
+	color: #1aad19;
+	border: 1px solid #adb8c0;
+	box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px -15px 10px -12px rgba(0,0,0,0.05), inset 15px 10px -12px rgba(255,255,255,0.1), inset 0px 0px 10px rgba(0,0,0,0.1);
+}
+
+.regular-radio + label:active, .regular-radio:checked + label:active {
+	box-shadow: 0 1px 2px rgba(0,0,0,0.05), inset 0px 1px 3px rgba(0,0,0,0.1);
+}
+
+.big-radio + label {
+	padding: 16px;
+}
+
+.big-radio:checked + label:after {
+	width: 24px;
+	height: 24px;
+	left: 4px;
+	top: 4px;
+}

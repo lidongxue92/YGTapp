@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>直播列表Frame</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/ygtcommon.css" />
+    <style>
+        /*主体内容样式*/
+
+        .list {
+            padding: 15px;
+            color: #333;
+            background: #fff;
+            border-bottom: 1px solid #f1f1f1;
+        }
+
+        .list img {
+            width: 38%;
+            vertical-align: top;
+            border-radius: 5px;
+            overflow: hidden;
+            height: 70px;
+        }
+
+        .list .right {
+            display: inline-block;
+            margin-left: 2%;
+            width: 58%;
+            position: relative;
+            top: 0;
+        }
+
+        .list .right .title {
+            color: #424242;
+            font-weight: normal;
+            font-size: 1rem;
+            width: auto;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            word-wrap: normal;
+            word-wrap: break-word;
+            word-break: break-all;
+            max-height: 36px;
+            line-height: 18px;
+            white-space: normal;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            padding: 0;
+            margin-top: 5px;
+            font-weight: 900;
+        }
+
+        .list .right p {
+            padding: 0;
+            margin: 0;
+            margin-top: 2px;
+        }
+
+        .list .right p span {
+            display: inline-block;
+            text-align: left;
+            font-size: 0.8rem;
+        }
+
+        .list .right p .time {
+            margin-right: 10px;
+        }
+
+        .list .right p .Browsing {
+            font-weight: 500;
+            color: #b8b8b8;
+        }
+
+        .list .right p .Browsing img {
+            height: 13px;
+            width: auto;
+            position: relative;
+            top: 0px;
+        }
+
+        .list .right p .free {
+            color: #ff9913;
+            font-size: 13px;
+            font-weight: 900;
+            float: right;
+        }
+
+        .list .right p span b {
+            font-weight: normal;
+        }
+
+        .list .right p .freetime {
+            position: relative;
+            font-weight: normal;
+            color: #999;
+            font-size: 13px;
+            font-weight: normal;
+        }
+
+        .list .right p .freetime:after {
+            content: '';
+            display: inline-block;
+            position: absolute;
+            width: 100%;
+            height: 1px;
+            background: #999;
+            left: 0;
+            top: 50%;
+        }
+
+        .list .right p .freebth {
+            background: #ff9913;
+            color: #fff;
+            padding: 3px 8px;
+            border-radius: 5px;
+            margin-left: 10px;
+            color: #fff;
+        }
+
+        .lasttitle {
+            text-align: center;
+            color: #999;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        @media screen and (min-width: 768px) {
+            .list img {
+                height: 100px;
+            }
+        }
+        #audioclick{position: fixed;left: 20px;bottom: 10px;width: 40px;height: 50px;border-radius: 50%;animation:mymove 5s infinite;}
+        #audioclick img{ width: 100%;}
+        @keyframes mymove
+        {
+            from {transform: rotate(0deg);}
+            to {transform: rotate(360deg);}
+        }
+
+        @-webkit-keyframes mymove
+        {
+            from {transform: rotate(0deg);}
+            to {transform: rotate(360deg);}
+        }
+    </style>
+</head>
+
+<body>
+    <div id="Tolist" data-url='classlist'>
+        <!-- <div class="list">
+            <img src="../img/classroom.jpg" />
+            <div class="right">
+                <h5 class="title">88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888</h5>
+                <p>
+                    <span class="Selfsupport"><img src="../img/zy.png" /></span>
+                    <span class="address">上海市</span>
+                    <span class="time">2019-08-05</span>
+                </p>
+            </div>
+        </div>
+        <div class='lasttitle'>已无更多数据</div> -->
+    </div>
+    <div class="loading">
+        <span>
+            <img src="../img/loading.gif" />
+        </span>
+    </div>
+    <span id="audioclick" onclick="audioto();"><img src="../img/smile.png" /></span>
+</body>
+<script src="../js/lib/jquery-2.1.4.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var page = 1;
+    var pagesize = 4;
+    var loading = false;
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    var systemtype = '';
+    var iswxpay = $api.getStorage('iswxpay');
+
+    apiready = function() {
+        systemtype = api.systemType;
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled: false
+        });
+        //  禁止左右滑动
+        api.setRefreshHeaderInfo({
+            bgColor: '#fefefe',
+            textColor: '#999',
+            textDown: '下拉刷新...',
+            textUp: '松开刷新...',
+            //  textLoading:'<img src="widget://img/loading.gif" />',
+            showTime: false
+        }, function(ret, err) {
+            //在这里从服务器加载数据，加载完成后调用api.refreshHeaderLoadDone()方法恢复组件到默认状态
+            page = 1;
+            $api.html($api.byId('Tolist'), '');
+            api.refreshHeaderLoading();
+            loadData();
+            if (loading) loading = false;
+            setTimeout('api.refreshHeaderLoadDone()', '500'); //api.refreshHeaderLoadDone();
+        });
+        api.addEventListener({
+            name: 'scrolltobottom',
+            extra: {
+                threshold: 0 //设置距离底部多少距离时触发，默认值为0，数字类型
+            }
+        }, function(ret, err) {
+            if (loading) {
+                return;
+            }
+            loading = true;
+            page++; //页数
+            loadData();
+            loading = false;
+        });
+        $(".loading").show();
+        loadData();
+    };
+
+    function loadData() {
+
+        //var type = $('#headernav').find('.active').data('type');
+        var type = 1;
+        if (!ygtuserinfo || !ygtuserinfo.id) {
+            return false;
+        }
+
+        // var id = $api.getStorage('liveid');
+        // console.log(id);
+        // var id = 5;
+        api.ajax({
+            url: apihost + '/api/wtk/classroom/getClassroomList',
+            method: 'post',
+            headers: {
+
+            },
+            data: {
+                values: {
+                    page: page,
+                    pagesize: 10,
+                    typeid: 0,
+                    isfree: 1
+                }
+            }
+        }, function(ret, err) {
+            if (ret) {
+                $(".loading").hide();
+                console.log(JSON.stringify(ret));
+                if (ret.code == 1) {
+                    var len = ret.data.result.length;
+                    var html = '';
+                    for (var i = 0; i < len; i++) {
+                        html += '<div class="list" tapmode onclick="audioclass(' + ret.data.result[i]['id'] + ');" >';
+                        // if (ret.data.result[i]['style'] != '1') {
+                        //     html += '<div class="list" tapmode onclick="openguide(' + ret.data.result[i]['id'] + ');" >';
+                        // } else if (ret.data.result[i]['begintime'] == '回顾') {
+                        //     //不收费回顾
+                        //
+                        // } else {
+                        //     html += '<div class="list" tapmode onclick="classroom(' + ret.data.result[i]['id'] + ');" >';
+                        // }
+                        html += '<img src="' + ret.data.result[i]['thumb'] + '">' +
+                            '<div class="right">' +
+                            '<h5 class="title">' + ret.data.result[i]['name'] + '</h5>' +
+                            '<p >' + ret.data.result[i]['listtitle'] + '</p>'
+                        if (ret.data.result[i]['begintime'] == '回顾') {
+                            html += '<p>';
+                        } else {
+                            html += '<p>' + '<span class="time">' + ret.data.result[i]['begintime'] + '</span>';
+                        }
+                        var count = ret.data.counts[ret.data.result[i]['id']];
+                        if (count > 300) {
+                            //    html +='<span class="Browsing"><img src="../img/eyes.png" /> '+count+'</span>';
+                            html += '<span class="Browsing">' + count + ' 人在学</span>';
+                        }
+                        if (ret.data.result[i]['style'] == 1) {
+                            html += '<span class="free">免费</span></p>';
+                        } else if (ret.data.result[i]['style'] == 2) {
+                            html += '<span class="free">密码</span></p>'
+                        } else {
+                            if (ret.data.result[i]['limitpaying'] == 1) {
+                                html += '<span style="float:right;"><b  class="freetime">￥' + ret.data.result[i]['price'] + '</b><b class="freebth">限免</b></span></p>';
+                            } else {
+                                //  if (systemtype == 'ios' && iswxpay == 0) {
+                                //     html += '<span class="free">'+ret.data.result[i]['price']+'牛币</span></p>';
+                                // }else{
+                                html += '<span class="free">￥' + ret.data.result[i]['price'] + '</span></p>';
+                                // }
+
+                            }
+                        }
+                        html += '</div>' +
+                            '</div>';
+                    }
+
+                    $api.append($api.byId('Tolist'), html);
+                    if (len == 10) {
+                        //  遍历直播间数据
+
+                    } else {
+                        var html2 = ' ';
+                        html2 += "<div class='lasttitle'>暂无更多课程</div>";
+                        $api.append($api.byId('Tolist'), html2);
+                        loading = true;
+                        $(".weui-loadmore").hide();
+                    };
+                };
+            }
+        });
+    }
+
+    //跳转
+    function audioto() {
+        var audioid = $api.getStorage('audioid');
+
+        if (audioid) {
+           id = audioid;
+       }else{
+           id = 2774;
+       }
+       var url = $('#Tolist').attr('data-url')
+       $api.setStorage('url', url);
+        api.openWin({
+          name: 'audioclass',
+          url: './audioclass.html',
+          pageParam: {name: 'test',id:id},
+          bgColor: 'rgba(0,0,0,0)',
+          animation:{
+            type:'none'
+          }
+        })
+    }
+    //直播页面详情跳转限免
+    function openguide(id) {
+        api.openWin({
+            name: 'guide',
+            url: './guide.html',
+            pageParam: {
+                name: 'test',
+                id: id
+            },
+            bgColor: 'rgba(0,0,0,0)',
+            animation: {
+                type: 'none'
+            }
+        })
+    }
+
+
+
+    //页面详情跳转
+    function audioclass(id) {
+        //alert(id);
+        api.openWin({
+            name: 'audioclass',
+            url: './audioclass.html',
+            pageParam: {
+                name: 'test',
+                id: id
+            },
+            bgColor: 'rgba(0,0,0,0)',
+            animation: {
+                type: 'none'
+            },
+            reload: true,
+        });
+    }
+</script>
+
+</html>

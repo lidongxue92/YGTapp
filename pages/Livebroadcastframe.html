@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>直播列表Frame</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/ygtcommon.css" />
+    <style>
+        /*主体内容样式*/
+
+        .list {
+            padding: 15px;
+            color: #333;
+            background: #fff;
+            border-bottom: 1px solid #f1f1f1;
+        }
+
+        .list img {
+            width: 38%;
+            vertical-align: top;
+            border-radius: 5px;
+            overflow: hidden;
+            height: 70px;
+        }
+
+        .list .right {
+            display: inline-block;
+            margin-left: 2%;
+            width: 58%;
+            position: relative;
+            top: 0;
+        }
+
+        .list .right .title {
+            color: #424242;
+            font-weight: normal;
+            font-size: 1rem;
+            width: auto;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            word-wrap: normal;
+            word-wrap: break-word;
+            word-break: break-all;
+            max-height: 36px;
+            line-height: 18px;
+            white-space: normal;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            padding: 0;
+            margin-top: 5px;
+            font-weight: 900;
+        }
+
+        .list .right p {
+            padding: 0;
+            margin: 0;
+            margin-top: 2px;
+            color: #999;
+        }
+
+        .list .right p span {
+            display: inline-block;
+            text-align: left;
+            font-size: .8rem;
+        }
+
+        .list .right p .Browsing {
+            font-weight: 500;
+            color: #b8b8b8;
+        }
+
+        .list .right p .time {
+            margin-right: 10px;
+        }
+
+        .list .right p .Browsing img {
+            height: 13px;
+            width: auto;
+            position: relative;
+            top: 0px;
+        }
+
+        .list .right p .free {
+            color: #ff9913;
+            font-size: 13px;
+            font-weight: 900;
+            float: right;
+        }
+
+        .list .right p span b {
+            font-weight: normal;
+        }
+
+        .list .right p .freetime {
+            position: relative;
+            font-weight: normal;
+            color: #999;
+            font-size: 13px;
+            font-weight: normal;
+        }
+
+        .list .right p .freetime:after {
+            content: '';
+            display: inline-block;
+            position: absolute;
+            width: 100%;
+            height: 1px;
+            background: #999;
+            left: 0;
+            top: 50%;
+        }
+
+        .list .right p .freebth {
+            background: #ff9913;
+            color: #fff;
+            padding: 3px 8px;
+            border-radius: 5px;
+            margin-left: 10px;
+            color: #fff;
+        }
+
+        .lasttitle {
+            text-align: center;
+            color: #999;
+            margin-top: 10px;
+        }
+
+        @media screen and (min-width: 768px) {
+            .list img {
+                height: 100px;
+            }
+        }
+        #audioclick{position: fixed;left: 5%;bottom: 10px;width: 80%;background: rgba(0,0,0,.7);padding: 10px 5%;border-radius: 10px;display: none}
+        #audioclick span{display: inline-block;width: 65%;}
+        #audioclick .hed{position: relative;width: 60px;vertical-align: top;margin-right: 10px;}
+        #audioclick .pic{ width: 60px;height: 36px;border: 1px solid #eee;border-radius: 5px;}
+        #audioclick .close{width: 20px;float: right;position: relative;top:8px;}
+        #audioclick .pause{position: absolute;left:20px;width:20px;top: 10px;}
+        #audioclick b{display: inline-block;width: 100%;overflow: hidden; text-overflow: ellipsis; white-space: nowrap;color: #e4e4e4;}
+    </style>
+</head>
+
+<body>
+    <div id="audioTolist" >
+
+    </div>
+    <div id="Tolist" data-url='Livebroadcast'>
+        <!-- <div class="list">
+            <img src="../img/classroom.jpg" />
+            <div class="right">
+                <h5 class="title">88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888</h5>
+                <p>医管通微课堂</p>
+                <p>
+                    <span class="time">9-03 14:00</span>
+                    <span class="Browsing"><img src="../img/eyes.png" /> 657</span>
+                    <span class="free">免费</span>
+                </p>
+            </div>
+        </div>
+        <div class='lasttitle'>已无更多数据</div> -->
+    </div>
+    <div class="loading">
+        <span>
+            <img src="../img/loading.gif" />
+        </span>
+    </div>
+    <div id="audioclick" >
+        <p onclick="audioto();" style="display:inline-block;width:90%;">
+            <span class="hed">
+                <img class="pic" src="" />
+            </span>
+            <span >
+                <b class="title"></b>
+                <b class="listtitle"></b>
+            </span>
+        </p>
+        <img class="close" src="../img/round_close.png" />
+    </div>
+</body>
+<script src="../js/lib/jquery-2.1.4.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = '';
+    var page = 1;
+    var pagesize = 4;
+    var loading = false;
+    var systemtype = '';
+    var iswxpay = $api.getStorage('iswxpay');
+    var calsstitle = '';
+    apiready = function() {
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+        systemtype = api.systemType;
+        classtitle = $api.getStorage('classtitle');
+        listtitle = $api.getStorage('listtitle');
+        backImg = $api.getStorage('bakcimg');
+        $('#audioclick .title').html(classtitle);
+        $('#audioclick .listtitle').html(listtitle);
+        $("#audioclick .pic").attr('src', backImg)
+        if (classtitle == undefined) {
+            $("#audioclick").hide();
+        } else {
+            $("#audioclick").show();
+        }
+        api.addEventListener({
+            name:'viewappear'
+        }, function(ret, err){
+            classtitle = $api.getStorage('classtitle');
+            listtitle = $api.getStorage('listtitle');
+            backImg = $api.getStorage('bakcimg');
+            $('#audioclick .title').html(classtitle);
+            $('#audioclick .listtitle').html(listtitle);
+            $("#audioclick .pic").attr('src', backImg);
+            var stop = $('body').scrollTop();
+            if (classtitle != undefined && classtitle != '' && stop < 400) {
+                $("#audioclick").show();
+            } else {
+                $("#audioclick").hide();
+            }
+        });
+        api.setRefreshHeaderInfo({
+            bgColor: '#fefefe',
+            textColor: '#999',
+            textDown: '下拉刷新...',
+            textUp: '松开刷新...',
+            showTime: false
+        }, function(ret, err) {
+            page = 1;
+            $api.html($api.byId('Tolist'), '');
+            api.refreshHeaderLoading();
+            loadData();
+            if (loading) loading = false;
+            //setTimeout('api.refreshHeaderLoadDone()', '500'); //api.refreshHeaderLoadDone();
+        });
+        //音频入口
+        window.onscroll = function() {
+            classtitle = $api.getStorage('classtitle');
+            var sat = $("#audioclick").attr('hidden')
+            var stop = $('body').scrollTop();
+            if (sat == undefined && classtitle != undefined) {
+                if(stop > 100){
+                    $("#audioclick").slideUp(200);
+                }else if (stop < 200) {
+                    $("#audioclick").slideDown(200);
+                }
+            }else{
+                $("#audioclick").hide();
+            }
+        }
+        api.addEventListener({
+            name: 'scrolltobottom',
+            extra: {
+                threshold: 0 //设置距离底部多少距离时触发，默认值为0，数字类型
+            }
+        }, function(ret, err) {
+            if (loading) {
+                return;
+            }
+            loading = true;
+            page++; //页数
+            loadData();
+            loading = false;
+        });
+        var backurl = $("#Tolist").attr('data-url');
+        $api.setStorage('backurl',backurl);
+        $(".loading").show();
+         loadData();
+    }
+    $("#audioclick .close").click(function () {
+        $("#audioclick").css('display','none');
+        $("#audioclick").attr('hidden','true')
+        api.closeWin({
+            name: 'audioclass'
+        });
+    })
+    function loadData() {
+        // 首页直播间数据
+        api.ajax({
+            url: apihost + '/api/wtk/classroom/getClassroomList',
+            method: 'post',
+            headers: {},
+            data: {
+                values: {
+                    page: page,
+                    pagesize: '10',
+                    typeid: api.pageParam.typeid
+                }
+            }
+        }, function(ret, err) {
+            console.log(JSON.stringify(ret));
+            console.log(JSON.stringify(err));
+            if (ret) {
+                $(".loading").hide();
+                if (ret.code == 1) {
+                    var len = ret.data.result.length;
+                    var html = '';
+                    for (var i = 0; i < len; i++) {
+                        if (ret.data.result[i]['style'] != 1) {
+                            // 需要密码收费
+
+                            if (ret.data.result[i]['type'] == 4 && ret.data.result[i]['begintime'] == '回顾') {
+                                html += '<div class="list" tapmode onclick="audioclassguide(' + ret.data.result[i]['id'] + ');" >';
+                            }else{
+                                html += '<div class="list" tapmode onclick="openguide(' + ret.data.result[i]['id'] + ');" >';
+                            }
+                        }else if (ret.data.result[i]['type'] == 4 && ret.data.result[i]['begintime'] == '回顾'){
+                            html += '<div class="list" tapmode onclick="openaudioclass(' + ret.data.result[i]['id'] + ');" >';
+                        }else if (ret.data.result[i]['type'] != 1) {
+                            // 视频
+                            if (ret.data.result[i]['begintime'] == '回顾') {
+                                html += '<div class="list" tapmode onclick="openvideohistory('+ret.data.result[i]['id']+');">';
+                            }else {
+                                html += '<div class="list" tapmode onclick="openvideo('+ret.data.result[i]['id']+');">';
+                            }
+
+                        } else if (ret.data.result[i]['style'] == 1 && ret.data.result[i]['begintime'] == '回顾') {
+                            //不收费回顾
+                            html += '<div class="list" tapmode onclick="classroomhistory(' + ret.data.result[i]['id'] + ');" >';
+                        } else {
+                            html += '<div class="list" tapmode onclick="classroom(' + ret.data.result[i]['id'] + ');" >';
+                        }
+                        html += '<img src="' + ret.data.result[i]['thumb'] + '" />' +
+                            '<div class="right">' +
+                            '<h5 class="title" id="title">' + ret.data.result[i]['name'] + '</h5>' +
+                            '<p >' + ret.data.result[i]['listtitle'] + '</p>'
+                        if (ret.data.result[i]['begintime'] == '回顾') {
+                            html += '<p>'
+                        } else {
+                            html += '<p>' + '<span class="time">' + ret.data.result[i]['begintime'] + '</span>';
+                        }
+                        var count = ret.data.counts[ret.data.result[i]['id']];
+                        if (count > 300) {
+                            //    html +='<span class="Browsing"><img src="../img/eyes.png" /> '+count+'</span>';
+                            html += '<span class="Browsing">' + count + ' 人在学</span>';
+                        }
+                        if (ret.data.result[i]['style'] == 1) {
+                            html += '<span class="free">免费</span></p>';
+                        } else if (ret.data.result[i]['style'] == 2) {
+                            html += '<span class="free">密码</span></p>';
+                        } else {
+                            if (ret.data.result[i]['limitpaying'] == 1) {
+                                html += '<span style="float:right;"><b  class="freetime">￥' + ret.data.result[i]['price'] + '</b><b class="freebth">限免</b></span></p>';
+                            } else {
+                                //    if(systemtype == 'ios' && iswxpay == 0){
+                                //         html += '<span class="free">'+ret.data.result[i]['price']+'牛币</span></p>';
+                                //    }else{
+                                html += '<span class="free">￥' + ret.data.result[i]['price'] + '</span></p>';
+                                //    }
+
+                            }
+
+                        }
+                        html += '</div>' +
+                            '</div>';
+                    }
+                    $api.append($api.byId('Tolist'), html);
+                    if (len < 10) {
+                        var html2 = '';
+                        html2 += "<div class='lasttitle'>暂无更多课程</div>";
+                        $api.append($api.byId('Tolist'), html2);
+                        loading = true;
+                    }
+                }
+            }
+            api.refreshHeaderLoadDone();
+        });
+    }
+
+    //跳转
+    function audioto() {
+        var audioid = $api.getStorage('audioid');
+        if (audioid) {
+            id = audioid;
+        } else {
+            id = 2774;
+        }
+        var url = $('#Tolist').attr('data-url')
+        $api.setStorage('url', url);
+        var audiokey = $api.getStorage('audiokey')
+        if (audiokey == '0') {
+            api.openWin({
+                name: 'sigleaudio',
+                url: './sigleaudio.html',
+                pageParam: {
+                    name: 'test',
+                    id: audioid
+                },
+                bgColor: 'rgba(0,0,0,0)',
+                animation: {
+                    type: "movein", //动画类型（详见动画类型常量）
+                    subType: "from_bottom", //动画子类型（详见动画子类型常量）
+                    duration: 100
+                }
+            })
+        }else{
+            api.openWin({
+                name: 'audioclass',
+                url: './audioclass.html',
+                pageParam: {
+                    name: 'test',
+                    specialid: audioid
+                },
+                bgColor: 'rgba(0,0,0,0)',
+                animation: {
+                    type: "movein", //动画类型（详见动画类型常量）
+                    subType: "from_bottom", //动画子类型（详见动画子类型常量）
+                    duration: 100
+                }
+            })
+        }
+        setTimeout('api.closeWin({name: "Management"});', '200');
+    }
+    //直播页面详情跳转
+    function classroom(id) {
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+        if (ygtuserinfo.id == -1) {
+            api.openWin({
+                name: 'loginframe',
+                url: './loginframe.html',
+                animation: {
+                    type: 'none'
+                }
+            });
+
+        } else {
+            api.openWin({
+                name: 'classroom',
+                url: './classroom.html',
+                pageParam: {
+                    id: id
+                },
+                reload:true,
+                animation: {
+                    type: 'none'
+                }
+            })
+        }
+    }
+
+    function openguide(id) {
+        api.openWin({
+            name: 'guide',
+            url: './guide.html',
+            pageParam: {
+                name: 'test',
+                id: id
+            },
+            reload:true,
+            animation: {
+                type: 'none'
+            }
+        });
+    }
+    //打开音频
+    function openaudioclass(id) {
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+        var url = $('#Tolist').attr('data-url')
+        $api.setStorage('url', url);
+        if (ygtuserinfo.id == -1) {
+            api.openWin({
+                name: 'loginframe',
+                url: './loginframe.html',
+                animation: {
+                    type: 'none'
+                }
+            });
+
+        }else {
+            api.openWin({
+                name: 'sigleaudio',
+                url: './sigleaudio.html',
+                pageParam: {
+                    id: id
+                },
+                animation: {
+                    type: 'none'
+                },
+                reload:true
+            });
+        }
+
+    }
+
+    //音频付费
+    function Specialguide(id) {
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+        if (ygtuserinfo.id == -1) {
+            api.openWin({
+                name: 'loginframe',
+                url: './loginframe.html',
+                animation: {
+                    type: 'none'
+                }
+            });
+
+        }else {
+            api.openWin({
+                name: 'Specialguide',
+                url: './Specialguide.html',
+                pageParam: {
+                    id: id
+                },
+                reload:true
+            });
+        }
+
+    }
+    function classroomhistory(id) {
+        // api.confirm({
+        //     msg: '为了响应国家使命政策，观看视频前，请先完善个人信息',
+        //     buttons: ['取消', '去完善']
+        // }, function(ret, err) {
+        //     if (ret) {
+        //         if (ret.buttonIndex !=1 ) {
+        //             api.openWin({
+        //               name: 'member',
+        //               url: './member.html',
+        //               pageParam: {name: 'test'},
+        //               bgColor: 'rgba(0,0,0,0)',
+        //               animation:{
+        //                 type:'none'
+        //               }
+        //             })
+        //             // api.openWin({
+        //             //   name: 'classroomhistory',
+        //             //   url: './classroomhistory.html',
+        //             //   pageParam: {id:id}
+        //             // })
+        //         }
+        //     }
+        // });
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+        if (ygtuserinfo.id == -1) {
+            api.openWin({
+                name: 'loginframe',
+                url: './loginframe.html',
+                animation: {
+                    type: 'none'
+                }
+            });
+
+        } else {
+            api.openWin({
+                name: 'classroomhistory',
+                url: './classroomhistory.html',
+                pageParam: {
+                    id: id
+                }
+            });
+        }
+
+    }
+
+    // 打开视频
+    function openvideo(id) {
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+        if (ygtuserinfo.id == -1) {
+            api.openWin({
+                name: 'loginframe',
+                url: './loginframe.html',
+                animation: {
+                    type: 'none'
+                }
+            });
+
+        }else {
+            api.openWin({
+                name: 'classroomvide',
+                url: './classroomvide.html',
+                pageParam: {
+                    id: id
+                }
+            });
+        }
+
+    }
+
+    // 打开回顾视频
+    function openvideohistory(id) {
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+        if (ygtuserinfo.id == -1) {
+            api.openWin({
+                name: 'loginframe',
+                url: './loginframe.html',
+                animation: {
+                    type: 'none'
+                }
+            });
+
+        }else {
+            api.openWin({
+                name: 'clsromvdohistory',
+                url: './clsromvdohistory.html',
+                pageParam: {
+                    id: id
+                }
+            });
+        }
+
+    }
+    //打开直播间课程
+</script>
+
+</html>

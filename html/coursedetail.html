@@ -1,0 +1,457 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+    <title>医院绩效方案实务设计第十期－优质医管活动，尽在医管通！</title>
+    <meta name="keywords" content="医院绩效方案实务设计第十期,医管通,医院管理" />
+    <meta name="description" content="医院绩效方案实务设计第十期,医院绩效方案实务设计第十期上海站适合人员院长/副院长、医院中高层干部、医的院财务部、人力资源部、绩效办、运营办、信息科等科室管理人员，其他对医院绩效管理课题感兴趣的同仁。为确保绩效方案有效落地，建议每家医院安排（人力资源+财务）一同前来听课。课程背景随着医院规模的不断扩大，医院现行绩效管理模式已经不">
+
+    <link rel="stylesheet" href="http://static.hmwis.com/www2018/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://static.hmwis.com/www2018/static/css/animate.min.css">
+    <link rel="stylesheet" href="/static/css/font-awesome.min.css">
+    <link rel="stylesheet" href="http://static.hmwis.com/www2018/static/css/common.css">
+    <!--选用-->
+    <link rel="stylesheet" href="http://static.hmwis.com/www2018/static/css/swiper.min.css">
+    <link rel="stylesheet" href="http://static.hmwis.com/www2018/static/css/index.css">
+
+    <link href='http://static.hmwis.com/www/statics/js/fullcalendar/fullcalendar.css' rel='stylesheet' />
+
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+    header {
+        position: fixed;
+        width: 100%;
+        height: 84px;
+        background-color: #000;
+        width: 100%;
+        z-index: 3;
+        top: 80px;
+    }
+
+    header h1 {
+        width: 100%;
+        height:84px;
+        line-height: 84px;
+        text-align: center;
+        color: #fff;
+        font-size: 20px;
+    }
+        .header .return{display: block; width: 30px; height: 30px; position: absolute; margin:10px 0; background: url("/static/img/return.png"); background-size: 100% 100%;}
+
+        .itemBanner{position: relative;top: 50px;}
+        .myeventcontent {font-size:16px;}
+        .myeventcontent ul {list-style-type: disc;}
+        .myeventcontent ol {list-style-type: decimal;}
+        .fc-day-grid-event .fc-content {
+            word-wrap: break-word;
+            word-break: break-all;
+            white-space: pre-wrap !important;
+        }
+        .fc-more-popover {
+            z-index: 3;
+            width: 450px;
+        }
+        .scrollFixed {
+            z-index:1;
+        }
+        /* 中等屏幕（桌面显示器，小于等于 992px） */
+        @media (max-width: 992px) {
+            .fc-more-popover {
+                width: 450px;
+            }
+        }
+        /* 小屏幕（平板，小于等于 768px） */
+        @media (max-width: 768px) {
+            .fc-more-popover {
+                width: 350px;
+            }
+
+        }
+    </style>
+</head>
+<body>
+<header class='header' id="header">
+    <a href="/index/apps/index" class="return"></a>
+    <h1 class="name"><i class="ico ico-list-w"></i>公开课详情</span></h1>
+</header>
+
+<!-- 主体 -->
+<section>
+    <div class="container-fluid itemBanner" style="background-image: url(http://img4.hmwis.com/2018/02/06/20/5a799951491dc.jpg);">
+    </div>
+    <div class="container-fluid bg-f6f xs-full">
+        <div class="container xs-full">
+            <div class="row">
+                <div class="col-md-4 col-sm-12 pull-right xs-clearFix">
+                    <div class="bg-fff ofh" id="conditionFixed">
+                        <div class="text-center mt20 signupButb" id="signupBut">
+                            <div class="fs16 col-ff9">
+                                <span class="fa fa-minus-circle fs26"></span>
+                                <p class="mt5">报名已截止</p>
+                            </div>
+                        </div>
+                        <hr class="mt30"/>
+                        <div class="itemInfo">
+                            <div class="text-center countdown"><span id="countdown">活动倒计时</span></div>
+                            <ul id="courseinfo">
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8 col-sm-12">
+                    <div class="bg-fff  itemContent">
+                        <div class="columnHead mt30">
+                            <span class="item fs16 col-257">活动内容</span>
+                        </div>
+                        <div class="content myeventcontent" id="myeventcontent">
+
+                        </div>
+                        <div class="columnHead"><span class="item fs16 col-257">日程安排</span></div>
+                        <div class="content" style="overflow:visible;" id="fullcalendarcontent">
+
+                        </div>
+                        <div class="columnHead"><span class="item fs16 col-257">嘉宾/讲师</span></div>
+                        <div class="content">
+                            <ul class="lecturer ofh" id="teacherul">
+                            </ul>
+                        </div>
+                        <div class="columnHead"><span class="item fs16 col-257">特色教学</span></div>
+                        <div class="content">
+                            <img src="http://static.hmwis.com/www2017/static/img/tese.png" class="img-responsive" alt="">
+                        </div>
+                        <div class="columnHead"><span class="item fs16 col-257">学院简介</span></div>
+                        <div class="content">
+                            <div class="row">
+                                <div class="col-md-4 pull-right hidden-xs">
+                                    <img src="http://static.hmwis.com/www2017/static/img/logo-xy.png" class="img-responsive mt30" alt="">
+                                </div>
+                                <div class="col-md-8">
+                                    <p>每个人都有一颗向好之心！</p>
+                                    <p>医管通学院是国内最有影响力的医院管理学习与分享平台。</p>
+                                    <p>医管通学院专注为<strong>1000万＋</strong>医疗从业人员提供实操、落地的课程培训服务，涵盖线下课程、线上课程以及医院内部定制课程。</p>
+                                    <p>截至2017年底，已培养<strong>30000+</strong>医院职能管理学员，覆盖北京、上海、广州、深圳等<strong>30</strong>多个城市。</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="columnHead"><span class="item fs16 col-257">学员来自</span></div>
+                        <div class="content">
+                            <img src="http://img2.hmwis.com/2017/03/09/16/58c1168e1f79a.png" class="img-responsive" alt="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mt50"></div>
+    </div>
+
+</section>
+<!-- /主体 -->
+
+
+<script src="http://static.hmwis.com/www2018/static/js/jquery.min.js"></script>
+<script src="http://static.hmwis.com/www2018/static/js/bootstrap.min.js"></script>
+<script src="http://static.hmwis.com/www2018/static/js/common.js"></script>
+
+
+
+<div class="modal fade baoMing" id="signupModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" id="baoMingmodalcontent">
+
+                <form action="" method="post" id="baomingform">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"><i class="fa fa-times"></i></span></button>
+                        <h4 class="modal-title" id="myModalLabel">报名信息</h4>
+                    </div>
+                    <div class="modal-body bmForm">
+                        <ul>
+                            <li>
+                                <span>手机号码</span>
+                                    <input type="text" placeholder="正确的手机号码" onblur="javascript:checkmobile()" value="" id="bmmobile" name="mobile" class="input_name" />
+                            </li>
+
+                            <li>
+                                <span>验证码</span>
+                                <input type="number" placeholder="短信验证码" name="sms" id="bmsms" class="input_name" onblur="javascript:checksms()" />
+                                <input type="button" value="获取验证码" class="button yzm fs14" id="getCodes" onclick="sendMessage()" />
+                            </li>
+                            <li>
+                                <span>联系人</span>
+                                <input type="text" onblur="javascript:checkusername()" value="" id="bmusername" name="username" class="input_name" placeholder="姓名" />
+                            </li>
+                            <li>
+                                <span>工作单位</span>
+                                <input type="text" onblur="javascript:checkcompany()" placeholder="工作单位全称" value="" id="bmcompany" name="company" class="input_name" />
+                            </li>
+                            <li>
+                                <span>电子邮箱</span>
+                                <input type="email" onblur="javascript:checkemail()" placeholder="电子邮箱地址" value="" id="bmemail" name="email" class="input_name" />
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="errorMsg pull-left" id="errormsg">
+                            <span class="fa fa-exclamation-circle" aria-hidden="true"></span>
+                            <em>错误消息</em>
+                        </div>
+                        <input type="hidden" name="courseid" id="bmcourseid" value="" />
+                        <input type="hidden" name="page_title" id="bmpagetitle" value="" />
+                        <input type="hidden" name="url_from" id="bmurlfrom" value="" />
+                        <button type="button" class="button button-gray" data-dismiss="modal">取消</button>
+                        <button type="button" id="bmformsubmit" class="button button-orange">提交报名</button>
+                        <!-- <button type="button" id="submitsignbtn" class="button button-caution button-rounded button-small">确认提交</button> -->
+                    </div>
+                </form>
+        </div>
+    </div>
+</div>
+<div class="modal bs-example-modal-sm fade"  id="signupTipModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"><i class="fa fa-times"></i></span></button>
+                <h4 class="modal-title">确认报名信息</h4>
+            </div>
+            <div class="modal-body">
+                <p class="text-center"><span class="fa fa-exclamation-circle col-ff9 fa-2x"></span></p>
+                <p class="ofh col-ff9">该课为线下实战公开课，提交后工作人员将会在一个工作日内与您取得联系！</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="button button-gray" data-dismiss="modal">取消报名</button>
+                <button type="button" class="button button-blue" id="submitsignbtn">确认提交报名</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal bs-example-modal-sm fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content text-center col-257 ptb50 ">
+            <p class="ofh"><span class="fa fa-check-circle fs30"></span></p>
+            <p class="ofh fs22">报名成功!</p>
+        </div>
+    </div>
+</div>
+<div class="modal bs-example-modal-sm fade" id="plansModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" style="">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content text-center col-257 ptb50 ">
+            <p class="ofh"><span class="fa fa-check-circle fs30"></span></p>
+            <p class="ofh fs22">报名成功!</p>
+        </div>
+    </div>
+</div>
+<script>
+    var msgurl = "{:url('api/sms/send')}";
+    var checksmsurl = "{:url('api/validate/check_sms_correct')}";
+</script>
+<script src="/static/js/activities.js"></script>
+<script src="http://static.hmwis.com/www/statics/js/fullcalendar/lib/moment.min.js"></script>
+<script src="http://static.hmwis.com/www/statics/js/fullcalendar/fullcalendar.js?1533203406"></script>
+<script src="http://static.hmwis.com/www/statics/js/fullcalendar/locale/zh-cn.js"></script>
+<script type="text/javascript">
+
+apiready = function() {
+    var header = $api.byId('header');
+    $api.fixStatusBar(header);
+}
+    var courseid = api.pageParam.id;
+    $(function(){
+        $.post(
+            '/api/www/course/getDetail?id='+courseid,
+            {},
+            function(data) {
+                console.log(data);
+                $('title').html(data.data.titles.title);
+                // 活动倒计时
+                var seti = window.setInterval(function(){ShowCountDown(data.data.course.begintime, data.data.course.endtime,'countdown');}, interval);
+                // 活动信息
+                var courseinfo = '<li><h1 class="itemTitle">';
+                if (data.data.course.is_selfbusis == 1) {
+                    courseinfo += '<span><em>YGT</em>自营</span>';
+                }
+                courseinfo += data.data.course.title+'</h1></li>';
+                courseinfo += '<li><i class="fa fa-calendar fa-fw"></i><em>'+data.data.course.begintime+'至'+
+                    data.data.course.endtime.substr(0,16)+'</em></li>';
+                courseinfo += '<li><i class="fa fa-flag  fa-fw"></i><em>'+data.data.course.shortaddress+'</em></li>' +
+                    '<li><i class="fa fa-map-marker  fa-fw"></i><em>'+data.data.course.address+'</em></li>';
+                if (data.data.course.scale > 0) {
+                    courseinfo += '<li><i class="fa fa-user  fa-fw"></i><em>限额'+data.data.course.scale+'人</em></li>';
+                }else {
+                    courseinfo += '<li><i class="fa fa-user  fa-fw"></i><em>不限</em></li>';
+                }
+                $('#courseinfo').html(courseinfo);
+                // 课程内容
+                $('#myeventcontent').html(data.data.course.intro);
+
+                // 日程安排
+                if (data.data.course.lists > 0) {
+                    $('#fullcalendarcontent').fullCalendar({
+                        customButtons: {
+                            myCustomButton: {
+                                text: '开课日期',
+                                click: function() {
+                                    $('#fullcalendarcontent').fullCalendar('gotoDate', data.data.course.begintime.substr(0,10));
+                                }
+                            }
+                        },
+                        header: {
+                            left:   'title',
+                            center: '',
+                            right:  'myCustomButton  prev,next'
+                        },
+                        locale: 'zh-cn',
+                        defaultDate: data.data.course.begintime.substr(0,10),
+                        editable: false,
+                        eventLimit: 2,
+                        fixedWeekCount:false,
+                        height:'auto',
+                        contentHeight: '100px',
+                        timezone:'Asia/Shanghai',
+                        eventLimitText: '更多',
+                        timeFormat:'hh:mm',
+                        events:data.data.extend.plans
+                    });
+                }else {
+                    var plans = '';
+                    var plansobj = data.data.extend.plans;
+                    firstplan = {};
+                    for (tfk in plansobj) {
+                        firstplan = plansobj[tfk];
+                        break;
+                    }
+                    if (firstplan['v'].length > 0) {
+                      plans += '<ul class="schedule"><li><em class="s">STAR</em></li>'+
+                      '<li><span class="deta pull-left">' +
+                          '<i class="fa fa-calendar"></i>' + firstplan['d'] + '</span>'+
+                      for (fk in firstplan['v']) {
+                          '<p class="pull-right"><span class="time fl">'+firstplan['v'][fk]['time']+'</span>'+
+                          '<span class="content pull-right">' + firstplan['v'][fk]['content'].replace(/\\r\\n/g, '<br/>') + '</span>'
+                           +'</p>'
+                      }
+                      +'</li>'+
+
+                      for (pk in plansobj) {
+                            '<li><span class="deta pull-left">' +
+                              '<i class="fa fa-calendar"></i>' + plansobj[pk]['d'] + '</span>'+
+                          for (pvk in plansobj[pk]['v']) {
+                              '<p class="pull-right"><span class="time fl">'+plansobj[pk]['v'][pvk]['time']+'</span>'
+                               +'<span class="content pull-right">' + plansobj[pk]['v'][pvk]['content'].replace(/\\r\\n/g, '<br/>') + '</span>'
+                              + '</p>'
+                          }
+                        + '</li>';
+                      }
+
+                      // plans += '<li><em class="e">END</em></li></ul>';
+                      //   plans += '<ul class="schedule"><li><em class="s">STAR</em></li>';
+                      //   plans += '<li><span class="deta pull-left">' +
+                      //       '<i class="fa fa-calendar"></i>' + firstplan['d'] + '</span>';
+                      //   for (fk in firstplan['v']) {
+                      //       plans += '<p class="pull-right"><span class="time fl">'+firstplan['v'][fk]['time']+'</span>';
+                      //       plans += '<span class="content pull-right">' + firstplan['v'][fk]['content'].replace(/\\r\\n/g, '<br/>') + '</span>';
+                      //       plans += '</p>'
+                      //   }
+                      //   plans += '</li>';
+                      //
+                      //   for (pk in plansobj) {
+                      //       plans += '<li><span class="deta pull-left">' +
+                      //           '<i class="fa fa-calendar"></i>' + plansobj[pk]['d'] + '</span>';
+                      //       for (pvk in plansobj[pk]['v']) {
+                      //           plans += '<p class="pull-right"><span class="time fl">'+plansobj[pk]['v'][pvk]['time']+'</span>';
+                      //           plans += '<span class="content pull-right">' + plansobj[pk]['v'][pvk]['content'].replace(/\\r\\n/g, '<br/>') + '</span>';
+                      //           plans += '</p>'
+                      //       }
+                      //       plans += '</li>';
+                      //   }
+                      //
+                      //   plans += '<li><em class="e">END</em></li></ul>';
+                    }
+                    $('#fullcalendarcontent').html(plans);
+
+
+                }
+
+                // 讲师
+                var teachers = '';
+                for (tck in data.data.teachers) {
+                    teachers += '<li>' +
+                        '<img src="'+data.data.teachers[tck]['pic']+'" alt="'+data.data.teachers[tck]['name']+'">\n' +
+                        '<div class="pull-left ofh lecturer-con">' +
+                        '<p class="ofh"><b>'+data.data.teachers[tck]['name']+'</b><em>'+data.data.teachers[tck]['position']+'</em></p>' +
+                        '<div class="lecturer-info">'+data.data.teachers[tck]['intro']+'</div>' +
+                        '</div></li>';
+                }
+                $('#teacherul').html(teachers);
+
+            }
+        );
+
+        // 检查是否登录，是否报名
+        $.post(
+            '/api/www/course/checkEnrol',
+            {'courseid':courseid},
+            function(data){
+                console.log(data);
+                // 报名状态
+                var baom = '';
+                if (data.data.isenrol == 1) {
+                    baom = '<div class="fs16 col-257">' +
+                        '<span class="fa fa-check-circle fs26"></span>' +
+                        '<p class="mt5">你已报名</p>' +
+                        '</div>';
+                }else if (data.data.isend == -2) {
+                    baom = '<div class="fs16 col-ff9">' +
+                        '<span class="fa fa-minus-circle fs26"></span>' +
+                        '<p class="mt5">活动已结束</p>' +
+                        '</div>';
+                }else if (data.data.isend == -1) {
+                    baom = '<div class="fs16 col-ff9">' +
+                        '<span class="fa fa-minus-circle fs26"></span>' +
+                        '<p class="mt5">报名已截止</p>' +
+                        '</div>';
+                }else {
+                    baom = '<a href="javascript:void(0)" class="button fs16" data-toggle="modal" data-target="#signupModal">立即报名</a>';
+                }
+                $('#signupBut').html(baom);
+
+                if (data.data.isend == 0) {
+                    if (data.data.islogin == 1) {
+                        if (data.data.user.mobile != '') {
+                            $('#bmmobile').attr('readonly', 'readonly');
+
+                        }
+                        $('#bmmobile').val(data.data.user.mobile);
+
+                        $('#bmsms').parents('li').remove();
+                        $('#bmusername').val(data.data.user.nickname);
+                        $('#bmcompany').val(data.data.user.position);
+                        $('#bmemail').val(data.data.user.email);
+                    }
+                    $('#bmcourseid').val(data.data.course.id);
+                    $('#bmpagetitle').val(data.data.course.title);
+                    $('#bmurlfrom').val('http://member.ygt.cm/index/apps/coursedetail/id/'+data.data.course.id);
+                }else {
+                    $('#baoMingmodalcontent').html('<div class="w100 tc fs18">报名已结束</div>');
+                }
+
+            });
+    });
+
+</script>
+
+<script>
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?bc553c8e2d3a3621cc930c046015b193";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+</body>
+</html>

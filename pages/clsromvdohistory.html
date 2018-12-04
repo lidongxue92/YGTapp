@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>直播间回顾</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/ygtcommon.css">
+    <script type="text/javascript" src="../js/jweixin.js"></script>
+    <script type="text/javascript" src="../script/api.js"></script>
+</head>
+<style type="text/css">
+body{margin: 0;background: #fafafa; }
+    .header{padding-top: 30px;position: fixed;width: 100%;overflow: hidden;min-height: 240px;top: 0;width: 100%;}
+    .header .bgimg{
+        position: absolute;
+        width: 200%;
+        height: 100%;
+        top: 0;
+        left: -50%;
+        filter: url(blur.svg#blur); /* FireFox, Chrome, Opera */
+        -webkit-filter: blur(10px); /* Chrome, Opera */
+        -moz-filter: blur(10px);
+        -ms-filter: blur(10px);
+            filter: blur(10px);
+        filter: progid:DXImageTransform.Microsoft.Blur(PixelRadius=10, MakeShadow=false);
+     }
+     .header .back{position: absolute;width: 50px;height: 25px;display: inline-block;left: 10px;background:url('../img/back_light.png');background-size: auto 100%;z-index: 5555;background-repeat: no-repeat;top: 45px;}
+     .header .share{position: absolute;width:50px;height: 25px;display: inline-block;right: 10px;background:url('../img/share.png');background-size: auto 100%;z-index: 55555;background-repeat: no-repeat;top: 40px;background-position: right;}
+     #viedeplayer{width: 100%;height: 100%;}
+    .header p{color: #fff;font-size: 1.2rem;text-align: left;position: relative;margin-top: 30px;width: 90%;margin-left: 5%;}
+    /*分享*/
+    .sharetoast{position: fixed;width: 100%;left: 0;background: #f4f4f4;z-index: 113;bottom: 0;padding-top: 20px;display:none;min-height: 180px;}
+    .sh{display: block;}
+    .sharetoast h5{color:#666;text-align: center;font-weight: normal;padding: 0;margin: 0;font-size: 1rem;}
+    .sharetoast li{display:inline-block;padding: 0 20px;text-align: center;padding-bottom: 10px;margin-top: 20px;}
+    .sharetoast li p{margin-top: 10px;color: #999;}
+    .sharetoast li img{width: 3rem;}
+
+    .sharetoast #opentool{background: #fff;text-align: center;line-height: 50px;position: absolute;bottom: 0;width: 100%;height: 50px;}
+    .bg{position: absolute;width: 100%;height: 100%;top: 0;left: 0;background: rgba(0,0,0,.3);z-index: 111;display:none;}
+    .loading{background: #fff;}
+
+    section{margin-top: 270px;}
+    section h5{margin: auto;padding: 0;line-height: 55px;text-align: center;position: fixed;width: 100%;z-index: 4555;background: #fff;font-size: 14px;color: #999;font-weight: normal;}
+    #img{overflow-y: auto;position: relative;top: 55px;}
+    #img img{width: 100%;margin-top: 10px;}
+    @media screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+        section{margin-top: 290px;}
+    }
+</style>
+
+<body ontouchstart>
+    <header class="top" id="header" >
+          <h1>
+              <span class="back" onclick="goback();"></span>
+              <span class="title" id="title">直播间</span>
+              <span class="share" id="share"></span>
+          </h1>
+
+    </header>
+    <div class="swiper-container">
+
+    </div>
+    <section>
+        <h5>PPT课件</h5>
+        <div id="img"></div>
+    </section>
+    <div class='sharetoast'>
+        <h5>邀请好友一起来听课吧~</h5>
+        <ul>
+            <li id='share_friend' onclick="sharefriend();">
+                  <a href="javascript:void(0)" id="shareFriends">
+                      <img src="../img/frend.png" />
+                      <p>微信好友</p>
+                  </a>
+              </li>
+              <li id="share" onclick="sharefriends();">
+                  <a href="javascript:void(0)" id="shareCFriends">
+                      <img src="../img/frends.png" />
+                      <p>朋友圈</p>
+                  </a>
+              </li>
+              <li id="share" onclick="poster();">
+                  <a href="javascript:void(0)" id="Invitation">
+                      <img src="../img/Invitation.png" />
+                      <p>邀请卡</p>
+                  </a>
+              </li>
+        </ul>
+        <p id='opentool'>取消</p>
+    </div>
+    <div class="loading">
+        <span>
+            <img src="../img/loading.gif" />
+        </span>
+    </div>
+    <script src="../js/lib/jquery-2.1.4.js"></script>
+    <script src="../js/jquery-weui.js"></script>
+    <script src="../js/swiper.min.js" charset='utf-8'></script>
+    <script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+
+    var sharetitle = '';
+    var sharedesc = '';
+    var shareicon = '';
+    var shareurl ='';
+    var coverImg = '';
+    var toph = '';
+    apiready = function() {
+        // 设置状态栏
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled: false
+        });
+        loaddata();
+        var jsfun = 'funcGoto();';
+       api.execScript({ name: 'audioclass', script: jsfun });
+        api.addEventListener({
+            name: 'keyback'
+        }, function(ret, err) {
+            closeWin();
+        });
+
+        api.addEventListener({
+            name:'viewappear'
+        }, function(ret, err){
+            var time = new Date().getTime();
+            timebegin= Math.floor(time/1000);
+            // alert(timebegin);
+        });
+        $(".loading").show();
+        api.addEventListener({
+            name:'pause'
+        }, function(ret, err){
+            var time = new Date().getTime();
+            timend= Math.floor(time/1000);
+            var timelog = (timend)-(timebegin);
+            classroomid = api.pageParam.id;
+            api.ajax({
+                url: apihost + '/api/wtk/classroom/setlog',
+                method: 'post',
+                headers: {
+                    'TOKEN':ygtuserinfo.token
+                },
+                data: {
+                    values: {
+                        classroomid:classroomid,
+                        specialid:0,
+                        timelength:timelog,
+                        uid:ygtuserinfo.id
+                    }
+                }
+            },function(ret, err){
+                console.log(JSON.stringify(ret));
+                console.log(JSON.stringify(err));
+                if (ret) {
+                    console.log( JSON.stringify( ret ) );
+                } else {
+                    console.log( JSON.stringify( err ) );
+                }
+            });
+        });
+    };
+        // 控制播放
+        function video(videopath) {
+
+            var moviePlayer = api.require('moviePlayer');
+
+			toph = $api.offset($api.byId('header')).h
+            moviePlayer.open({
+                rect: {
+                    x: 0,
+                    y: toph,
+                    w: api.frameWidth,
+                    h: 200
+                },
+                styles: {
+                    head: {
+                        bg: 'transparent',
+                        height: 44,
+                        y: 20,
+                        title: {
+                            size: 0,
+                            color: '#000',
+                            width: 40,
+                            leftMargin: 10
+                        },
+                        backSize: 0,
+                        backImg: 'widget://img/back.png',
+                    },
+                    foot: {
+                        bg: 'rgba(0,0,0,0.5)',
+                        height: 44,
+                        palyBtn: {
+                            size: 30,
+                            playImg: 'widget://img/play.png',
+                            pauseImg: 'widget://img/pause.png',
+                            marginLeft: 5
+                        },
+                        currentTimeLabel: {
+                            textSize: 14,
+                            textColor: "#fff",
+                            textWidth: 43,
+                            marginLeft: 5
+                        },
+                        seekBar: {
+                            sliderImg: 'widget://img/circle.png',
+                            sliderW: 20,
+                            sliderH: 20,
+                            progressColor: '#696969',
+                            progressSelected: '#ff9913',
+                            marginLeft: 10,
+                            marginRight: 10
+                        },
+                        totalTimeLabel: {
+                            textSize: 14,
+                            textColor: "#fff",
+                            textWidth: 43,
+                            marginRight: 5
+                        },
+                        fullscreenBtn: {
+                            size: 30,
+                            verticalImg: 'widget://img/all.png',
+                            horizontalImg: 'widget://img/all.png',
+                        }
+                    }
+                },
+                path: videopath,
+                autoPlay: true,
+                fixed: true
+            }, function(ret, err) {
+                if (ret) {
+                    console.log(JSON.stringify(ret));
+                    api.setStatusBarStyle({
+                        style: 'dark',
+                    });
+                }
+            });
+        }
+
+        function loaddata() {
+
+            var classroomid = api.pageParam.id;
+            console.log('这是视频id' + classroomid);
+            api.ajax({
+                    url: apihost + '/api/wtk/classroom/getinfo',
+                    method: 'post',
+                    headers: {
+                        'TOKEN': ygtuserinfo.token
+                    },
+                    data: {
+                        values: {
+                            classroomid: classroomid,
+                            uid: ygtuserinfo.id
+                        }
+                    }
+                },
+                function(data, err) {
+                    console.log(JSON.stringify(data) + '直播的数据');
+                    //console.log(JSON.stringify(err));
+                    $(".loading").hide();
+                    if (data) {
+                        if (data.code == 1) {
+                            time = data.time;
+                            $("#title").html(data.data.info.name);
+                            videoid = $api.getStorage('videoid');
+                            position = $api.getStorage('position');
+                            var curposition = $api.getStorage('curposition');
+
+                            video(data.data.info.videourl);
+                            //video();
+                            var moviePlayer = api.require('moviePlayer');
+                            if (curposition != undefined && curposition[api.pageParam.id] != undefined) {
+
+                                moviePlayer.seekTo({
+                                    position: curposition[api.pageParam.id]
+                                });
+                            }else {
+                                // moviePlayer.seekTo({
+                                //     position: 1
+                                // });
+                                //setTimeout(function(){moviePlayer.pause();}, 1300);
+
+
+                            }
+                            // 分享信息
+                            sharetitle = data.data.titles.title;
+                            sharedesc = data.data.titles.description;
+                            shareurl = data.data.titles.shareurl;
+                            var shareimg = data.data.titles.shareimg;
+                            img = shareimg.split('?')[0];
+                            shareicon = img;
+                            // 处理swip图片
+                            var photos = data.data.photos;
+                            var plen = photos.length;
+                            var phtml = '';
+
+                            if (plen > 0) {
+                                for (var i = 0; i < plen; i++) {
+                                    phtml += '<img src="' + photos[i]['photo'] + '" alt="" class="swiper-lazy" />'
+                                }
+                                $('#img').html(phtml);
+                            }else {
+                                $('#img').html('<div style="width:100%;text-align:center;">暂无课件</div>');
+                            }
+                        }
+                    }else{
+                        if (err.statusCode == 401) {
+                            api.openFrame({
+                                name: 'loginframe',
+                                url: './loginframe.html',
+                                rect: {
+                                    marginLeft:0,    //相对父 window 左外边距的距离
+                                    marginTop:0,    //相对父 window 上外边距的距离
+                                    marginBottom:0,    //相对父 window 下外边距的距离
+                                    marginRight:0
+                                },
+                                pageParam: {
+
+                                },
+                                bounces: true,
+                                vScrollBarEnabled: false,
+                                hScrollBarEnabled: false
+                            });
+                        }
+                    }
+                });
+        }
+
+        //关闭
+        function closeWin() {
+            var moviePlayer = api.require('moviePlayer');
+            moviePlayer.getCurrentPosition(function(ret) {
+
+                if (ret.position) {
+
+                    var position = Math.floor(ret.position);
+                    var oldposition = $api.getStorage('curposition');
+
+                    if (oldposition == undefined) {
+                        oldposition = {};
+                    }
+
+                    oldposition[api.pageParam.id]=position;
+                    $api.setStorage('curposition', oldposition);
+
+                    console.log(JSON.stringify(oldposition));
+                }
+
+            });
+            api.closeWin({
+                name: 'clsromvdohistory'
+            });
+
+            // api.closeToWin({
+            //     name: 'root',
+            //     animation: {
+            //         type: 'none'
+            //     }
+            // });
+        }
+        //跳转页面
+        function classroom() {
+            var id = api.pageParam.id;
+            audioElm.pause();
+            api.openWin({
+                name: 'classroom',
+                url: './classroom.html',
+                pageParam: {
+                    id: id
+                }
+            })
+        };
+        //分享
+        $('#share').bind('click', function(e) {
+
+            $('#bg').show();
+            $(".sharetoast").addClass('sh');
+        });
+        //分享关闭
+        $('#opentool').bind('click', function(e) {
+            $('#bg').hide();
+            $(".sharetoast").removeClass('sh');
+        });
+
+        $('#bg').bind('click', function(e) {
+            $('#bg').hide();
+            $(".sharetoast").removeClass('sh');
+            $('#bg').hide();
+        });
+
+        //分享朋友
+        function sharefriend() {
+            var wx = api.require('wx');
+            wx.shareWebpage({
+                apiKey: '',
+                scene: 'session',
+                title: sharetitle,
+                description: sharedesc,
+                thumb: 'widget://img/shareicon.png', //http://img1.wtk.so/2016/08/19/57b6dbc29e7cc.png
+                contentUrl: shareurl
+            }, function(ret, err) {
+                if (ret.status) {
+                    alert('分享成功');
+                    $('#bg').hide();
+                    $(".sharetoast").removeClass('sh')
+                } else {
+                    alert('分享失败');
+                    console.log(JSON.stringify(err));
+                }
+            });
+        }
+
+        //分享朋友圈
+        function sharefriends() {
+            var wx = api.require('wx');
+            wx.shareWebpage({
+                apiKey: '',
+                scene: 'timeline',
+                title: sharetitle,
+                description: sharedesc,
+                thumb: 'widget://img/shareicon.png',
+                contentUrl: shareurl
+            }, function(ret, err) {
+                if (ret.status) {
+                    alert('分享成功');
+                    $('#bg').hide();
+                    $(".sharetoast").removeClass('sh')
+                } else {
+                    alert('分享失败');
+                    console.log(JSON.stringify(err));
+                }
+            });
+        }
+        //邀请卡
+        function poster() {
+            classroomid = api.pageParam.id;
+            api.openWin({
+                name: 'poster',
+                url: './poster.html',
+                pageParam: {
+                    id: classroomid,
+                    objecttype:1
+                },
+                animation: {
+                    type: 'none'
+                }
+            });
+        }
+
+        //返回
+        function goback() {
+
+           var time = new Date().getTime();
+           timend= Math.floor(time/1000);
+           var timelog = (timend)-(timebegin);
+           classroomid = api.pageParam.id;
+           api.ajax({
+               url: apihost + '/api/wtk/classroom/setlog',
+               method: 'post',
+               headers: {
+                   'TOKEN':ygtuserinfo.token
+               },
+               data: {
+                   values: {
+                       classroomid:classroomid,
+                       specialid:0,
+                       timelength:timelog,
+                       uid:ygtuserinfo.id
+                   }
+               }
+           },function(ret, err){
+               console.log(JSON.stringify(ret));
+               console.log(JSON.stringify(err));
+               if (ret) {
+                   console.log( JSON.stringify( ret ) );
+                   api.closeWin();
+               } else {
+                   console.log( JSON.stringify( err ) );
+               }
+           });
+
+        }
+    </script>
+</body>
+
+</html>

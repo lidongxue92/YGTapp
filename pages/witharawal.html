@@ -1,0 +1,133 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>医管通APP</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/ygtcommon.css">
+
+    <style type ="text/css">
+    #header .right{float: right;font-size: 12px;margin-right: 20px;}
+    .middle{text-align: left;margin-top: 75px;}
+    .middle h5{padding: 10px 0;background: #fff;}
+    .middle em{font-style: normal;color:#ddd;}
+    .middle .tab{display: inline-block;margin: 0 20px;color:#666;font-weight: normal;padding: 5px 0;font-size: 13px;}
+    .middle .active{color:#ff9913;border-bottom: 1px solid #ff9913;}
+    .middle .witharawal{margin-top: 10px;padding: 10px;font-size:13px;background: #fff;color:#999;}
+    .middle .witharawal .big{font-size:20px;color:#333;}
+    .middle .datalist{margin-top: 20px;background: #fff;}
+    .middle .datalist li{padding: 10px}
+    .middle .datalist li p{font-size:14px;color:#666;}
+    .middle .datalist li input{ width: calc(100% - 10px);border-radius: 5px;border: 1px solid #eee;margin-top: 5px;background: #f8f8f8;font-size: 12px;padding: 8px 0;padding-left: 10px;}
+    .middle .wx{display: none;}
+    .middle .button{width: calc(100% - 20px);display: block;line-height: 40px;background: #ff9913;color:#fff;text-align: center;margin-left:10px;border-radius: 5px;margin-top:20px;}
+    @media screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+        .middle {
+            margin-top: 95px;
+        }
+    }
+   </style>
+
+
+<body >
+    <header class="top" id="header">
+        <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span class="title">提现</span>
+            <span class="right" onclick="witharawallog();">记录</span>
+        </h1>
+    </header>
+    <div class="middle">
+            <h5>
+                <span class="tab active">银行卡转账</span>
+                <em>|</em>
+                <span class="tab wxtab" onclick="nomount();">微信提现</span>
+            </h5>
+            <div class="witharawal">
+                <p>您当前可提现金额</p>
+                <span class="big">0.00</span>&ensp;元
+            </div>
+            <ul class="datalist card">
+                <li>
+                  <p>本次提现金额</p>
+                  <input type="number" oninput="if(value.length>5)value=value.slice(0,5)">
+               </li>
+               <li>
+                  <p>户名</p>
+                  <input type="text" name="">
+               </li>
+               <li>
+                  <p>银行帐号</p>
+                  <input type="number"  oninput="if(value.length>19)value=value.slice(0,19)">
+               </li>
+               <li>
+                  <p>开户行</p>
+                  <input type="text" name="">
+               </li>
+            </ul>
+            <ul class="datalist wx">
+                <li>
+                   <p>本次提现金额</p>
+                   <input type="number" oninput="if(value.length>5)value=value.slice(0,5)">
+                </li>
+                <li>
+                   <p>收款方实名</p>
+                   <input type="text" name="">
+                </li>
+            </ul>
+            <a class="button">提现</a>
+        </div>
+</body>
+<script type="application/javascript" src="../script/api.js"></script>
+<script type="application/javascript" src="../js/lib/fastclick.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+        //  禁止左右滑动
+        $api.fixStatusBar(header);
+        var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    };
+
+    //关于我们
+    function witharawallog() {
+        api.openWin({
+            name: 'witharawallog',
+            url: './witharawallog.html',
+            pageParam: {
+                name: 'test'
+            },
+            bgColor: 'rgba(0,0,0,0)',
+            animation: {
+                type: 'none'
+            }
+        })
+    }
+
+    //暂未开通页面
+    function nomount() {
+        api.toast({
+            msg: '暂未开通请耐心等待',
+            duration: 2000,
+            location: 'middle'
+        });
+
+    }
+</script>
+
+</html>

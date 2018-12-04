@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>医管通APP</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/ygtcommon.css">
+
+    <style type ="text/css">
+    .middle{text-align: center;margin-top: 100px;}
+    .bgimg{background: url(../img/profitimg.jpg);width: 200px;height: 200px;background-size: 100%;margin: 0 auto;margin-top: 40px;}
+    .bgimg .title{position: relative;top: 50px;color:#666;font-size:14px;}
+    .bgimg .money{position: relative;top:60px;font-size:28px;}
+    .bgimg a{margin-top: 80px;display: inline-block;font-size:12px;color:#4a90e2;}
+    .profit{border-top: 1px solid #eee;margin-top: 20px;display: flex;}
+    .profit div{display: inline-block;width: 50%;padding: 5px 0;}
+    .profit div p{line-height: 25px;font-size:13px;color:#999;}
+    .profit div .money{font-size:16px;color:#333;}
+    .profit .left{border-right: 1px solid #eee;}
+    .witharawallog{border-top: 1px solid #eee;line-height: 50px;color:#4a90e2;}
+
+   </style>
+
+
+<body >
+    <header class="top" id="header">
+        <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span class="title">我的收益</span>
+        </h1>
+    </header>
+    <div class="middle">
+        <div class="bgimg">
+            <p class="title">可提现金额(元)</p>
+            <p class="money">0.00</p>
+            <a onclick="classlog()">查看明细</a>
+        </div>
+        <div class="profit">
+            <div class="left">
+                <p>累积收益(元)</p>
+                <p class="money">1.11</p>
+            </div>
+            <div class="right">
+                <p>当月收益(元)</p>
+                <p class="money">0.01</p>
+            </div>
+        </div>
+        <p class="witharawallog" onclick="witharawal()">
+            提现
+        </p>
+    </div>
+</body>
+<script type="application/javascript" src="../script/api.js"></script>
+<script type="application/javascript" src="../js/lib/fastclick.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+        //  禁止左右滑动
+        $api.fixStatusBar(header);
+        var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    };
+
+    //明细
+    function classlog() {
+        api.openWin({
+            name: 'classlog',
+            url: './classlog.html',
+            pageParam: {
+                name: 'test'
+            },
+            bgColor: 'rgba(0,0,0,0)',
+            animation: {
+                type: 'none'
+            }
+        })
+    }
+
+    //提现
+    function witharawal() {
+        api.openWin({
+            name: 'witharawal',
+            url: './witharawal.html',
+            pageParam: {
+                name: 'test'
+            },
+            bgColor: 'rgba(0,0,0,0)',
+            animation: {
+                type: 'none'
+            }
+        })
+    }
+
+</script>
+
+</html>

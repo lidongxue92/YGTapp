@@ -1,0 +1,121 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>医管通APP</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/ygtcommon.css">
+
+    <style type ="text/css">
+    #header .right{float: right;font-size: 12px;margin-right: 20px;}
+    .middle{text-align: left;margin-top: 75px;}
+    .list li{padding: 10px 15px;background: #fff;border-bottom: 1px solid #eee;}
+    .list li span{float:right;font-size:14px;position: relative;top: 10px;}
+    .list li span em{color:#ff9913;font-size:14px;padding: 0 5px;font-style: normal;}
+    .list .left{display: inline-block;width: 70%;font-size:12px;color:#666;}
+    .list .left h5{font-weight: normal;font-size:16px;}
+    .list .left p{font-size:12px;color:#999;}
+    @media screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+        .middle {
+            margin-top: 95px;
+        }
+    }
+   </style>
+
+
+<body >
+    <header class="top" id="header">
+        <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span class="title">提现明细</span>
+        </h1>
+    </header>
+    <div class="middle">
+        <ul class="list">
+            <li>
+                <div class="left">
+                    <h5>提现</h5>
+                    <p>2016.09.01 17:01</p>
+                </div>
+                <span><em>2</em>元</span>
+            </li>
+             <li>
+                <div class="left">
+                    <h5>提现</h5>
+                    <p>2016.09.01 17:01</p>
+                </div>
+                <span><em>2</em>元</span>
+            </li>
+        </ul>
+    <div>
+</body>
+<script type="application/javascript" src="../script/api.js"></script>
+<script type="application/javascript" src="../js/lib/fastclick.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+        //  禁止左右滑动
+        $api.fixStatusBar(header);
+        var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    };
+
+    //关于我们
+    function classlog() {
+        api.openWin({
+            name: 'ygt',
+            url: './classlog.html',
+            pageParam: {
+                name: 'test'
+            },
+            bgColor: 'rgba(0,0,0,0)',
+            animation: {
+                type: 'none'
+            }
+        })
+    }
+    //用户协议
+    function resAgreement() {
+        api.openWin({
+            name: 'resAgreement',
+            url: './resAgreement.html',
+            pageParam: {
+                name: 'test'
+            },
+            animation:{
+              type:'none'
+            }
+        });
+    }
+    //个人资料
+    function member() {
+        api.openWin({
+          name: 'member',
+          url: './member.html',
+          pageParam: {name: 'test'},
+          bgColor: 'rgba(0,0,0,0)',
+          animation:{
+            type:'none'
+          }
+        })
+    }
+
+
+</script>
+
+</html>

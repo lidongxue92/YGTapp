@@ -1,0 +1,545 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>直播列表</title>
+    <link rel="stylesheet" type="text/css" href="../res/css/light7.min.css" />
+    <link rel="stylesheet" type="text/css" href="../res/icon/iconfont.css">
+    <link rel="stylesheet" type="text/css" href="../css/ypynewapp.css">
+    <style type="text/css">
+    .rili{ width: 100%; height: 310px; background-color: #fff;}
+    </style>
+</head>
+<body style="">
+  <div class="page">
+    <!-- 标题栏 -->
+ <header class="bar bar-nav">
+   <button class="button button-link button-nav pull-left" onclick="api.closeWin()">
+      <i class="iconfont icon-shangyiye2"></i>
+      返回
+    </button>
+    <span class="button button-link pull-right" onclick="xiayue()">
+          下月 </span>
+          <span class="button button-link pull-right" onclick="shangyue()">
+                上月 </span>
+  <!--  <button  class="button button-link iconfont icon-saoma " onclick="saomiao()"></button>-->
+
+   <h1 class="title">直播列表<span id="nowdate"></span></h1>
+ </header>
+  <div class="content">
+
+  <div class="rili"></div>
+
+  <div class="list-block">
+    <ul id="livelist">
+    </ul>
+  </div>
+
+</div>
+</div>
+</body>
+<script type='text/javascript' src='../res/config.js' charset='utf-8'></script>
+<script type='text/javascript' src='../res/zepto.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='../res/js/light7.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='../res/js/i18n/cn.min.js'></script>
+<script type="text/javascript">
+  var serverurl = javaserver;
+  var biaozhus =[];
+  var UICalendar;
+    apiready = function(){
+    //  $("body").css("margin-top",api.safeArea.top+"px");
+        list2html();
+        setTimeout(function(){
+          //alert(JSON.stringify(biaozhus));
+      UICalendar = api.require('UICalendar');
+      UICalendar.open({
+          rect: {
+              x: 0,
+              y: api.safeArea.top+50,
+              w: api.frameWidth,
+              h: 300
+          },
+          styles: {
+              bg: 'rgba(255,255,255,1)',
+              week: {
+                  weekdayColor: '#3b3b3b',
+                  weekendColor: '#a8d400',
+                  size: 12
+              },
+              date: {
+                  color: '#3b3b3b',
+                  selectedColor: '#fff',
+                  selectedBg: '#a8d500',
+                  size: 12
+              },
+              today: {
+                  color: 'rgb(230,46,37)',
+                  bg: '#eee'
+              },
+              specialDate: {
+                  color: '#fff',
+                  bg: 'widget://images/youke_bg.png'
+              }
+          },
+          specialDate: biaozhus,
+          switchMode: 'horizontal',
+          fixedOn: api.frameName,
+          fixed: false
+      }, function(ret, err) {
+          if (ret) {
+          //  alert(JSON.stringify(ret));
+             $("#nowdate").html("("+ret.year+"-"+ret.month+")");
+            if(ret.eventType == 'special' || ret.eventType == 'normal')
+            {
+
+              var ret = ret.year+"-"+((ret.month<10)?('0'+ret.month):ret.month)+'-'+((ret.day<10)?('0'+ret.day):ret.day);
+              //alert(ret);
+              list2html(ret);
+            }
+
+
+
+
+          } else {
+          //  alert(JSON.stringify(err));
+          }
+      });
+      },1000);
+    };
+
+    //扫描二维码
+    function saomiao(){
+
+      var FNScanner = api.require('FNScanner');
+      FNScanner.open({
+          autorotation: true
+      }, function(ret, err) {
+      //  alert(JSON.stringify(ret)+'x'+JSON.stringify(err));
+          if (ret) {
+              api.hideProgress();
+              if(ret.eventType == "success"){
+                //alert(ret.eventType);
+                var sysUserInfo=strToJson(GetlocalStorage("userinfo"));
+                if(sysUserInfo != null){
+                  var content = ret.content;
+                  var flag = GetParam(content, "f");
+                  if(flag == "l"){  //解释一下，这是字母L，不是数字1,
+                    var roomid = GetParam(content, "r");
+                    var liveserver = GetParam(content, "l");
+                    var liveurl = "../livepush/livep.html?roomid=" + roomid;
+                    if(liveserver != ""){
+                       liveurl += "&liveserver=" + liveserver;
+                    }
+                    api.openWin({
+                        name: 'live',
+                        url:liveurl
+                    });
+
+                  }else{
+                    $.alert("扫描内容错误");
+                  }
+                }else {
+                  $.alert("请先登录！", function() {
+                    window.location.href = "ypylogin.html";
+                    return;
+                  });
+                }
+
+              }
+          } else {
+              alert("扫码失败，请重试");
+          }
+      });
+    }
+    function GetParam(paramUrl, paramName) {
+      var reg = new RegExp("(^|&)" + paramName.toLowerCase() + "=([^&]*)(&|$)", "i");
+      var r = paramUrl.substr(1).match(reg);
+      if (r != null) return unescape(r[2]); return "";
+    }
+  $(function(){
+
+  });
+  function list2html(riqi){
+
+    var  sysUserInfo=strToJson(GetlocalStorage("userinfo"));
+    if(sysUserInfo!=null&&sysUserInfo!=""&&sysUserInfo!=undefined){
+         //登录(*防止学员用户已更换组织架构，缓存数据不对)
+         getAjax(serverurl+"/stage/findSectionList",
+           {
+             orgID:sysUserInfo.organization_ID,
+             user_id:sysUserInfo.user_ID,
+             org_Id:sysUserInfo.allorgid,
+             role_Id:sysUserInfo.allroleid,
+             user_groupId:sysUserInfo.allgroupid,
+             xtype:"6",
+             pageIndex:"1",
+             pageSize:"100"
+           },
+           function(data){
+                //alert(data);
+                var obj = JSON.parse(data);
+                var liishtml ="";
+                if(!obj.hasOwnProperty("datas")){
+                      $("#livelist").html("今天（"+riqi+"）没有直播课程");
+                    return;
+                }
+                biaozhus =[];
+
+                for (var i = 0; i < obj.datas.length; i++) {
+
+                    var liveobj =  JSON.parse(obj.datas[i].chapterJson);
+                    var cssTime = liveobj.CSSTIME.replace(/\-/g, '/');
+                    var data2 = new Date(cssTime);
+                    var date3 =formatDate(data2);// data2.getFullYear()+"-"+((data2.getMonth()+1)<10)?'0'+(data2.getMonth()+1):(data2.getMonth()+1)+"-"+(data2.getDate()<10)?;
+                    //console.log(data2+','+date3);
+                    var biaozhu ={date:date3};
+                    biaozhus.push(biaozhu);
+                    if(riqi != undefined)
+                    {
+                  //      var data = new Date(riqi);
+                //  console.log(riqi+',,'+date3);
+                        if(riqi != date3)
+                        {
+                           continue;
+                        }
+                    }
+                    var diffnew =new Date();
+                  //  diffnew =formatDate(diffnew);//.getFullYear()+"-"+(diffnew.getMonth()+1)+"-"+diffnew.getDate();
+                  //  var diff = new Date(diffnew) - new Date(date3);
+                  //  if(diff > 0){
+                //      continue;
+                //    }
+                    liishtml += "<li class=\"item-content  item-link\" data=\'"+JSON.stringify(liveobj)+"\' onClick=\"livego(this,'"+liveobj.liveObj.liveid+"','"+cssTime+"','"+cssTime+"','"+liveobj.livetype+"');\">";
+                    liishtml += "        <div class=\"item-inner\">";
+                    liishtml += "          <div class=\"item-title\">"+obj.datas[i].csname+"<br /><font color='#999' style='font-size:12px'>开课时间："+cssTime+"</font></div>";
+                     if(data2 > new Date())
+                     {
+                         liishtml += "          <div class=\"item-after\">加入日程</div>";
+                     }
+                     else {
+
+                     }
+                    liishtml += "          <div class=\"item-after\"></div>";
+                    liishtml += "        </div>";
+                    liishtml += "</li>";
+
+
+                }
+              //  alert(liishtml.length);
+                if(liishtml.length == 0)
+                {
+                  $("#livelist").html("<center style=\"height:30px;line-height:30px\">"+riqi+"没有直播课程</center>");
+                }
+                else {
+                    $("#livelist").html(liishtml);
+                }
+                // UICalendar.setSpecialDates({
+                //  specialDates: biaozhus
+                // });
+
+               //alert(data);
+           });
+    }
+  }
+  function formatDate(time){
+    var date = new Date(time);
+
+    var year = date.getFullYear(),
+        month = date.getMonth()+1,//月份是从0开始的
+        day = date.getDate(),
+        hour = date.getHours(),
+        min = date.getMinutes(),
+        sec = date.getSeconds();
+    var newTime = year + '-' +
+                (month < 10? '0' + month : month) + '-' +
+                (day < 10? '0' + day : day);
+
+    return newTime;
+}
+//进入直播间，或加入日程
+  function livego(obj, roomid,date2,title,type){
+    var jitian = getDays(new Date(),date2);
+    console.log('xxx'+jitian+'xx'+date2);
+    if((jitian <= 4 && jitian > -4)){
+      if(type == "1"){
+
+        //ppt+语音模式直播
+        api.openWin({name:'liveroom',url: '../html/live.html',pageParam: {
+          roomid: roomid
+        }});
+      }
+      else if(type == "2") {
+        //alert("xx");
+        //打开纯视频模式直播
+        SetlocalStorage("LiveBroadcast_Info", JSON.stringify($(obj).attr("data")));
+        api.openWin({
+            name: 'live',
+            url: '../html/peixun/live.html'
+        });
+        //UICalendar.hide();
+        //$.router.loadPage("../html/peixun/live.html");
+        //$.router.loadPage("../html/peixun/live.html");
+      }
+      else if(type == "3") { //小鱼互联
+        console.log($(obj).attr("data"));
+        var objs = strToJson($(obj).attr("data"));
+        api.openWin({
+            name: 'slive',
+            url: "../html/iframe.html",
+            pageParam: {
+                title:objs.CSNAME,
+                url: objs.liveObj.stu_htm
+            }
+        });
+      }
+      else {
+        alert("当前直播模式不支持"+type);
+      }
+    }
+    else if(jitian > 4) {
+      //  alert("直播还未开始，是否需要加到系统日历中？");
+        var rili = GetlocalStorage("rili");//是否存在日历中
+        if(rili != null)
+        {
+            var array = rili.split(',');
+            for (var i = 0; i < array.length; i++) {
+                if(array[i] == roomid){
+                  alert("已经在日历中了！");
+                  return;
+                  break;
+                }
+            }
+        }
+        else {
+          rili = "";
+        }
+        rili = rili+roomid+",";
+        var calendarMemo = api.require('calendarMemo');
+        calendarMemo.addEvent({
+            title: '上课提醒',
+            description: '[直播课程]'+title,
+            startTime: date2,
+            endTime: date2
+        }, function(ret) {
+            alert("创建成功！请在手机日历中查看，时间在"+date2);
+            console.log(JSON.stringify(ret));
+            SetlocalStorage("rili",rili);
+        });
+    }
+    else {
+        alert("课程已过期");
+    }
+
+
+  }
+  function getDays(sDate1, sDate2){
+    var dateSpan,
+          tempDate,
+          iDays;
+      sDate1 = Date.parse(sDate1);
+      sDate2 = Date.parse(sDate2);
+      dateSpan = sDate2 - sDate1;
+      dateSpan = Math.floor(dateSpan);
+      iDays = Math.floor(dateSpan / (3600 * 1000));
+      return iDays
+  }
+  //***********************************************************************************
+  //                              字符串转json
+  //***********************************************************************************
+  function strToJson(str){
+      //如果本来就是对象，强转会异常
+     try {
+           if(str!=null&&str!=""&&str!=undefined){
+              return JSON.parse(str);
+          }else{
+              return null;
+          }
+      } catch (e) {
+          return str;
+      }
+  }
+
+  //**********************************************************************
+  //全局异步请求数据
+  //**********************************************************************
+  function getAjax(url, parm, callBack, callBackError, callBackType, mode,istongbu) {
+      var token = "userinfo_token is none";
+      if (callBackType == null || callBackType == "" || callBackType == undefined)
+          callBackType = "text";
+      if (mode == null || mode == "" || mode == undefined)
+          mode = "get";
+      if (istongbu!=undefined&&!istongbu){
+          istongbu =false;
+    	}else{
+    		  istongbu =true;
+    	}
+    try{
+        $.ajax({
+            type: mode,
+            beforeSend: function (xhr) {
+               if(!QueryString("courseId")){
+                    token = strToJson(GetlocalStorage("userinfo_token"),token);
+                    xhr.setRequestHeader("X-Session-Token",token);
+                }
+            },
+            //手机端需要加上token验证
+            headers: {
+                //"Accept": "text/plain; charset=utf-8",
+                //"Content-Type": "text/plain; charset=utf-8",
+                "Accept": "application/json, text/javascript, */*; charset=utf-8",
+                "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
+            },
+            async:istongbu,
+            url: url,
+            data: parm,
+            dataType: callBackType,
+            cache: false,
+            success: function (msg, status, xhr) {
+              pedding=false;
+                callBack(msg);
+                 $.hideIndicator(); //隐藏loading
+            },
+            error: function (err) {
+                //console.error("服务器访问异常：" + err);
+                $.hideIndicator(); //loading
+                if(callBackError != undefined && callBackError != null && callBackError != "")
+                callBackError(err);
+                // $.alert(err);
+                console.log('请求服务器错误！');
+                pedding=false;
+
+            }
+        });
+
+    }
+    catch(error) {
+      $.alert("请求错误,请刷新重试！");
+      console.log(url);
+      $.hideIndicator();
+    }
+  }
+
+  //获取缓存用户信息，如果为空，跳转登录页
+  function getUserInfo(){
+      var sysUserInfo=strToJson(GetlocalStorage("userinfo"));
+      if(sysUserInfo==null||sysUserInfo==undefined||sysUserInfo==""){
+          window.location.href ="../ypylogin.html";
+      }else{
+          return sysUserInfo;
+      }
+    }
+  function GetlocalStorage(name) {
+      // / <summary>
+      // / 获得本地数据
+      // / </summary>
+      if (window.localStorage) {
+          // 获取token
+          if(name == "userinfo_token"){
+              return getToKen();
+          }
+          //获取本地缓存
+          var value = localStorage.getItem(name);
+          if (value != null&&value!=""&&value!=undefined) {
+                  //如果获取的值已经是对象，强转会报错，直接返回
+                 try {
+                     return JSON.parse(value);
+                 } catch (e) {
+                      return value;
+                }
+         } else {
+                return value;
+           }
+
+      } else {
+         $.toast("您的浏览器不支持本系统，或开启了隐身模式");
+      }
+}
+  // 获取token
+  function getToKen (){
+      var localtoken={};
+      try{
+          var localtoken = JSON.parse(localStorage.getItem("userinfo_token"));
+      }catch(e){
+          return null;
+      }
+      var exp = 1000 * 60 * 60 * 24; // 过期时间 1 天
+      if (localtoken == undefined || localtoken == null || localtoken == "") {
+          localtoken = "";
+      } else if (!localtoken.hasOwnProperty('outTime') || !localtoken.hasOwnProperty('token')) {
+          localtoken = "";
+      } else if (localtoken.hasOwnProperty('outTime') && parseInt(new Date().getTime() - exp) > new Date(localtoken.outTime).getTime()) {
+          localtoken = "";
+      } else if (localtoken.hasOwnProperty('token')) {
+          localtoken = localtoken.token.toString();
+      }
+      return localtoken;
+  }
+  function SetlocalStorage(name, obj) {
+      // / <summary>
+      // / 重写本地数据
+      // / </summary>
+      if (window.localStorage) {
+
+          try {
+              if(name == "userinfo_token"){
+                  var tokenObj = { token: obj, outTime: "" };
+                  tokenObj.outTime = new Date().getTime();
+                  localStorage.setItem("userinfo_token", JSON.stringify(tokenObj));
+              }else{
+                  //localStorage.setItem(name, JSON.stringify(obj));
+                  localStorage.setItem(name, obj);
+              }
+          }
+          catch (oException) {
+              if (oException.name  == 'QuotaExceededError') {
+                  $.toast("超出本地存储限额！");
+                  //如果历史信息不重要了，可清空后再设置
+                  localStorage.clear();
+                  if(name == "userinfo_token"){
+                      var tokenObj = { token: obj, outTime: "" };
+                      tokenObj.outTime = new Date().getTime();
+                      localStorage.setItem("userinfo_token", JSON.stringify(tokenObj));
+                  }else{
+                      //localStorage.setItem(name, JSON.stringify(obj));
+                      localStorage.setItem(name, obj);
+                  }
+              }
+          }
+      } else {
+         $.toast("您的浏览器不支持本系统，或开启了隐身模式");
+      }
+  }
+  function QueryString(fieldName) {
+      /// <summary>
+      ///   获得URL GET参数
+      /// </summary>
+      /// <param name="fieldName" type="String">
+      ///   参数名
+      /// </param>
+      /// <returns type="void" />如果不存在返回NULL
+      var reg = new RegExp("(^|&)" + fieldName.toLowerCase() + "=([^&]*)(&|$)", "i");
+      var r = window.location.search.toLowerCase().substr(1).match(reg);
+      if (r != null) return unescape(r[2]); return null;
+  }
+  function shangyue(){
+    UICalendar.prevMonth(function(ret, err) {
+        if (ret) {
+           $("#nowdate").html("("+ret.year+"-"+ret.month+")");
+        } else {
+            //alert(JSON.stringify(err));
+        }
+    });
+  }
+  function xiayue(){
+    UICalendar.nextMonth(function(ret, err) {
+      if (ret) {
+           $("#nowdate").html("("+ret.year+"-"+ret.month+")");
+      } else {
+        //  alert(JSON.stringify(err));
+      }
+  });
+  }
+</script>
+</html>

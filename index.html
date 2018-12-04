@@ -1,0 +1,306 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Hello APP</title>
+    <link rel="stylesheet" type="text/css" href="./css/api.css" />
+    <link rel="stylesheet" type="text/css" href="./css/base.css" />
+
+    <link rel="stylesheet" type="text/css" href="./css/ygtcommon.css" />
+    <link rel="stylesheet" type="text/css" href="./css/swder.css" />
+
+    <script src="./js/lib/jquery2.js"></script>
+    <style type="text/css">
+        body{position: relative;}
+        #audio{position: absolute;top: 0;left: 0;display: none;}
+        .middletab{white-space: nowrap;position: relative;top: 70px;background: #f8f8f8;padding:8px 5px;}
+        .middletab .tab{display: inline-block;padding: 3px 8px;margin: 0;padding-top: 5px;font-size: 13px;color: #7c7c7c;}
+        .middletab .active{background: linear-gradient(-135deg, rgb(255, 153, 133) 50%, rgb(255, 153, 19) 100%);color: #fff;border-radius: 30px;}
+        @media screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+            .middletab{top: 90px;}
+        }
+    </style>
+
+
+    <body>
+        <!-- 头部 -->
+        <header class="top" id="header">
+            <h1>
+                <span class="title">医管通</span>
+            </h1>
+        </header>
+        <div class="middletab" id="middletab">
+            <span class="tab active" onclick="openList(0, this);">
+                推荐
+            </span>
+        </div>
+        <section id="section">
+
+        </section>
+
+
+        <!-- 底部按钮切换 -->
+        <footer class="foot" id="footer">
+            <span class="tab"  tapmode>
+                  <img src='./img/faxian-2.png'/>
+                  <p  class='c-2577e3'>发现</p>
+              </span>
+              <span class="tab" tapmode onclick="study();">
+                <img src='./img/yigou-3.png'/>
+                <p>学习</p>
+            </span>
+                <span class="tab" tapmode onclick="my();">
+                  <img src='./img/wode-3.png'/>
+                  <p>我的</p>
+              </span>
+        </footer>
+        <div id="audio">
+            <audio id="" src=""></audio>
+            <div id="audiolist"></div>
+        </div>
+    </body>
+    <script src="./js/lib/jquery-2.1.4.js"></script>
+    <script src="./js/jquery-weui.js"></script>
+    <script src="./js/swiper.min.js" charset='utf-8'></script>
+    <script type="text/javascript" src="./script/api.js"></script>
+    <script type="text/javascript">
+        $api.setStorage('apihost', 'http://member.ygt.cm');
+        var apihost = 'http://member.ygt.cm';
+        var userinfo = '';
+        var myswiper = '';
+        var systemtype='';
+        var iswxpay = 0;
+        var toph = 0;
+        var bottomh = 0;
+        var srcstr = '';
+        var audiourl = '';
+        apiready = function() {
+            api.addEventListener({
+                name:'offline'
+            }, function(ret, err){
+                alert('断网了');
+
+            });
+            api.addEventListener({
+                name:'online'
+            }, function(ret, err){
+                $api.rmStorage('offline');
+
+            });
+            // 设置状态栏
+            api.setStatusBarStyle({
+                style: 'dark',
+            });
+            var header = $api.byId('header');
+            $api.fixStatusBar(header);
+            systemtype = api.systemType;
+            $api.setStorage('systemtype', systemtype);
+            console.log(systemtype);
+
+            //  禁止左右滑动
+            api.setWinAttr({
+                slidBackEnabled: false
+            });
+            toph = $api.offset($api.byId('header')).h+$api.offset($api.byId('middletab')).h;
+            bottomh = $api.offset($api.byId('footer')).h;
+            userinfo = $api.getStorage('ygtuserinfo');
+
+            getteactype();
+
+            api.openFrame({
+                name: 'indexframe',
+                url: './pages/indexframe.html',
+                rect: {
+                    marginLeft:0,    //相对父 window 左外边距的距离
+                    marginTop:toph,    //相对父 window 上外边距的距离
+                    marginBottom:bottomh,    //相对父 window 下外边距的距离
+                    marginRight:0
+                },
+                pageParam: {
+                    typeid: 0
+                },
+                bounces: true,
+                vScrollBarEnabled: false,
+                hScrollBarEnabled: false
+            });
+            //清除 音频数据
+            $api.rmStorage('classtitle');
+            $api.rmStorage('listtitle');
+            $api.rmStorage('bakcimg');
+            api.addEventListener({
+                name:'viewappear'
+            }, function(ret, err){
+                checklogin();
+            });
+
+
+        };
+
+        function checklogin() {
+            userinfo = $api.getStorage('ygtuserinfo');
+            if (!userinfo || !userinfo.id) {
+                api.openWin({
+                    name: 'login',
+                    url: './login.html',
+                    animation: {
+                        type: 'none'
+                    }
+                });
+            } else {
+                console.log(JSON.stringify(userinfo)+'sssss');
+                api.ajax({
+                    url: apihost + '/api/user/index',
+                    method: 'post',
+                    headers: {
+                        'TOKEN': userinfo.token
+                    },
+                    data: {
+                        values: {
+                            uid: userinfo.user_id
+                        }
+                    }
+                }, function(ret, err) {
+                    if (ret) {
+
+                        iswxpay = ret.data.iswxpay;
+                    } else {
+
+                    }
+                    $api.setStorage('iswxpay', iswxpay);
+
+
+                });
+            }
+        }
+
+        //底部直播课
+        function Livebroadcast() {
+
+            api.openWin({
+                name: 'Livebroadcast',
+                url: './pages/Livebroadcast.html',
+                pageParam: {
+                    name: 'test'
+                },
+                bgColor: 'rgba(0,0,0,0)',
+                reload:true,
+                animation: {
+                    type: 'none'
+                }
+            })
+
+        }
+        //公开课查看更多
+        function openclass() {
+
+            api.openWin({
+                name: 'openclass',
+                url: './pages/openclass.html',
+                pageParam: {
+                    name: 'test'
+                },
+                reload:true,
+                bgColor: 'rgba(0,0,0,0)',
+                animation: {
+                    type: 'none'
+                }
+            })
+        }
+        //底部我的
+        function my() {
+
+            api.openWin({
+                name: 'my',
+                url: './pages/my.html',
+                pageParam: {
+                    name: 'test'
+                },
+                bgColor: 'rgba(0,0,0,0)',
+                animation: {
+                    type: 'none'
+                }
+            })
+        }
+
+        //底部学习
+        function study() {
+            api.openWin({
+                name: 'Study',
+                url: './pages/Study.html',
+                pageParam: {
+                    name: 'test'
+                },
+                bgColor: 'rgba(0,0,0,0)',
+                animation: {
+                    type: 'none'
+                }
+            })
+        }
+        //顶部tab
+        function getteactype() {
+            api.ajax({
+                url: apihost + '/api/wtk/classroom/getTeachType',
+                method: 'post',
+                headers: {
+                    //'TOKEN':userinfo.token
+                },
+                data: {
+                    values: {
+                        //uid: userinfo.id
+                    }
+                }
+            }, function(ret, err) {
+                console.log(JSON.stringify(ret));
+                if (ret) {
+                    if (ret.code == 1) {
+                        var len = ret.data.result.length;
+                        var barhtml = '';
+                        for (var i = 0; i < len; i++) {
+                            barhtml += '<span class="tab" onclick="openList(' + ret.data.result[i]['id'] + ', this);">' +
+                                '<p>' + ret.data.result[i]['name'] + '</p>' +
+                                '</span>';
+                        }
+                        $api.append($api.byId('middletab'), barhtml);
+                    } else {
+                        alert('类型请求错误');
+                    }
+
+                } else {
+                    // alert( JSON.stringify( err ) );
+                    alert(err.msg);
+                }
+            });
+
+        }
+        function openList(id, obj) {
+            api.closeFrame({
+                name: 'indexframe'
+            });
+            $api.removeCls($api.dom('.active'), 'active');
+            $("#middletab .tab").removeClass('active')
+            $api.addCls(obj, 'active');
+            var classification = $('.active').text();
+            api.openFrame({
+                name: 'indexframe',
+                url: './pages/indexframe.html',
+                rect: {
+                    marginLeft: 0, //相对父 window 左外边距的距离
+                    marginTop: toph, //相对父 window 上外边距的距离
+                    marginBottom: bottomh, //相对父 window 下外边距的距离
+                    marginRight: 0
+                },
+                pageParam: {
+                    typeid: id,
+                    classification:classification
+                },
+                bounces: true,
+                vScrollBarEnabled: false,
+                hScrollBarEnabled: false
+            });
+        }
+    </script>
+
+</html>

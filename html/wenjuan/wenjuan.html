@@ -1,0 +1,771 @@
+﻿
+<!DOCTYPE html>
+<html>
+<head>
+	<title>问卷编辑</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+<link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/weui/1.1.2/style/weui.min.css">
+<link rel="stylesheet" type="text/css" href="/system/views/wenjuan/wenjuan.css">
+</head>
+<body>
+
+<div id="app" >
+<div class="weui-tab">
+<div class="weui-navbar" style="top: -60px">
+                <div class="weui-navbar__item " :class="{'weui-bar__item_on':wjobj.type==0}" @click="wjobj.type=0">
+                    问卷调研<span>显示用户选择比重为主</span>
+                </div>
+                <div class="weui-navbar__item" :class="{'weui-bar__item_on':wjobj.type==1}" @click="wjobj.type=1">
+                    360°评估<span>用于对人、课、部门等评估打分</span>
+                </div>
+                <div class="weui-navbar__item" :class="{'weui-bar__item_on':wjobj.type==2}" @click="wjobj.type=2">
+                    在线测评<span>根据答题结果，分析结论</span>
+                </div>
+</div>
+</div>
+<div class="container">
+
+
+<h1><edittext v-model='wjobj.title'></edittext></h1>
+
+	<edittext v-model='wjobj.hi'></edittext>
+
+<div v-for="(groupobj,index) in wjobj.question" :key="groupobj.id"><!--遍历题题目分组-->
+	<div class="weui-loadmore weui-loadmore_line">
+	            <span class="weui-loadmore__tips"><edittext v-model='groupobj.groupname'></edittext></span>
+	</div>
+
+
+	<!--遍历题目-->
+	<div v-for="(questionobj,xuhao) in groupobj.group" class="danti" :key="questionobj.id">
+		<font color="red" v-if="questionobj.qmust">*</font><span v-html="xuhao+1"></span>. [{{tixingname(questionobj.qtype) }}] <edittext v-model='questionobj.qtitle'></edittext>
+		<ol type="A">
+			<li v-for="(xuanxiang,abc) in questionobj.qselection" :id="xuanxiang.id" :key="xuanxiang.id" v-if="questionobj.qtype == 0 || questionobj.qtype == 1" >
+				<edittext v-model='xuanxiang.text' style="float: left;"></edittext> 
+				<span style="float: right;">
+					<span v-if="wjobj.type ==2 && wjobj.taglist.length>0" @click="selecttagshow(index,xuhao,abc)" ><a href="#">{{xuanxiang.tagname==''?'选择维度':xuanxiang.tagname}}</a></span>
+					<span v-if="wjobj.type !=0">得分：<input type="number" v-model="xuanxiang.score" name="" class="fenshu" ></span> 
+					<i class="weui-icon-cancel" @click="yichuxuanxiang(index,xuhao,abc)"></i>
+				</span>
+			</li>
+			
+			
+			<textarea class="weui-textarea" placeholder="请输入文本" rows="3" v-if="questionobj.qtype == 2" ></textarea>
+
+
+			<div class="liaobiao" v-if="questionobj.qtype == 3">非常不满意
+			<span v-for="(xuanxiang,abc) in questionobj.qselection"><input type="radio" :name="questionobj.id" :value="xuanxiang.text" /> {{xuanxiang.text}}</span>
+			 非常满意</div>
+		</ol>
+		 <div class="timu_tool">
+			 <a href="javascript:;" @click="addxuanxiang(index,xuhao)" v-if="questionobj.qtype == 0 || questionobj.qtype == 1" class="weui-btn weui-btn_mini weui-btn_default">增加选项</a>
+
+
+			 <a href="javascript:;" @click="yichutimu(index,xuhao)" class="weui-btn weui-btn_mini weui-btn_default">删除题目</a>
+
+			 <a href="javascript:;" @click="tixuup(index,xuhao,0)" class="weui-btn weui-btn_mini weui-btn_default">上移</a> 
+			 <a href="javascript:;" @click="tixuup(index,xuhao,1)" class="weui-btn weui-btn_mini weui-btn_default">下移</a>
+			 
+			 <input class="weui-switch" type="checkbox" v-model="questionobj.qmust"> <span style="display: inline-block;box-sizing: border-box;
+    padding: 0 1.32em;line-height: 2.3;font-size: 13px;">必填</span>
+    		</div>
+
+	</div>
+
+
+	<center><a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_default" @click="addtimu(index,0)"> + 新增单选</a>
+	 <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_default" @click="addtimu(index,1)"> + 新增多选</a> 
+	 <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_default" @click="addtimu(index,2)"> + 问答题	</a> 
+	  <a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_default" @click="addtimu(index,3)"> + 量表题</a></center>
+</div>
+<!--分割线-->
+<div class="weui-loadmore weui-loadmore_line ">
+            <span class="weui-loadmore__tips"><a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_default" @click="addgroup()">新增分组</a></span>
+</div>
+
+<div style="margin: 10px ;">
+<edittext v-model='wjobj.end'></edittext>
+</div>
+<!--分割线-->
+<div class="weui-loadmore weui-loadmore_line ">
+            <span class="weui-loadmore__tips">问卷设置</span>
+</div>
+<div class="weui-cell weui-cell_switch" v-if="wjobj.type == 0">
+                <div class="weui-cell__bd">是否支持匿名</div>
+                <div class="weui-cell__ft">
+                    <label for="login" class="weui-switch-cp">
+                        <input id="login" class="weui-switch-cp__input" type="checkbox"  v-model="wjobj.login" >
+                        <div class="weui-switch-cp__box"></div>
+                    </label>
+                </div>
+</div>
+<div class="weui-cell weui-cell_switch" v-if="wjobj.type ==0">
+                <div class="weui-cell__bd">完成问卷后，是否显示结果</div>
+                <div class="weui-cell__ft">
+                    <label for="jieguo" class="weui-switch-cp">
+                        <input id="jieguo" class="weui-switch-cp__input" type="checkbox"  v-model="wjobj.jieguo" >
+                        <div class="weui-switch-cp__box"></div>
+                    </label>
+                </div>
+</div>
+<div class="weui-cell weui-cell_switch" v-if="wjobj.type==1">
+                <div class="weui-cell__bd">合格分数</div>
+                <div class="weui-cell__ft">
+                   <input type="number" name="" class="fenshu" v-model="wjobj.qualified.min"> 总分：<span v-html="sums">0</span>
+                </div>
+</div>
+
+<!--维度设置strat-->
+<div class="weui-panel weui-panel_access"  v-if="wjobj.type ==2">
+			<div class="weui-panel__hd">测评结果计算公式(多结果时，满足其一即可获得，一次问卷可获得多结果) <span class="minibtn" @click="addtiaojian()">+</span></div>
+
+			<div class="weui-panel__hd" v-for="(jieguo,index) in wjobj.result" :key="jieguo.id" style="background-color: #eee;">
+				<span @click="jieguotagshow(index)" v-if="wjobj.taglist.length>0"><a href="#">{{jieguo.tag==null?"整卷":jieguo.tag.tagname}}</a></span>
+
+				总得分 大于 <input type="number" name="" class="fenshu" v-model="jieguo.sectionmin" > 小于  <input type="number" name="" class="fenshu" v-model="jieguo.sectionmax" > 分时，获得 <input  type="text" placeholder="请输入测评结果名称" v-model="jieguo.name" > 
+				<a href="javascript:;" class="weui-btn weui-btn_mini weui-btn_default" @click="deljieguo(index)" style="position: absolute; right: 10px">删除</a>
+				
+				<div class="weui-cell">
+	                <div class="weui-cell__bd">
+	                    <textarea class="weui-textarea" placeholder="请输入获得测评结果" rows="3" v-model="jieguo.describe" ></textarea>
+	                </div>
+	            </div>
+
+			</div>
+
+
+            <div class="weui-panel__hd">测评维度定义（选填） <span class="minibtn"  @click="addtag()">+</span></div>
+            <div class="weui-panel__bd" v-for="(tag,index) in wjobj.taglist" class="danti" :key="tag.tagid">
+                <div class="weui-media-box weui-media-box_text">
+                    <h4 class="weui-media-box__title"><edittext v-model='tag.tagname'></edittext></h4>
+                    <p class="weui-media-box__desc"><edittext v-model='tag.tagabout'></edittext></p>
+                </div>
+            </div>
+
+</div>
+ <div class="weui-skin_android" id="androidActionsheet" v-show="tagshow">
+        <div class="weui-mask" @click="tagshow=false"></div>
+        <div class="weui-actionsheet">
+            <div class="weui-actionsheet__menu">
+                <div class="weui-actionsheet__cell" v-for="(tag,index) in wjobj.taglist" class="danti" :key="tag.tagid" @click="selecttag(tag)">{{tag.tagname}}</div>
+            </div>
+        </div>
+</div>
+<!--维度设置end-->
+ <!--BEGIN 输入工具-->
+<div class="js_dialog" id="androidDialog1" v-if="addtool">
+            <div class="weui-mask" @click="addtool=false"></div>
+            <div class="weui-dialog weui-skin_android">
+                <div class="weui-dialog__hd"><strong class="weui-dialog__title">插入题目</strong></div>
+                <div class="weui-dialog__bd">
+                    <textarea style="width: 100%; height: 200px;" v-model="tooltext" placeholder="用法:第一个回车前卫标题，其余行为选项,空一行可输入多题"></textarea>
+                </div>
+                <div class="weui-dialog__ft">
+                    <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_default" @click="addtool=false">取消</a>
+                    <a href="javascript:;" class="weui-dialog__btn weui-dialog__btn_primary" @click="addtoolbtn()">确定</a>
+                </div>
+            </div>
+</div>
+<!--END 输入工具-->
+</div>
+<a href="javascript:;" class="weui-btn weui-btn_primary" onclick="save()">保存问卷</a>
+</div>
+<div class="weui-footer">
+            <p class="weui-footer__text">Copyright © <font color="red">注意：点击文字可以编辑</font></p>
+        </div>
+ <div id="laod" style="position: fixed; top:0;left: 0; width: 100%; height: 100%; background-color: #eee; text-align: center; padding-top: 100px;">
+	<i class="weui-loading weui-icon_toast"></i><br>
+	正在组建问卷，请稍候
+</div>
+<script type="text/javascript" src="https://cdn.bootcss.com/zepto/1.2.0/zepto.min.js"></script>
+<script src="https://cdn.bootcss.com/vue/2.2.2/vue.min.js" type="text/javascript" ></script>
+<script src="/framework/angular.min.js"></script>
+<script src="/framework/lodash.min.js" type="text/javascript"></script>
+<script src="/framework/restangular/restangular.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="/framework/angular-toastr/angular-toastr.min.js"></script>
+<script type="text/javascript" src="/framework/angular-toastr/angular-toastr.tpls.min.js"></script>
+<script src="/system/service/common.js" type="text/javascript"></script>    
+
+<script type="text/javascript">
+var yuming = commonUrl;
+var wenjuan ={
+	id:guid(),//问卷ID
+	title:"问卷标题",//问卷名称
+	enddate:"",//问卷截止日期
+	bg:"",//文件界面背景
+	login:false,//是否支持匿名
+	jieguo:false,//完成问卷后，是否显示结果
+	type:0,//问卷类型 0普通调查，查看用户选择比重；1为评估，为看调研用户得分，2为测评，需要显示测评结果
+	hi:"感谢参与本问卷",
+	end:"结束感谢",
+	question:[ //问题列表
+		{
+			id:guid(),//
+			groupname:"第1组",//分组名
+			group:[//题目分组
+				{
+					id:guid(),//题目ID
+					qtype:0, //0为单选，1为多选，2为问答，3为打分题
+					qmust:false,//是否必填
+					qtitle:"这是一个可编辑的题干",//题干
+					qselection:[ //选项
+						{
+							id:guid(),
+							text:"选项A",//选型内容
+							tagid:"",//选项对应的标签【维度】
+							tagname:"",//维度名
+							score:0,//选型对应的分数
+							selected:0 //选择了这个的人数
+						},
+						{
+							id:guid(),
+							text:"选项B",//选型内容
+							tagid:"",//选项对应的标签【维度】
+							tagname:"",//维度名
+							score:0,//选型对应的分数
+							selected:0 //选择了这个的人数
+						},
+						{
+							id:guid(),
+							text:"选项C",//选型内容
+							tagid:"",//选项对应的标签【维度】
+							tagname:"",//维度名
+							score:0,//选型对应的分数
+							selected:0 //选择了这个的人数
+						},
+						{
+							id:guid(),
+							text:"选项D",//选型内容
+							tagid:"",//选项对应的标签【维度】
+							tagname:"",//维度名
+							score:0,//选型对应的分数
+							selected:0 //选择了这个的人数
+						}
+					]
+				}
+				
+			]
+		}
+
+	],
+	qualified:{
+		min:0, //合格分数，评估问卷合格条件
+		max:0 //问卷能获得的最大分数
+	},
+	taglist:[ //维度列表
+		
+	],
+	result:[ //专为测评类内容预留，根据得分，给出结果
+		{
+			id:guid(),
+			tag:null,//指定标签
+			sectionmin:0, //得分区间
+			sectionmax:10,
+			name:"",//获得称号
+			describe:"" //称号描述，只要符合条件就可获得称号
+		}
+	]
+
+};
+var vm;
+//界面初始化
+$(function(){
+	var key = QueryString("key");
+	if(key != null){
+		getAjax(yuming+"/questionnaire/findTopicDetails",{qid:key},function(data){
+		if(data.errorcode == "0"){
+			wenjuan = data.data;
+			
+			wenjuan.question = JSON.parse(data.data.question);
+			//wenjuan.qualified = JSON.parse(data.data.qualified);
+			wenjuan.taglist = JSON.parse(data.data.taglist);
+			wenjuan.result = JSON.parse(data.data.result);
+
+			//console.log(wenjuan);
+			vmchushi();
+		}
+		else{
+			alert("读取错误"+data.errorcode);
+		}
+	});
+	}
+	else{
+		linshiwenjuan = GetlocalStorage("wenjuan");
+		if(linshiwenjuan != null){ //读取缓存
+			wenjuan = linshiwenjuan;
+		}
+		vmchushi();
+	}
+	
+	$("#laod").hide()
+});
+function vmchushi(){
+	vm = new Vue({
+		el: '#app',
+  		data: {
+  			wjobj:wenjuan,
+  			tagshow:false,
+  			addtool:false,//插入工具
+  			addindex:0,//插入到的分组
+  			addtixing:0,//插入的题型
+  			tooltext:"",//插入工具中的子
+  			tagslect:{},//选择维度时,用于记录选择的是哪个选项
+  			tagresult:{}//维度选择，结果
+  		},
+  		computed: {
+  			sums(){//计算总分
+  				var zongfen=0;
+  				var qulist = this.wjobj.question;
+  				for(var i=0;i<qulist.length;i++)
+  				{
+  					for(var j=0;j<qulist[i].group.length;j++)//循环得到每个题
+	  				{
+	  					if(qulist[i].group[j].qselection.length >0){
+		  					var maxfen = qulist[i].group[j].qselection[0].score;
+		  					//找出题目中的最高分选项，进行汇总
+		  					for(var z=0;z<qulist[i].group[j].qselection.length;z++)
+		  					{
+		  						if(maxfen < qulist[i].group[j].qselection[z].score){
+		  							maxfen = qulist[i].group[j].qselection[z].score;
+		  						}
+		  					}
+		  					zongfen = parseInt(zongfen)+parseInt(maxfen);
+	  					}
+	  				}
+  				}
+  				this.wjobj.qualified.max = zongfen;
+  				return zongfen;
+  			}
+  		},
+  		methods: {
+  			tixingname:function(typeid){
+  				if(typeid == 0)
+  				{
+  					return "单选题";
+  				}
+  				else if(typeid == 1)
+  				{
+  					return "多选题";
+  				}
+  				else if(typeid == 2)
+  				{
+  					return "问答题";
+  				}
+  				else if(typeid == 3)
+  				{
+  					return "量表题";
+  				}
+  				else{
+  					console.log(typeid);
+  					return "未知";
+  				}
+  			},
+  			yichuxuanxiang:function(i1,i2,i3){ //移除题目选型
+  				this.wjobj.question[i1].group[i2].qselection.splice(i3,1);
+  			},
+  			addxuanxiang:function(i1,i2){ //增加题目选型
+  				var obj = {
+					id:guid(),
+					text:"选项",//选型内容
+					tagid:"",//选项对应的标签【维度】
+					score:0,//选型对应的分数
+					selected:0 //选择了这个的人数
+				};
+
+  				this.wjobj.question[i1].group[i2].qselection.push(obj);
+  			},
+  			yichutimu:function(i1,i2){ //移除题目
+  				this.wjobj.question[i1].group.splice(i2,1);  
+  			},
+  			addtimu:function(i1,tixing){
+  				var obj ={
+					id:guid(),//题目ID
+					qtype:tixing, //0为单选，1为多选，2为问答，3为打分题
+					qmust:false,//是否必填
+					qtitle:"这是一个可编辑的题干"//题干
+				}
+				if(tixing == 0 || tixing ==1){
+					this.addtixing = tixing;
+					this.addindex= i1;
+					this.addtool = true;
+					return;
+					obj.qselection = [ //选项
+						{
+							id:guid(),
+							text:"选项A",//选型内容
+							tagid:"",//选项对应的标签【维度】
+							score:0,//选型对应的分数
+							selected:0 //选择了这个的人数
+						},
+						{
+							id:guid(),
+							text:"选项B",//选型内容
+							tagid:"",//选项对应的标签【维度】
+							score:0,//选型对应的分数
+							selected:0 //选择了这个的人数
+						},
+						{
+							id:guid(),
+							text:"选项C",//选型内容
+							tagid:"",//选项对应的标签【维度】
+							score:0,//选型对应的分数
+							selected:0 //选择了这个的人数
+						},
+						{
+							id:guid(),
+							text:"选项D",//选型内容
+							tagid:"",//选项对应的标签【维度】
+							score:0,//选型对应的分数
+							selected:0 //选择了这个的人数
+						}
+					]
+				}
+				else if(tixing == 2)
+				{
+					this.addtixing = tixing;
+					this.addindex= i1;
+					this.addtool = true;
+					return;
+				}
+				else if(tixing == 3)
+				{
+					obj.qselection = [ //选项
+						{
+							id:guid(),
+							text:"1",//选型内容
+							tagid:"",//选项对应的标签【维度】
+							score:1,//选型对应的分数
+							selected:0 //选择了这个的人数
+						},
+						{
+							id:guid(),
+							text:"2",//选型内容
+							tagid:"",//选项对应的标签【维度】
+							score:2,//选型对应的分数
+							selected:0 //选择了这个的人数
+						},
+						{
+							id:guid(),
+							text:"3",//选型内容
+							tagid:"",//选项对应的标签【维度】
+							score:3,//选型对应的分数
+							selected:0 //选择了这个的人数
+						},
+						{
+							id:guid(),
+							text:"4",//选型内容
+							tagid:"",//选项对应的标签【维度】
+							score:4,//选型对应的分数
+							selected:0 //选择了这个的人数
+						}
+						,
+						{
+							id:guid(),
+							text:"5",//选型内容
+							tagid:"",//选项对应的标签【维度】
+							score:5,//选型对应的分数
+							selected:0 //选择了这个的人数
+						}
+					]
+				}
+				else{}
+				this.wjobj.question[i1].group.push(obj);
+  			},
+  			addgroup: function(){
+  				var obj = {
+					id:guid(),//
+					groupname:"第"+(this.wjobj.question.length+1)+"组",//分组名
+					group:[]
+				};
+
+  				this.wjobj.question.push(obj);
+  			},
+  			tixuup:function(i1,index,weizhi){
+  				var newindex = 0;
+  				if(weizhi == 0){//上移
+  					newindex = index-1;
+  				}
+  				else{//下移动
+  					newindex = index+1;
+  				}
+
+  				var options =this.wjobj.question[i1].group;
+  				if(index < options.length && index > 0){
+					var tempOption = options[newindex];
+					Vue.set(options, newindex, options[index]);
+					Vue.set(options, index, tempOption);
+				}
+ 				
+  			},
+  			addtag:function(){//新增维度
+  				var tagobj ={
+					tagid:guid(),
+					tagname:"维度（点击编辑）",
+					tagabout:"关于维度的介绍"
+				};
+				this.wjobj.taglist.push(tagobj);
+  			},
+  			selecttagshow:function(i1,i2,i3){//选择维度
+  				this.tagslect = this.wjobj.question[i1].group[i2].qselection[i3];
+  				this.tagshow = true;
+  			},
+  			selecttag:function(tag){//选择维度
+  				this.tagslect.tagid= tag.tagid;
+  				this.tagslect.tagname= tag.tagname;
+  				this.tagresult.tag = tag;
+  				this.tagshow = false;
+  			},
+  			jieguotagshow:function(index){
+  				this.tagresult = this.wjobj.result[index];
+  				this.tagshow = true;
+  			},
+  			addtiaojian:function(){//增加结果
+  				var result = {
+  					id:guid(),
+					tag:null,//指定标签
+					sectionmin:0, //得分区间
+					sectionmax:10,
+					name:"",//获得称号
+					describe:"" //称号描述，只要符合条件就可获得称号
+  				};
+  				this.wjobj.result.push(result);
+  			},
+  			deljieguo:function(index){ //删除结果
+				this.wjobj.result.splice(index,1);
+  			},
+  			addtoolbtn:function(){ //解析并增加题目
+  				var content = iGetInnerText(this.tooltext).split("\n\n");
+
+  				for(var i=0;i<content.length;i++){
+  					var timu = iGetInnerText(content[i]);
+  					if(timu != ""){
+  						var tilist= timu.split("\n");
+  						var obj ={
+							id:guid(),//题目ID
+							qtype:this.addtixing, //0为单选，1为多选，2为问答，3为打分题
+							qmust:false,//是否必填
+							qtitle:"这是一个可编辑的题干",//题干
+							qselection:[]
+						}
+						obj.qtitle = tilist[0];
+  						for(var j=1;j<tilist.length;j++){
+  							var xx={
+	  							id:guid(),
+								text:tilist[j],//选型内容
+								tagid:"",//选项对应的标签【维度】
+								score:0,//选型对应的分数
+								selected:0 //选择了这个的人数
+							}
+  							obj.qselection.push(xx);
+  						}
+  						this.wjobj.question[this.addindex].group.push(obj);
+  					}
+  					this.tooltext = "";
+  					this.addtool = false;
+  					//console.log(timu);
+  				}
+  			 	function iGetInnerText(str) {
+			        return str.replace(/^\s+|\s+$/g,'');
+			    }
+
+  			 	//return;
+  			}
+
+  		},//注册函数
+  		directives:{//注册指令
+  			
+  		}
+	});
+}
+//vue点击文字直接编辑组件
+Vue.component('edittext', {
+  template:"<span contenteditable=\"true\"  v-html=\"innerText\" @blur=\"changeText\"></span>",
+  props: ['value'],
+  data(){ 
+  	return {
+    	innerText:this.value
+	}
+  },
+ methods:{
+  changeText(){
+  	 this.innerText = this.$el.innerHTML;
+ 	 this.$emit('input',this.innerText);
+  }
+ }
+})
+//保存
+function save(){
+	//先保存在本地一份，以免丢失
+	SetlocalStorage("wenjuan",wenjuan);
+
+	//入怀上个月还有
+	var user = GetlocalStorage("userinfo");
+	getAjax(yuming+"/questionnaire/saveOrEditQuestionnaire",{question:JSON.stringify(wenjuan),userid:user.user_ID},function(data){
+		if(data.errorcode == "0"){
+			localStorage.removeItem('wenjuan');
+			if (confirm("保存成功，关闭还是继续再做一份问卷？")){
+				//window.opener=null;
+				//window.close();
+				console.log(wenjuan.id);
+			}
+			else{
+				location.reload();
+			}
+		}
+		else{
+			alert("错误"+data.errorcode);
+		}
+	});
+}
+//用于生成uuid
+function guid() {
+	function S4() {
+	    return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+	}
+	 return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
+}
+/**
+  *工具 || 获得URL GET参数
+ */
+function QueryString(fieldName) {
+    /// <summary>
+    ///   获得URL GET参数
+    /// </summary>
+    /// <param name="fieldName" type="String">
+    ///   参数名
+    /// </param>
+    /// <returns type="void" />如果不存在返回NULL
+    var reg = new RegExp("(^|&)" + fieldName.toLowerCase() + "=([^&]*)(&|$)", "i");
+    var r = window.location.search.substr(1).match(reg);
+    if (r != null) return unescape(r[2]); return null;
+}
+//**********************************************************************
+//全局异步请求数据
+//**********************************************************************
+document.writeln("<div id=\'loadingToast\' style=\'display:none;\'>");
+document.writeln("        <div class=\'weui-mask_transparent\'></div>");
+document.writeln("        <div class=\'weui-toast\'>");
+document.writeln("            <i class=\'weui-loading weui-icon_toast\'></i>");
+document.writeln("            <p class=\'weui-toast__content\'>数据加载中</p>");
+document.writeln("        </div>");
+document.writeln("    </div>");
+function getAjax(url, parm, callBack, callBackError, callBackType, mode, istongbu) {
+    $("#loadingToast").show();
+    var token = "userinfo_token is none";
+    if (callBackType == null || callBackType == "" || callBackType == undefined)
+        callBackType = "text";
+    if (mode == null || mode == "" || mode == undefined)
+        mode = "post";
+    if (istongbu != undefined && !istongbu) {
+        istongbu = false;
+    } else {
+        istongbu = true;
+    }
+    try {
+        $.ajax({
+            type: mode,
+            beforeSend: function (xhr) {
+                if (!QueryString("courseId")) {
+                    token = strToJson(GetlocalStorage("userinfo_token"), token);
+                    xhr.setRequestHeader("X-Session-Token", token);
+                }
+            },
+            //手机端需要加上token验证
+            headers: {
+                //"Accept": "text/plain; charset=utf-8",
+                //"Content-Type": "text/plain; charset=utf-8",
+                "Accept": "application/json, text/javascript, */*; charset=utf-8",
+                "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
+            },
+            async: istongbu,
+            url: url,
+            data: parm,
+            dataType: callBackType,
+            cache: false,
+            success: function (msg, status, xhr) {
+                pedding = false;
+                $("#loadingToast").hide();
+                msg = strToJson(msg);
+                if (msg && msg.errorcode && (msg.errorcode == 35 || msg.errorcode == 36)) {
+                    alert("身份验证已失效，请重新登录！");
+                } else {
+                    callBack(msg);
+                    //  console.log(msg);
+                }
+            },
+            error: function (err) {
+                // $.hideIndicator(); //loading
+                if (callBackError != undefined && callBackError != null && callBackError != "")
+                    callBackError(err);
+                // $.alert(err);
+                console.log('请求服务器错误！');
+                pedding = false;
+                console.error("服务器访问异常：" + err.readyState);
+                $("#loadingToast").hide();
+            }
+        });
+
+    }
+    catch (error) {
+        console.log(error);
+        alert("请求错误,请刷新重试！");
+        $("#loadingToast").hide();
+    }
+}
+/**
+* 工具 || 获得本地存储
+*/
+function GetlocalStorage(name) {
+    // / <summary>
+    // / 获得本地数据
+    // / </summary>
+    if (window.localStorage) {
+        var value = localStorage.getItem(name);
+        if (value != null) {
+            return JSON.parse(value);
+        } else {
+            return value;
+        }
+    } else {
+        alert("您需要升级浏览器");
+    }
+}
+/**
+*工具 || 存储
+*/
+function SetlocalStorage(name, obj) {
+    // / <summary>
+    // / 重写本地数据
+    // / </summary>
+    if (window.localStorage) {
+        try {
+            localStorage.setItem(name, JSON.stringify(obj));
+        }
+        catch (oException) {
+            if (oException.name == 'QuotaExceededError') {
+                console.log('超出本地存储限额！');
+                //如果历史信息不重要了，可清空后再设置
+                localStorage.clear();
+                localStorage.setItem(name, JSON.stringify(obj));
+            }
+        }
+    } else {
+        alert("您需要升级浏览器才能够进行学习");
+    }
+}
+//字符转对象
+function strToJson(str) {
+    try {
+        if (str != null && str != "" && str != undefined) {
+            return JSON.parse(str);
+        } else {
+            return null;
+        }
+    } catch (e) {
+        return str;
+    }
+}
+</script>
+</body>
+</html>

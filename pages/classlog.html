@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>医管通APP</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/ygtcommon.css">
+
+    <style type ="text/css">
+    .middle{text-align: center;margin-top: 75px;}
+    .middle h5{padding: 10px 0;background: #fff;}
+    .middle em{font-style: normal;color:#ddd;}
+    .middle .tab{display: inline-block;margin: 0 20px;color:#666;font-weight: normal;padding: 5px 0;}
+    .middle .active{color:#ff9913;border-bottom: 1px solid #ff9913;}
+    .middle .datalist{margin-top: 20px;background: #fff;}
+    .middle .datalist li{padding: 10px;text-align: left;}
+    .middle .datalist li img{width: 60px;border-radius: 50%;}
+    .middle .datalist li .left{display: inline-block;vertical-align: top;}
+    .middle .datalist li .left h5{margin:0;padding: 0}
+    .middle .datalist li .left p{font-size: 12px;color:#999;line-height: 20px}
+    .middle .datalist li .money{float:right;position: relative;top: 15px;}
+    .middle .datalist li .money em{color:#ff9913;}
+    @media screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+        .middle {
+            margin-top: 95px;
+        }
+    }
+   </style>
+
+
+<body >
+    <header class="top" id="header">
+        <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span class="title">收益明细</span>
+        </h1>
+    </header>
+    <div class="middle">
+        <ul class="datalist">
+            <li>
+                <img src="../img/noavatar1.png" />
+                <div class="left">
+                    <h5>一只莽子</h5>
+                    <p>2018.10.09 12.26</p>
+                    <p>老年服务机构的风险管理</p>
+                </div>
+                <span class="money"><em>39</em>元</span>
+            </li>
+        </ul>
+    </div>
+</body>
+<script type="application/javascript" src="../script/api.js"></script>
+<script type="application/javascript" src="../js/lib/fastclick.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        var header = $api.byId('header');
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+        //  禁止左右滑动
+        $api.fixStatusBar(header);
+        var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    };
+
+
+</script>
+
+</html>

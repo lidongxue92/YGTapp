@@ -1,0 +1,152 @@
+/*全局定义*/
+
+body, html {
+    font-size: 0.9rem;
+    font-family: "微软雅黑";
+    background: #f8f8f8;
+    color: #333;
+    padding: 0;
+    margin: auto;
+    position: relative;
+    top: 0;
+}
+
+.c-2577e3 {
+    color: #ff9913
+}
+
+#audioclick b{font-weight: normal;}
+/*顶部导航栏*/
+
+.top {
+    position: fixed;
+    top: 0;
+    background: #fff;
+    text-align: center;
+    width: 100%;
+    border-bottom: 1px solid #f8f8f8;
+    z-index: 17;
+}
+
+.top h1 {
+    font-size: 1.3rem;
+    font-weight: normal;
+    background: #fff;
+    height: 45px;
+    line-height: 45px;
+    position: relative;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+}
+
+.top h1 .back {
+    position: absolute;
+    width: 30px;
+    height: 20px;
+    display: inline-block;
+    left: 15px;
+    background: url('../img/back_light.png');
+    background-size: auto 100%;
+    z-index: 5;
+    background-repeat: no-repeat;
+    top: 15px;
+}
+
+.top h1 .title {
+    display: inline-block;
+    width: 80%;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    position: absolute;
+    left: 10%;
+    text-align: center;
+}
+
+.top h1 .share {
+    position: absolute;
+    width: 30px;
+    height: 20px;
+    display: inline-block;
+    right: 15px;
+    background: url('../img/share.png');
+    background-size: auto 100%;
+    z-index: 5;
+    background-repeat: no-repeat;
+    top: 15px;
+    background-position: right;
+}
+
+
+/*底部菜单栏*/
+
+.foot {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    border-top: 1px solid #eee;
+    height: 50px;
+    padding-top: 5px;
+    padding-left: 1%;
+    background: #fafafa;
+}
+
+.foot .tab {
+    display: inline-block;
+    width: 32%;
+    text-align: center;
+}
+
+.foot .tab img {
+    width: 22px;
+    height: 22px;
+}
+
+.foot .tab p {
+    height: 20px;
+    line-height: 20px;
+    padding: 0;
+    margin: auto;
+    color: #b3b3b3;
+    font-size: 12px;
+}
+
+.foot .tab .c-2577e3 {
+    color: #ff9913;
+}
+
+
+/*加载中*/
+
+.loading {
+    position: absolute;
+    width: 100%;
+    height: 1300px;
+    background: #fff;
+    text-align: center;
+    left: 0;
+    top: -195px;
+    z-index: 11111;
+    display: none;
+}
+
+.loading span {
+    display: inline-block;
+    margin-top: 16rem;
+    padding: 20px 20px;
+}
+
+.loading span img {
+    width: 4rem;
+}
+
+
+/*适配iphonex*/
+
+@media screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+    .foot {
+        padding-bottom: 20px;
+    }
+}

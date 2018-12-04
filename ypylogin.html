@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>医培云APP【登录界面】</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="res/css/light7.min.css">
+    <link rel="stylesheet" type="text/css" href="res/icon/iconfont.css">
+    <!--环境检查 -->
+    <script src="res/loginCheck.js" type="text/javascript"></script>
+</head>
+<style>
+    .page-login{margin-top: 3rem;}
+    .logotitle{line-height: 20px;font-size: 12px;color: #ff9913;border-bottom: 1px solid #ff9913;}
+    .smalltitle{margin: 0;text-align: left;line-height: 15px;margin-top:3rem;color: #ff9913;font-size: 12px;margin-bottom: 5px;}
+    .footer {
+        color: #fff;
+        text-align: center;
+        border: none;
+        bottom: 0;
+        height: 60px;
+        width: 100%;
+        background: #ff9913;
+        box-sizing: border-box;
+        display: block;
+        position:absolute;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+        line-height: 60px;
+    }
+
+    .footer p b {
+        font-weight: normal;
+    }
+
+     .footer .big {
+        width: 100%;
+        font-size: .8rem;
+        font-weight: 500;
+    }
+
+     .footer .bigios {
+        width: 60%;
+        font-size: .8rem;
+        font-weight: 500;
+        float: right;
+        padding: 0 40px;
+    }
+    .footer .bigios b{line-height: 20px;font-weight: normal;display: block;}
+     .footer .hospital {
+        background: #3e3d3d;
+        display: inline-block;
+        width: 40%;
+        font-size: .8rem;
+        height: 60px;
+    }
+
+    .footer .small {
+        font-size: .7rem;
+        display: block;
+        line-height: 12px;
+        font-weight: 500;
+    }
+
+    .footer .enter {
+        display: block;
+        padding: 11px 0;
+        width: 100%;
+        text-align: center;
+        background: #ff9913;
+        color: #fff;
+        font-size: 18px;
+        overflow: hidden;
+    }
+    /*提交表单*/
+    form {
+        position: fixed;
+        top: 70px;
+        background: #fff;
+        width: 100%;
+        font-size: 12px;
+        line-height: 30px;
+        z-index: 111111;
+        display: block;
+        text-align: center;
+        display: none;
+        color: #fff;
+    }
+
+    form .from {
+        padding: 30px 15px;
+        padding-bottom: 65px;
+    }
+
+    form .from .title {
+        position: relative;
+        padding: 0;
+        margin: 0;
+        background: #ff9913;
+        height: 50px;
+        line-height: 50px;
+        border-radius: 50px;
+        font-weight: normal;
+        font-size: .8rem;
+        color: #fff!important;
+        display: block;
+    }
+
+    form .from .title img {
+        width: 1rem;
+        margin-right: 10px;
+        position: relative;
+        top: 8px;
+    }
+
+    form .from .title .img {
+        width: auto;
+        height: .5rem;
+        top: 0;
+    }
+
+    form .from p {
+        margin: 0;
+        padding: 0;
+        color: #999;
+        font-size: 13px;
+    }
+    form .from ul{margin: 0;padding: 0;}
+    form .from li {
+        line-height: 50px;
+        border-bottom: 1px solid #eee;
+        text-align: left;
+        font-size: 1rem;
+    }
+
+    form .from li span {
+        color: #ff9913;
+    }
+
+    form .from li input {
+        border: 0;
+        width: 93%;
+        padding-left: 5px;
+        color: #999;
+        font-size: .7rem;
+        display: inline-block;
+    }
+
+    form .from li .input_name {
+        width: 60%;
+    }
+
+    form .from li .yzm {
+        width: 30%;
+        padding: 5px 0;
+        background: #ff9913;
+        border-radius: 3px;
+        color: #fff;
+        line-height: 18px;
+    }
+
+    form .from li textarea {
+        color: #999;
+        width: 100%;
+        height: 60px;
+        border-radius: 5px;
+        margin-top: 10px;
+        padding: 10px;
+        border: 1px solid #eee;
+    }
+
+    form .foot {
+        height: 50px;
+        line-height: 50px;
+        background: #ff9913;
+        color: #fff;
+        font-size: .8rem;
+        padding: 0;
+        margin: 0;
+        position: absolute;
+        bottom: 10px;
+        width: 100%;
+    }
+
+    form .foot button {
+        display: inline-block;
+        line-height: 50px;
+        color: #fff;
+        font-size: .8rem;
+        height: 51px;
+        border-radius: 0;
+        border: 0;
+    }
+
+    form .foot .close {
+        background: #3e3d3d;
+        width: 40%;
+    }
+
+    form .foot .sub {
+        float: right;
+        width: 60%;
+        background: #ff9913;
+    }
+    .ypyclose{position: absolute;left: 10px;top: 5px;}
+    .ypyclose img{width: 1rem;}
+</style>
+<body>
+<div class="page" id="login">
+ <div style="height: 100%;background-color: #fff;z-index: 20;position: absolute;display:none;width:100%;" class="qidongyediv">
+	 <div class="qydongyeimg" style="height: 80%; background-color:#3399FF; background-image:(); background-size:100%; background-position:center;" ></div>
+	 <div style="margin-top:22px;"><center class="qydongyeorg">
+			 <img class="huanyingorg_img" src="image/czblogo.png" height="60" /></br>
+			 <center class="huanyingad">医管通</center>
+	 </div>
+	</div>
+  <header class="bar bar-nav">
+    <h1 id="title" class="title">
+        <span class="ypyclose" onclick="closeypy();"><img src="./img/ypyclose.png" /></span>
+        用户登录
+    </h1>
+  </header>
+  <div class="content">
+    <div class="page-login">
+      <div class="list-block inset text-center">
+        <h3 >
+            <img src="./images/ypylogo.png"  style="display:block;width:40%;margin-left:30%;">
+            <span class="logotitle">医院培训考核管理云平台</span>
+        </h3>
+        <p class="smalltitle">*请使用院内管理员提供的学习账号登录</p>
+        <ul>
+          <!-- Text inputs -->
+
+          <li>
+            <div class="item-content">
+              <div class="item-media"><i class="icon iconfont icon-ren3"></i></div>
+              <div class="item-inner">
+                <div class="item-input">
+                  <input id="username" type="text" placeholder="用户名/邮箱" onfocus ="error_login('登录','#0894ec')"  />
+                </div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-media"><i class="icon iconfont icon-denglumima"></i></div>
+              <div class="item-inner">
+                <div class="item-input">
+                  <input id="userpwd" type="password" placeholder="密码" onfocus ="error_login('登录','#0894ec')" />
+
+                </div>
+              </div>
+            </div>
+          </li>
+
+        </ul>
+      </div>
+      <!--<div id="login_error" style=" text-align:center; color:Red;">请求失败</div>-->
+      <div class="content-block">
+        <p><a class="button button-big button-fill external" id="login_btn" data-transition='fade'>登 录 </a></p>
+        <p class='text-center signup'>
+      	<!-- <a href="http://console.jisupeixun.com/user/forget_pwd.html" id="zhaohui" class='pull-right' external>忘记密码？</a> -->
+            <a href="#" class='pull-left' external style="display: none;">注册</a>
+        </p>
+       <div class="leader" style="margin-top:100px; display:none">其它登录方式</div>
+      			<p style=" display:none"><a href="javascript:;" onclick="weixinlogin()" class="button button-fill button-success"><i class="iconfont icon-weixin"></i> 微信登录</a></p>
+      </div>
+    </div>
+    <footer class="footer" id="footer">
+        <span class="hospital" >了解医培云</span>
+        <span class="bigios" id="bigios" onclick="viptoast();">
+            <b style="margin-top:10px;">医院未开通医培云</b>
+            <b> 申请试用</b>
+        </span>
+        <!-- <span class="big" style="display:none;">加入会员1998元/年</span> -->
+    </footer>
+    <form id="from">
+        <div class="from">
+            <h5 class='title' onclick="tel();" style="color:#fff;"><img src="./img/phone1.png" /><span style="position:relative;top:2px;">电话咨询</span>  <img class='img'  src="./img/phonenumber.png" /></h5>
+            <p>请填写您的信息 课程顾问将在第一时间联系您</p>
+            <ul>
+                <li>
+                    <span>*</span>
+                    <input type="text" placeholder="手机号码" onblur="checkmobile()" value="" id="bmmobile" name="mobile" class="input_name" />
+                </li>
+
+                <li>
+                    <span>*</span>
+                    <input type="number" placeholder="短信验证码" name="sms" id="bmsms" class="input_name" onblur="checksms()" />
+                    <input type="button" value="获取验证码" class="button yzm fs14" id="getCodes" onclick="sendMessage()" />
+                </li>
+                <li>
+                    <span>*</span>
+                    <input type="text" onblur="checkusername()" value="" id="bmusername" name="username" class="input_name" placeholder="联系人姓名" />
+                </li>
+                <li>
+                    <span>*</span>
+                    <input type="text" onblur="checkcompany()" placeholder="机构名称" value="" id="bmcompany" name="company" class="input_name" />
+                </li>
+                <li>
+                    <span>*</span>
+                    <input type="email" onblur="checkemail()" placeholder="电子邮箱地址" value="" id="bmemail" name="email" class="input_name" />
+                </li>
+
+            </ul>
+        </div>
+        <div class="foot">
+
+            <input type="hidden" name="courseid" id="bmcourseid" value="appvip" />
+            <input type="hidden" name="page_title" id="bmpagetitle" value="appvip" />
+            <input type="hidden" name="url_from" id="bmurlfrom" value="appvip" />
+            <button type="button" class="close button button-gray" data-dismiss="modal" onclick="closevip();">取消</button>
+            <button type="button" id="bmformsubmit" class="sub button button-orange">立即提交</button>
+        </div>
+    </form>
+    <style>
+      .content {
+        color: #999;
+      }
+      .button.button-fill.button-big {
+        line-height: 2.0rem;
+        height: 2.0rem;
+      }
+      .list-block {
+        margin: .75rem;
+      }
+      .content-block {
+        margin: .75rem 0;
+      }
+      .signup a {
+        color: #999;
+      }
+    </style>
+  </div>
+</div>
+<script type='text/javascript' src='res/zepto.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='res/js/light7.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='res/js/i18n/cn.min.js'></script>
+<script src="res/js/jquery-1.10.2.min.js" type="text/javascript"></script>
+<link href="res/webuploader/css/webuploader.css" rel="stylesheet" type="text/css" />
+<script src="res/webuploader/js/webuploader.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="ckt/swiper.min.js"></script>
+<script type="text/javascript" src="ckt/upload.js"></script>
+<script type="text/javascript" src="ckt/weixin.js"></script>
+<script type='text/javascript' src="res/config.js" ></script>
+<script type='text/javascript' src="res/jisupeixun.js"  async="async"></script>
+<script type='text/javascript' src="html/honor/honor.js" ></script>
+<script src="./js/activities.js"></script>
+  <script type="text/javascript">
+	var wangluo="";
+	var appid = "";
+	$("#systemlogo").attr("src",staticimgserver+"/images/logo.png").show();
+	$("#zhaohui").attr("href",staticimgserver+"/user/forget_pwd.html");
+	apiready = function(){
+		//防止页面后退
+			history.pushState(null, null, document.URL);
+			window.addEventListener('popstate', function () {
+					history.pushState(null, null, document.URL);
+			});
+
+  		$("body").css("margin-top",api.safeArea.top+"px");
+			appid = api.deviceId;
+			var connectionType = api.connectionType.toUpperCase();  //比如： wifi
+			if(connectionType == "4G" || connectionType == "3G" ||  connectionType =="2G")
+			{
+					api.toast({
+				      msg: '您在使用手机流量，可能会产生额外费用！',
+				      duration: 5000,
+				      location: 'bottom'
+				  });
+			}
+			else if(connectionType == "none") {
+				wangluo = "none";
+				//	$("#tishi").html("<center>网络异常或无网络访问权限</center>").show();
+				api.toast({
+						msg: '网络异常或无网络访问权限',
+						duration: 5000,
+						location: 'bottom'
+				});
+			}
+	}
+	var weixinid = "";
+//微信登录
+	function weixinlogin() {
+		var wx = api.require('wx');
+		wx.isInstalled(function(ret, err) {
+		    if (ret.installed) {
+		        //alert("当前设备已安装微信客户端");
+						wx.auth({
+							  //  apiKey: ''
+							}, function(ret, err) {
+								//alert('xxx');
+							    if (ret.status) {
+							        //alert(JSON.stringify(ret));
+											wx.getToken({
+											  //  apiKey: '',
+											  //  apiSecret: '',
+											    code: ret.code
+											}, function(ret, err) {
+											    if (ret.status) {
+
+														  //alert(JSON.stringify(ret));
+															wx.getUserInfo({
+															    accessToken: ret.accessToken,
+															    openId: ret.openId
+															}, function(ret, err) {
+																  console.log(JSON.stringify(ret));
+															    if (ret.status) {
+																			if(ret.code == 0)
+																			{
+																					//登录成功
+																					api.ajax({
+																				    url: javaserver+'/ApiUser/wechatsLogin',
+																				    method: 'post',
+																				    data: {
+																				        values: {
+																				            code:ret.unionid
+																				        }
+																				    }
+																				}, function(ret2, err) {
+																				    if (ret2) {
+																				        console.log(JSON.stringify(ret2));
+																								var users = ret2;
+																								 if (users.errorcode == "0") {
+																										 SetlocalStorage("userinfo_token", ret2.token);
+																										 SetlocalStorage("userinfo", JSON.stringify(ret2.data));
+																										window.location.href = "html/homenew.html";
+
+																	 							 }
+																								 else {
+																									 		alert("您的微信未绑定账号，请使用账号登录");
+																											weixinid = ret.unionid;
+																											/**
+																											api.ajax({
+																													 url: javaserver+'/ApiUser/wechatBindings',
+																													 method: 'post',
+																													 data: {
+																															 values: {
+																																	 code: ret.unionid,
+																																	 account:'',
+																																	 pwd:''
+																															 }
+																													 }
+																											 }, function(ret, err) {
+
+																											 });
+																											 **/
+																								 }
+
+
+																				    } else {
+																				      //  api.alert({ msg: JSON.stringify(err) });
+																				    }
+																				});
+																			}
+																			else
+																			{
+																				alert("登录错误");
+																			}
+															        //alert(JSON.stringify(ret));
+															    } else {
+															        alert(err.code);
+															    }
+															});
+											    } else {
+											        alert(err.code);
+											    }
+											});
+							    } else {
+							        alert(err.code);
+							    }
+						});
+		    } else {
+		        alert('对不起，您的手机未安装微信客户端，无法使用微信登录');
+		    }
+		});
+	}
+
+    //会员弹框
+    function viptoast() {
+        var h = $(window).height() - parseFloat(290);
+        // $('html,body').animate({scrollTop:0});
+        $(".hdflow").css('height', h)
+        $('#bg').show();
+        $("#from").show();
+    }
+    //关闭会员
+    function closevip() {
+        $(".hdflow").css('height', '100%')
+        $('#bg').hide();
+        $("#from").hide();
+    }
+
+    function closeypy() {
+        api.openWin({
+            name: 'index',
+            url: './index.html',
+            pageParam: {
+                name: 'test'
+            },
+            bgColor: 'rgba(0,0,0,0)',
+            reload:true,
+            animation: {
+                type: 'none'
+            }
+        })
+    }
+
+    // $(".item-input input").click(function () {
+    //     if(document.activeElement.id==="myinp" ){
+    //     alert("获取焦点了");
+    //   }
+    //   else{
+    //     alert("没有获取焦点");
+    //   }
+    // })
+</script>
+</body>
+</html>

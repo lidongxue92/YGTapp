@@ -1,0 +1,212 @@
+ <!DOCTYPE html>
+   <html>
+   <head>
+       <meta charset="utf-8">
+       <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+       <title>title</title>
+       <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+       <link rel="stylesheet" type="text/css" href="../../res/icon/iconfont.css">
+       <style type="text/css">
+         body {
+          padding: 0px;
+          margin: 0px;
+         }
+   </style>
+   </head>
+   <body scroll="no">
+<div class="page"> </div>
+   <div style="background-color:#39f; height:40px;  position:fixed; width: 100%; z-index:2; color:#fff;line-height:40px; text-align:center;">
+       <span style=" position:absolute;line-height:40px; left:10px; display:inline-block;" onclick="closew()"> <i class="iconfont icon-shangyiye2"></i>返回</span>
+       <span style=" position:absolute;line-height:40px; right:10px; display:inline-block;" onclick="getpagenumber()">+笔记</span>
+     <span id="title" >教案预览</span>
+   </div>
+   <div style=" position: absolute; top:30%; width:100%; text-align:center;" id="loading">
+     <center><img src="../images/loading_more.gif" /><br />正在载入</center>
+   </div>
+
+   <div style="background-color:#eee; height:150px;  position:fixed; width: 100%; z-index:2;bottom:0;">
+     <div style="margin:10px;">
+      笔记：
+      <ul id="bijilist">
+      </ul>
+    </div>
+   </div>
+   <script type='text/javascript' src="../../res/config.js" ></script>
+   <script type="text/javascript" src="../script/api.js"></script>
+   <script src="../../res/zepto.min.js" type="text/javascript"></script>
+   <script type='text/javascript' src='../../res/js/light7.min.js' charset='utf-8'></script>
+   <script type='text/javascript' src='../../res/js/i18n/cn.min.js'></script>
+   <script type="text/javascript" src='../../res/common.js' charset='urf-8'></script>
+
+   <script type="text/javascript">
+       apiready = function(){
+
+         $("body").css("margin-top",api.safeArea.top+"px");
+         api.setStatusBarStyle({
+            style: 'dark',
+            color: 'rgba(0,0,0,0.0)'
+         });
+           document.title = api.pageParam.title;
+           var classObj = GetlocalStorage("classObj");
+          // var orgid = getUserInfo().organization_ID;
+        //  var javaserver = "http://192.168.1.138:8080";
+
+  console.log(api.pageParam.cid+','+getUserInfo().organization_ID);
+          //查询笔记列表
+          getAjax(javaserver + "/notebook/findNotebook", {gradeId: classObj.gradeId,
+            courseId:api.pageParam.cid,pageSize:20,pageIndex:1,
+          userId: getUserInfo().user_ID,fileId:api.pageParam.fid},
+          function (rs) {
+            // alert(rs);
+              var data = JSON.parse(rs);
+              if(data.errorcode == "0"){
+                  if(data.datas.length >0)
+                  {
+                      var html = "";
+                      for(var j=0;j<data.datas.length;j++){
+                        var time = "",page="";
+                        if(data.datas[j].createtime != undefined)
+                        {
+                          time = data.datas[j].createtime;
+                        }
+                        if(data.datas[j].filePageSize != undefined)
+                        {
+                          page = "[第"+data.datas[j].filePageSize+'页]';
+                        }
+                        html+="<li id='"+data.datas[j].notebookId+"'>"+page+data.datas[j].notebookMarke+" <small>"+time+"</small> <a href='#' onclick=\"deletenoot('"+data.datas[j].notebookId+"')\">删除</a></li>";
+                      }
+                      $("#bijilist").html(html);
+                  }
+                  else {
+                      $("#bijilist").html("<center>暂无笔记</center>");
+                  }
+              }
+              else {
+                console.log('查询错误！');
+              }
+          });
+           //document.getElementById("iframepage").src=api.pageParam.url;
+          // document.getElementById("title").innerHTML=api.pageParam.title;
+          var docurl ='../../script/pdf2/web/viewer.html?file='+api.pageParam.url;
+          console.log('文件预览'+api.pageParam.url);
+           api.openFrame({
+               name: 'iframedocpage',
+               url: docurl,
+               rect: {
+                   x: 0,
+                   y: api.safeArea.top+40,
+                   w: 'auto',
+                   h: api.winHeight-210
+               }
+           });
+           api.setFrameClient({
+               frameName: 'iframedocpage'
+           }, function(ret, err) {
+               switch (ret.state) {
+                   case 0:
+                       break;
+                   case 1:
+                       break;
+                   case 2:
+                       document.getElementById('loading').style.display ='none';
+                       break;
+                   case 3:
+                       break;
+                   case 4:
+                       break;
+                   default:
+                       break;
+               }
+           });
+         //  setTimeout(function(){
+
+         //  },3000);
+
+         api.addEventListener({
+             name: 'officepage'
+         }, function(ret, err) {
+            // alert(JSON.stringify(ret.value.num));
+             var num =ret.value.num;
+             api.prompt({
+                 title:'笔记',
+                 msg:'请输入要记录的内容（当前第'+num+'页）',
+                  buttons: ['确定', '取消']
+              }, function(ret, err) {
+                  var index = ret.buttonIndex;
+                  var text = ret.text;
+                   if(text != ""){
+                     var notebookInfo = {
+                       gradeId: classObj.gradeId,
+                       courseId:api.pageParam.cid,
+                       studentId:getUserInfo().user_ID,
+                       studentMame:getUserInfo().user_Name,
+                       notebookMarke:text,
+                       fileId:api.pageParam.fid,
+                       filePageSize:num
+                     };
+                     getAjax(javaserver + "/notebook/addOrEditNotebook", {notebookInfo: JSON.stringify(notebookInfo) },
+                     function (rs) {
+                       //  alert(rs);
+                         if(JSON.parse(rs).errorcode =="0"){
+                            alert("保存成功");
+                          var  page = '[第'+num+'页]';
+                          var  html ="<li>"+page+text+"</li>";
+                          if($("#bijilist").html() == "<center>暂无笔记</center>")
+                          {
+                            $("#bijilist").html(html);
+                          }
+                          else {
+                            $("#bijilist").append(html);
+                          }
+
+                         }
+                         else {
+                           alert("保存失败"+rs);
+                         }
+                     });
+                   }
+                  //" /notebook/addOrEditNotebook"
+              });
+         });
+
+       };
+       function closew(){
+         //alert("x");
+           api.closeWin();
+       }
+       function getpagenumber(){
+         var jsfun = 'aaa()';
+          api.execScript({
+          frameName: 'iframedocpage', //winName
+          script: jsfun
+          });
+
+       }
+       function deletenoot(id){
+         api.confirm({
+             title: '系统提示',
+             msg: '您确定是要删除此条笔记吗？',
+             buttons: ['确定', '取消']
+         }, function(ret, err) {
+             var index = ret.buttonIndex;
+             if(index == 1)
+             {
+                document.getElementById('loading').style.display ='block';
+                getAjax(javaserver + "/notebook/deleteNotebook", {notebookId: id,userid:getUserInfo().user_ID },
+                function (rs) {
+                   // alert(rs);
+                   if(JSON.parse(rs).errorcode =="0"){
+                     alert('删除成功！');
+                       $("#"+id).remove();
+                   }
+                   else {
+                     alert('删除错误！');
+                   }
+                   document.getElementById('loading').style.display ='none';
+                });
+             }
+         });
+
+       }
+   </script>
+   </html>

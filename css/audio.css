@@ -1,0 +1,79 @@
+body{overflow: hidden;}
+#audio .header{position: absolute;height: 400px;width: 100%;overflow: hidden;top: -20px;}
+#audio .header .bgimg{position: absolute;height: 140%;left: -50%;top: -10%;filter: url(blur.svg#blur); -webkit-filter: blur(10px); /* Chrome, Opera */-moz-filter: blur(10px);-ms-filter: blur(10px);
+            filter: blur(10px);filter: progid:DXImageTransform.Microsoft.Blur(PixelRadius=10, MakeShadow=false);}
+#audio .header .back{position: absolute;width: 50px;height: 30px;display: inline-block;background: url('../img/more_unfold.png');background-size: auto 100%;z-index: 5;background-repeat: no-repeat;top: 43px;background-position-x: 8px;}
+#audio .header .share{position: absolute;width:50px;height: 20px;display: inline-block;right: 15px;background:url('../img/sharewhite.png');background-size: auto 100%;z-index: 5;background-repeat: no-repeat;top: 43px;background-position: right;}
+#audio .header p{color: #fff;font-size: 1.2rem;text-align: left;position: relative;margin-top: 15px;width: 90%;margin-left: 5%;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;
+        word-wrap: normal;word-wrap: break-word;word-break: break-all;max-height: 40px;line-height: 20px;white-space: normal;display: -webkit-box;
+        -webkit-box-orient: vertical;-webkit-line-clamp: 2;margin-bottom: 30px;}
+#audio .backimg{position: relative;width: 90%;margin-top: 7rem;opacity: 1;max-height:50%;}
+    /*语音播放*/
+#audio .audio{position: fixed;margin-top:4rem;text-align: center;bottom: 110px;}
+#audio .audio img{width: 30px;opacity: .5}
+#audio .audio button{background: transparent;border: 0;}
+#audio .audio .play{width: 60px;margin-left: 15px;margin-right: 15px;}
+#audio .prev{transform: rotate(180deg);}
+#audio .header .bgimg{opacity: .5}
+#audio .fullopciaty img{opacity: 1;}
+#page{position: absolute;opacity: 0;}
+    /*底部*/
+#audio .foot{position: fixed;width: 100%;padding: 10px 0;color: #999;}
+#audio .foot p{display: inline-block;width: 24%;text-align: center;}
+#audio .foot p img{width: 1.7rem;}
+#audio .foot p b{font-weight: normal;display:inline-block;width: 100%;line-height: 15px;margin-top: 5px;}
+#audio .foot p .speed{width: 1.6rem;height: 1.6rem;border-radius: 50%;border: .2rem solid #ddd;display: inline-block;line-height: 1.6rem;color: #999;font-weight: 500;font-size: 10px;}
+#audio .foot p #speed{width: 100%;text-align: center;}
+    /*倍速*/
+#audio .choosespeed{position: fixed;width: 100%;min-height: 100px;background: #fff;bottom: 0;z-index: 112;display:none;}
+#audio .choosespeed li{list-style: none;line-height: 45px;text-align: center;color: #999;font-size: 13px;margin-top: 3px;height: 45px;border-bottom: 1px solid #fafafa;}
+#audio .choosespeed .active{color: #ff9913;}
+#audio .choosespeed li:first-child{margin-top: 0;}
+#audio .choosespeed .close{background: #fafafa;text-align: center;color: #999;font-size: 13px;line-height: 45px;height: 45px;margin: 0;padding: 0;font-weight: normal;}
+
+    /*课程列表*/
+#audio .classlist{position: fixed;width: 100%;max-height: 500px;background: #fff;bottom: 0;z-index: 112;display:none;overflow-y: scroll;}
+#audio .classlist h5{background: #f8f8f8;margin: 0;padding: 15px 10px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;}
+#audio .classlist h5 .class{margin-left: 10px;border-left: 4px solid #ff9913;padding-left: 5px;color: #999;font-weight: normal;font-size: 13px;}
+#audio .classlist h5  .right{float:right;margin-right:10px;font-size:13px;color:#999;font-weight: normal;}
+#audio .classlist h5  .right img{width:.6rem;position: relative;top: -2px;}
+#audio .classlist li{list-style: none;line-height: 45px;text-align: left;color: #999;font-size: 13px;margin-top: 3px;height: 45px;border-bottom: 1px solid #fafafa;padding-left: 15px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;}
+#audio .classlist li img{width: 1.1rem;display: none;margin-right: 10px;}
+#audio .classlist .active{color: #ff9913;}
+#audio .classlist .active img{display: inline-block;}
+#audio .classlist li:first-child{margin-top: 0;}
+#audio .classlist .close{background: #fafafa;text-align: center;color: #999;font-size: 13px;font-weight: normal;}
+    /*分享*/
+#audio .sharetoast{position: fixed;width: 100%;left: 0;background: #f4f4f4;z-index: 113;bottom: 0;padding-top: 20px;display:none;min-height: 180px;}
+#audio .sh{display: block;}
+#audio .sharetoast h5{color:#666;text-align: center;font-weight: normal;padding: 0;margin: 0;font-size: 1rem;}
+#audio .sharetoast li{display:inline-block;padding: 0 20px;text-align: center;padding-bottom: 10px;margin-top: 20px;}
+#audio .sharetoast li p{margin-top: 10px;color: #999;}
+#audio .sharetoast li img{width: 3rem;}
+
+#audio .sharetoast #opentool{background: #fff;text-align: center;line-height: 50px;position: absolute;bottom: 0;width: 100%;height: 50px;}
+#audio .bg{position: absolute;width: 100%;height: 100%;top: 0;left: 0;background: rgba(0,0,0,.3);z-index: 111;display:none;}
+#audio .loading span{margin-top: 30rem;}
+@media screen and (max-width: 320px){
+    #audio .header{height: 340px;}
+    #audio .audio{margin-top:2rem;}
+    #audio .foot span img{width: 1.5rem;}
+}
+@media screen and (min-width: 360px){
+    #audio .audio{margin-top:2rem;}
+    #audio .foot span img{width: 1.5rem;}
+}
+@media screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+    #audio .audio{margin-top: 5rem;}
+    #audio .header{height: 460px;}
+    #audio .header p{margin-top: 20px;}
+    #audio .header .back{top: 50px;}
+    #audio .header .share{top:50px;}
+    #audio .foot{padding-bottom: 20px;}
+    #audio .choosespeed{padding-bottom: 10px;}
+    #audio .classlist{padding-bottom: 10px;}
+    #audio .sharetoast{padding-bottom: 10px;min-height: 220px;}
+    #audio .sharetoast li{margin-top: 30px;}
+    #audio .sharetoast #opentool{bottom: 20px;line-height: 50px;}
+    #audio .audio{bottom: 180px;}
+}

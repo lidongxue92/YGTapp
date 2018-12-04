@@ -1,0 +1,144 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>医管通APP</title>
+    <link rel="stylesheet" type="text/css" href="./css/api.css" />
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/ygtcommon.css">
+    <script src="../js/lib/jquery2.js"></script>
+    <style type="text/css">
+
+    </style>
+
+
+    <body>
+        <header class="top" id="header">
+            <h1>
+                <!-- <span class="back" onclick="api.closeWin();"></span> -->
+                <span class="title" >学习中心</span>
+                <!-- <span class='titleright' onclick="openLive();">直播间</span> -->
+            </h1>
+        </header>
+
+        <!-- 底部导航栏 -->
+        <footer class="foot" id="footer">
+            <span class="tab"  tapmode onclick="index();">
+                  <img src='../img/faxian-3.png'/>
+                  <p>发现</p>
+            </span>
+            <span class="tab"  >
+                <img src='../img/yigou-2.png'/>
+                <p class='c-2577e3'>学习</p>
+            </span>
+            <span class="tab" tapmode onclick="my();">
+                  <img src='../img/wode-3.png'/>
+                  <p >我的</p>
+            </span>
+        </footer>
+    </body>
+    <script src="../js/jquery-weui.min.js"></script>
+    <script type="application/javascript" src="../js/lib/fastclick.js"></script>
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript">
+        var apihost = $api.getStorage('apihost');
+        if (apihost == undefined || apihost == '') {
+            apihost = 'http://trade.ygt.cm';
+            $api.setStorage('apihost', apihost);
+        }
+        var ygtuserinfo = '';
+        var iswxpay = $api.getStorage('iswxpay');
+        apiready = function() {
+            //输出Log，Log将显示在APICloud Studio控制台
+            ygtuserinfo = $api.getStorage('ygtuserinfo');
+            console.log(JSON.stringify(ygtuserinfo))
+
+            api.addEventListener({
+                name:'viewappear'
+            }, function(ret, err){
+                api.closeWin({
+                    name: 'concemed'
+                });
+                api.closeFrame({
+                    name: 'concemedframe'
+                });
+
+            });
+            var header = $api.byId('header');
+            $api.fixStatusBar(header);
+            if (ygtuserinfo.avatar != '') {
+                $('.head').attr('src', ygtuserinfo.avatar);
+            } else {
+                $('.head').attr('src', '../img/noavatar.png');
+            }
+            //  禁止左右滑动
+            api.setWinAttr({
+                slidBackEnabled: false
+            });
+            toph = $api.offset($api.byId('header')).h;
+            bottomh = $api.offset($api.byId('footer')).h;
+            api.openFrame({
+                name: 'studyframe',
+                url: './studyframe.html',
+                rect: {
+                    marginLeft: 0, //相对父 window 左外边距的距离
+                    marginTop: toph, //相对父 window 上外边距的距离
+                    marginBottom: bottomh, //相对父 window 下外边距的距离
+                    marginRight: 0
+                },
+                pageParam: {
+                    id: 0
+                },
+                bounces: true,
+                vScrollBarEnabled: false,
+                hScrollBarEnabled: false
+            });
+        }
+        //首页
+        function index() {
+            api.addEventListener({
+                name:'viewdisappear'
+            }, function(ret, err){
+               api.closeWin();
+            });
+            api.openWin({
+                name: 'root',
+                url: '../index.html',
+                pageParam: {
+                    name: 'test'
+                },
+                bgColor: 'rgba(0,0,0,0)',
+                animation: {
+                    type: 'none'
+                }
+            })
+
+
+        }
+
+        //底部我的
+        function my() {
+            api.addEventListener({
+                name:'viewdisappear'
+            }, function(ret, err){
+               api.closeWin();
+            });
+            api.openWin({
+                name: 'my',
+                url: './my.html',
+                pageParam: {
+                    name: 'test'
+                },
+                bgColor: 'rgba(0,0,0,0)',
+                animation: {
+                    type: 'none'
+                }
+            })
+
+        }
+    </script>
+
+</html>

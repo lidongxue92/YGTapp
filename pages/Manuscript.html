@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>关于我们</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/ygtcommon.css" />
+    <style>
+
+    body{height: 100%;text-align: center;background: #fff;}
+    p{padding: 0 15px;font-size: .9rem;line-height: 25px;color: #999;text-align: left;}
+    .mt20{margin-top: 20px;}
+    .wordtitle{margin-top: 70px;line-height: 30px;text-align: left;padding: 10px;font-size: 18px;font-weight: 900;letter-spacing:2px;}
+    section{background: #fff;padding-top: 20px;margin-top: 10px;}
+    section p{color: #000;font-size: 14px;letter-spacing:1px;}
+    section img{max-width: 100%;}
+    footer{position: fixed;bottom: 4rem;width: 100%;text-align: center;}
+    .home{color: #2577e3}
+    .top h1 .back{background: url('../img/ypyclose.png');background-size: 100%;width: 20px;height: 20px;}
+    /*分享*/
+    .sharetoast{position: fixed;width: 100%;left: 0;background: #f4f4f4;z-index: 113;bottom: 0;padding-top: 20px;display:none;min-height: 180px;text-align: left;}
+    .sh{display: block;}
+    .sharetoast h5{color:#666;text-align: center;font-weight: normal;padding: 0;margin: 0;font-size: 1rem;}
+    .sharetoast li{display:inline-block;padding: 0 20px;text-align: center;padding-bottom: 10px;margin-top: 20px;}
+    .sharetoast li p{margin-top: 10px;color: #999;}
+    .sharetoast li img{width: 3rem;}
+
+    .sharetoast #opentool{background: #fff;text-align: center;line-height: 50px;position: absolute;bottom: 0;width: 100%;height: 50px;}
+    .bg{position: absolute;width: 100%;height: 100%;left: 0;top: 0;background: rgba(0,0,0,.5);display: none;}
+    @media screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+        .wordtitle{margin-top: 90px;}
+    }
+    </style>
+</head>
+
+<body>
+    <header class="top" id="header">
+        <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span class="title">文字讲稿</span>
+            <!-- <span class="share" id="share"></span> -->
+        </h1>
+    </header>
+    <div class="wordtitle">台湾养老机构质量管理与评审制度台湾养老机构质量管理与评审制度台湾</div>
+    <p class="home">台湾养老</p>
+    <section>
+
+    </section>
+    <div class='sharetoast'>
+        <h5>邀请好友一起来听课吧~</h5>
+        <ul>
+            <li id='share_friend' onclick="sharefriend();">
+                  <a href="javascript:void(0)" id="shareFriends">
+                      <img src="../img/frend.png" />
+                      <p>微信好友</p>
+                  </a>
+              </li>
+              <li id="share" onclick="sharefriends();">
+                  <a href="javascript:void(0)" id="shareCFriends">
+                      <img src="../img/frends.png" />
+                      <p>朋友圈</p>
+                  </a>
+              </li>
+              <!-- <li id="share_poster" onclick="poster();">
+                  <a href="javascript:void(0)" id="Invitation">
+                      <span class="msg">高收益</span>
+                      <img src="../img/Invitation.png" />
+                      <p>邀请卡</p>
+                  </a>
+              </li> -->
+        </ul>
+        <p id='opentool'>取消<p>
+    </div>
+    <div class="bg" id="bg"></div>
+</body>
+<script src="../js/lib/jquery-2.1.4.js"></script>
+<script type="application/javascript" src="../js/lib/fastclick.js"></script>
+<script src="../script/api.js"></script>
+<script type="text/javascript">
+var apihost = $api.getStorage('apihost');
+if (apihost == undefined || apihost == '') {
+    apihost = 'http://member.ygt.cm';
+    $api.setStorage('apihost', apihost);
+}
+var ygtuserinfo = '';
+var calsstitle ='';
+var shareurl = '';
+var sharetitle ='';
+apiready = function() {
+    var header = $api.byId('header');
+    $api.fixStatusBar(header);
+    systemtype = api.systemType;
+    classroomid = api.pageParam.id;
+    ygtuserinfo = $api.getStorage('ygtuserinfo');
+  //  禁止左右滑动
+  api.setWinAttr({
+      slidBackEnabled : false
+  });
+  calsstitle = $api.getStorage('classtitle');
+  shareurl = $api.getStorage('shareurl');
+  sharetitle = $api.getStorage('sharetitle');
+  var listtitle = $api.getStorage('listtitle');
+  // $('.title').html(listtitle);
+  $('.wordtitle').html(calsstitle);
+  $('.home').html(listtitle);
+  var h = $(window).height();
+   $('body').css('min-height',h)
+  //  禁止左右滑动
+  loadData();
+};
+
+//PPT数据
+function loadData() {
+    $(".loading").show();
+    var classroomid = api.pageParam.id;
+    api.ajax({
+            url: apihost + '/api/wtk/special/getCourseContent',
+            method: 'post',
+            headers: {
+                'TOKEN':ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    classroomid: classroomid,
+                    uid:ygtuserinfo.id
+                }
+            }
+        },
+        function(data, err) {
+            console.log(JSON.stringify(data)+'直播的数据');
+            console.log(JSON.stringify(err));
+            $(".loading").hide();
+            if (data) {
+                if (data.code == 1) {
+                    $('section').html(data.data.info.content);
+                }
+            }
+        });
+}
+
+//分享
+$('#share').bind('click',function(){
+
+  $('#bg').show();
+  $(".sharetoast").addClass('sh');
+});
+//分享关闭
+$('#opentool').bind('click',function(e){
+  $('#bg').hide();
+  $(".sharetoast").removeClass('sh');
+});
+
+$('#bg').bind('click',function(e){
+  $('#bg').hide();
+  $(".sharetoast").removeClass('sh');
+  $('#bg').hide();
+});
+
+//分享朋友
+function sharefriend() {
+    if (shareurl == undefined) {
+        shareurl = '/index/special/guide'
+    }
+  var wx = api.require('wx');
+  wx.shareWebpage({
+      apiKey: '',
+      scene: 'session',
+      title: sharetitle,
+      description: '',
+      thumb: 'widget://img/shareicon.png',//shareicon,//http://img1.wtk.so/2016/08/19/57b6dbc29e7cc.png
+      contentUrl:shareurl
+  }, function(ret, err) {
+      if (ret.status) {
+          alert('分享成功');
+          $('#bg').hide();
+          $(".sharetoast").removeClass('sh')
+      } else {
+          alert('分享失败');
+          console.log(JSON.stringify(err));
+      }
+  });
+}
+
+//分享朋友圈
+function sharefriends() {
+    if (shareurl == undefined) {
+        shareurl = '/index/special/guide'
+    }
+  var wx = api.require('wx');
+  wx.shareWebpage({
+      apiKey: '',
+      scene: 'timeline',
+      title: sharetitle,
+      description: '',
+      thumb: 'widget://img/shareicon.png',// shareicon,//http://img1.wtk.so/2016/08/19/57b6dbc29e7cc.png
+      contentUrl:shareurl
+  }, function(ret, err) {
+      if (ret.status) {
+          alert('分享成功');
+          $('#bg').hide();
+          $(".sharetoast").removeClass('sh')
+      } else {
+          alert('分享失败');
+          console.log(JSON.stringify(err));
+      }
+  });
+}
+</script>
+
+</html>
