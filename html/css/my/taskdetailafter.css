@@ -1,0 +1,35 @@
+.middle{margin-top: 75px;}
+.middle h5{padding:0 10px;background: #fff;font-weight: normal;font-size: 14px;}
+.middle h5 span{display: inline-block;padding:10px 15px;}
+.middle h5 .active{color: #ff9913;border-bottom: 1px solid #ff9913;}
+.tasklist .list{background: #fff;margin-top: 10px;padding: 0 15px;color:#333;}
+.tasklist .list h5{text-align:center;font-size:16px;font-weight: normal;}
+.tasklist .list img{width:20px;position: relative;top: 5px;}
+.tasklist li{margin-top: 10px;list-style: none;border-bottom: 1px dotted #ddd;padding: 10px 0;}
+.tasklist li .c-333{color:#333;font-weight: 700;}
+.tasklist .list li h5{font-size: 16px;text-align:left;}
+.tasklist li p{font-size: 13px;line-height: 25px;color: #666;display: flex;width:100%;}
+.tasklist li p span{display: inline-block}
+.tasklist li p .left{width:80%;white-space: nowrap;text-overflow: ellipsis;overflow: hidden; }
+.lasttitle{text-align: center;color: #666;font-size:13px;margin-top: 15px;padding-bottom: 15px;}
+#main{display:none;}
+@media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+  .middle {
+      margin-top: 90px;
+  }
+
+}
+/* xr */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) {
+  .middle {
+      margin-top: 90px;
+  }
+
+}
+/* xs max */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) {
+  .middle {
+      margin-top: 90px;
+  }
+
+}

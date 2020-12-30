@@ -1,0 +1,196 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>作业详情</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" href="../../css/base.css">
+    <link rel="stylesheet" href="../../css/ygtcommon.css">
+    <link rel="stylesheet" href="../../css/my/taskdetailafter.css">
+<body >
+    <header class="top" id="header">
+        <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span class="title">试题分析</span>
+        </h1>
+    </header>
+    <div class="middle tasklist">
+      <h5 id='title'><span class="tab active" dataid ="1">错题排行</span><span class="tab" dataid ="2">错误分析</span></h5>
+        <div class="list">
+            <!-- <div class="livelist">
+                <div>
+                    <h5>医管通护理频道</h5>
+                    <p>课程你附加费看结果放客服发看看是方法</p>
+                    <p class="clearfix">
+                        <span class="left">之恋管理</span>
+                        <span class="right">100人回答</span>
+                    </p>
+                </div>
+            </div>
+            <div class="livelist">
+                <div>
+                    <h5>医管通护理频道</h5>
+                    <p>课程你附加费看结果放客服发看看是方法</p>
+                </div>
+            </div> -->
+        </div>
+        <div id="main" style="height:200px;background: #fff;width:100%"></div>
+    </div>
+</body>
+<script src="../../js/lib/jquery-2.1.4.js"></script><script src="../../js/common.js"></script>
+<script src="../..//js/echarts.min.js"></script>
+<script type="application/javascript" src="../../script/api.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+        //  禁止左右滑动
+        $api.fixStatusBar(header);
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+        homeafter();
+    };
+
+    // 错题排行
+    function homeafter() {
+        api.ajax({
+            url: wtkurl +'task/errTop',
+            method: 'post',
+            headers: {
+                'TOKEN': ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    uid: ygtuserinfo.id,
+                    taskid:api.pageParam.id
+                }
+            }
+        }, function(data, err) {
+            console.log(JSON.stringify(data));
+            if (data.data.length > 0) {
+            var listhtml = '';
+            listhtml +='<h5><img src="../../img/taskwork.png">&ensp;考试期间错误比例最高的'+data.data.length+'题目是：</h5>'
+            for (var i = 0; i < data.data.length; i++) {
+              listhtml +='<li><h5><span class="c-333">(错误数：'+data.data[i].ecount+')</span>'
+              if (data.data[i].type == 1) {
+                listhtml +='单选：'+data.data[i].question+'</h5>'
+              }else if (data.data[i].type == 2) {
+                listhtml +='多选：'+data.data[i].question+'</h5>'
+              }else{
+                listhtml +='判断：'+data.data[i].question+'</h5>'
+              }
+              var chooselist = data.data[i].choselist;
+              if (data.data[i].type != 3) {
+                $.each(chooselist, function(a,ret) {
+                  console.log(a)
+                  listhtml += '<p>'+a+':'+ret.chose+'</p>'
+                });
+              }
+              if (data.data[i].answer == "T") {
+                listhtml +='<p>答案：正确</p></li>'
+              }else if (data.data[i].answer == "F") {
+                listhtml +='<p>错误</p></li>'
+              }else{
+                listhtml +='<p>答案：'+data.data[i].answer+'</p></li>'
+              }
+            }
+            $('.list').append(listhtml);
+          }
+
+        });
+    }
+    // 错误分析
+    function homeaftererr() {
+        api.ajax({
+            url: wtkurl +'task/TaskResult',
+            method: 'post',
+            headers: {
+                'TOKEN': ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    uid: ygtuserinfo.id,
+                    taskid:api.pageParam.id
+                }
+            }
+        }, function(data, err) {
+            //alert(JSON.stringify(data));
+            var listhtml = '';
+          listhtml +='<h5 style="text-align:left">总分：'+data.data.taskinfo.score+'分</h5><p>每套试卷只可以回答一次；'
+          $.each(data.data.questionnums, function(b,data) {
+            if (data.type == 1) {
+              listhtml +='单选题:'
+            }else if (data.type ==2) {
+              listhtml +='多选题:'
+            }else{
+              listhtml +='判断:'
+            }
+            listhtml +=data.num+'题；'
+          });
+          listhtml +='</p><h5 style="text-align:left"><img style="width:30px;" src="../../img/taskstudent.png">&ensp;'+data.data.students+'人答题</h5>'
+          $('#main').css('display','block')
+          var myChart = echarts.init(document.getElementById('main'));
+          var xdata = [];
+          var ydata = [];
+          $.each(data.data.scorelist, function(a,ret) {
+            console.log(a)
+            xdata.push(a);
+            ydata.push(ret)
+          });
+          option = {
+            xAxis: {
+                type: 'category',
+                data: xdata,
+                axisLabel: {
+                  interval: 0
+                }
+            },
+            yAxis: {
+                type: 'value',
+                minInterval: 1,
+                name: '人数',
+                minInterval: 1, //设置成1保证坐标轴分割刻度显示成整数。
+              axisLabel: {
+                  formatter: '{value} 人'
+              }
+            },
+            series: [{
+                data: ydata,
+                type: 'bar',
+                barWidth:15
+            }]
+        };
+        myChart.setOption(option);
+        $('.list').append(listhtml);
+      });
+    }
+    $('.tab').click(function () {
+    $('.tab').removeClass('active');
+    $(this).addClass('active');
+    $('.list').html('');
+    page = 1;
+    if ($('.active').attr('dataid') == 1) {
+      homeafter();
+    }else{
+      homeaftererr();
+    }
+
+})
+
+</script>
+
+</html>

@@ -1,0 +1,152 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>练习题列表</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/ygtcommon.css">
+    <link rel="stylesheet" href="../css/index/exercisesframe.css">
+<body >
+    <div class="middle">
+
+        <div class="answer">
+            <h5 class="titile">练习（365）</h5>
+            <div class="answerlist"></div>
+            <div class="Answerdetails" onclick="Answerdetails()">
+                <h5><img src="../img/noavatar1.png" />&ensp;杨振&emsp;<span>挑战了周航老师的练习题</span></h5>
+                <h5 class="anstitle">#课程你附加费看结果放客服发看看是方法课程你附加费看结果放客</h5>
+                <p class="intro">发达不规不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股
+                份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达不规范
+                范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达</p>
+                <p class="tr">11评论<span></span>145人看过</p>
+            </div>
+            <div class="Answerdetails">
+                <h5><img src="../img/noavatar1.png" />&ensp;杨振&emsp;<span>挑战了周航老师的练习题</span></h5>
+                <h5 class="anstitle">#课程你附加费看结果放客服发看看是方法课程你附加费看结果放客</h5>
+                <p class="intro">发达不规不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股
+                份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达不规范
+                范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达</p>
+                <p class="tr">11评论<span></span>145人看过</p>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="../js/lib/jquery-2.1.4.js"></script><script src="../js/common.js"></script>
+<script type="application/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var page = 1;
+    var pagesize = 10;
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    var loading = false;
+    var isover = false;
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+        //  禁止左右滑动
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+        api.setRefreshHeaderInfo({
+            bgColor: '#fefefe',
+            textColor: '#999',
+            textDown: '下拉刷新...',
+            textUp: '松开刷新...',
+            //  textLoading:'<img src="widget://img/loading.gif" />',
+            showTime: false
+        }, function(ret, err) {
+            //在这里从服务器加载数据，加载完成后调用api.refreshHeaderLoadDone()方法恢复组件到默认状态
+            if (!loading) {
+                isover = false;
+              page = 1;
+              $api.html($api.byId('Tolist'), '');
+              api.refreshHeaderLoading();
+              Arrangement();//api.refreshHeaderLoadDone();
+            }
+        });
+        api.addEventListener({
+            name: 'scrolltobottom',
+            extra: {
+                threshold: 0 //设置距离底部多少距离时触发，默认值为0，数字类型
+            }
+        }, function(ret, err) {
+            if (loading || isover) {
+                return;
+            }
+            page++; //页数
+            Arrangement();
+        });
+        Arrangement();
+    };
+
+    function Arrangement() {
+        loading = true;
+        api.ajax({
+            url: wtkurl +'classroomlist/getTaskByClassroomid',
+            method: 'post',
+            headers: {
+                'TOKEN':ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    classroomid:api.pageParam.id,
+                    uid:ygtuserinfo.id
+                },
+            }
+        }, function(data, err) {
+            alert(JSON.stringify(data));
+            if (data.data != '') {
+                if (data.data[0].answerlist != '') {
+                    var answerlist = data.data.[0]answerlis.length;
+                    var listhtml = '';
+                    for (var i = 0; i < answerlist; i++) {
+                        listhtml +='<div class="Answerdetails" onclick="Answerdetails('+answerlist[i].question_id+')">'+'<h5><img src="'+answerlist[i].pic+'" />&ensp;'+answerlist[i].username+
+                                    '<span>挑战了'+data.data.username+'老师的练习题</span>'+'</h5>'+'<h5 class="anstitle">#'+answerlist[i].answers+'</h5>'+'<p class="intro">'+answerlist[i].answers+'</p>'
+                                    +'<p class="tr">'+11+'评论<span></span>'+145+'人看过</p>'+'</div>'
+                    }
+                    $('.answerlist').append(listhtml);
+
+                    if (answerlist < 10) {
+                        var html2 = ' ';
+                        html2 += "<div class='lasttitle'>已无更多数据</div>";
+                        $('.answerlist').append(html2);
+                        isover = true;
+                    }
+                    loading = false;
+                    api.refreshHeaderLoadDone();
+                }
+            } else {
+                console.log('接口错误信息getchatlist：');
+                console.log(JSON.stringify(err));
+            }
+        });
+    }
+
+    function Answerdetails() {
+        api.openWin({
+            name: 'answerdetails',
+            url: './answerdetails.html',
+            pageParam: {
+                name: 'test'
+            },
+            bgColor: 'rgba(0,0,0,0)',
+            animation: {
+                type: 'none'
+            }
+        });
+    }
+</script>
+
+</html>

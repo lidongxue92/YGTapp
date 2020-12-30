@@ -1,0 +1,200 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>医管通APP</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/ygtcommon.css">
+    <link rel="stylesheet" href="../css/index/exercises.css">
+<body >
+    <header class="top" id="header">
+        <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span class="title">练习题</span>
+        </h1>
+    </header>
+    <div class="middle">
+        <div class="nodata">
+            <img src="../img/homework.png" />
+            <p>还没有布置作业哦~</p>
+        </div>
+        <div class="ex">
+            <h5 class="introduce"><img src="../img/noavatar1.png" />&ensp;<span class="tecname">周汉</span> <span class="tec">讲师</span></h5>
+            <h6 class="title">课程你附加费看结果放客服发看看是方法课程你附加费看结果放客服发看看是方法课程你附加费看结果放客服发看看是方法课程你附加费看结果放客服发看看是方法</h6>
+            <p class="information">306人挑战&ensp;112人拿到优秀</p>
+            <h5 class="infor">练习题说明</h5>
+            <p class="content"> 不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发
+                高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布
+                发达不规不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股
+                份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达不规范
+                范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达</p>
+            <p class="button" onclick="comment()">开始练习</p>
+        </div>
+        <div class="answer">
+            <h5 class="titile"></h5>
+            <div class="answerlist"></div>
+            <!-- <div class="Answerdetails" onclick="Answerdetails()">
+                <h5><img src="../img/noavatar1.png" />&ensp;杨振&emsp;<span>挑战了周航老师的练习题</span></h5>
+                <h5 class="anstitle">#课程你附加费看结果放客服发看看是方法课程你附加费看结果放客</h5>
+                <p class="intro">发达不规不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股
+                份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达不规范
+                范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达</p>
+                <p class="tr">11评论<span></span>145人看过</p>
+            </div>
+            <div class="Answerdetails">
+                <h5><img src="../img/noavatar1.png" />&ensp;杨振&emsp;<span>挑战了周航老师的练习题</span></h5>
+                <h5 class="anstitle">#课程你附加费看结果放客服发看看是方法课程你附加费看结果放客</h5>
+                <p class="intro">发达不规不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股
+                份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达不规范
+                范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达</p>
+                <p class="tr">11评论<span></span>145人看过</p>
+            </div> -->
+        </div>
+    </div>
+    <div class="loading">
+        <span>
+            <img src="../img/loading.gif" />
+        </span>
+    </div>
+</body>
+<script src="../js/lib/jquery-2.1.4.js"></script><script src="../js/common.js"></script>
+<script type="application/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    var questiontitle = '';
+    var questionid = '';
+    var listtitle = '';
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+        //  禁止左右滑动
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+        $('.loading').show();
+        api.addEventListener({name: 'viewappear'}, function(ret, err){
+            $('.answerlist').html('');
+            Arrangement();
+         })
+    };
+
+    function Arrangement() {
+        api.ajax({
+            url: wtkurl +'classroomlist/getTaskByClassroomid',
+            method: 'post',
+            headers: {
+                'TOKEN':ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    classroomid:api.pageParam.id,
+                    uid:ygtuserinfo.id
+                },
+            }
+        }, function(data, err) {
+            console.log(JSON.stringify(data));
+
+            if (data.data != '') {
+                $('.middle .nodata').css('display','none');
+                $('.middle .ex .introduce img').attr('src',data.data[0].pic);
+                if (data.data[0].teacher_name == '') {
+                    $('.middle .ex .tecname').html(data.data[0].username);
+                }else{
+                    $('.middle .ex .tecname').html(data.data[0].teacher_name);
+                }
+
+                $('.middle .ex .title').html(data.data[0].question);
+                $('.middle .ex .content').html(data.data[0].note);
+                $('.middle .ex .information').html(data.data[0].answernum+'人挑战')
+                questiontitle = data.data[0].question;
+                listtitle = data.data[0].list_title;
+                questionid = data.data[0].id;
+                if (data.data[0].answerlist != '') {
+                    var answerlist = data.data[0].answerlist;
+                    $('.answer .titile').html('练习（'+answerlist.length+'）')
+                    var listhtml = '';
+                    for (var i = 0; i < answerlist.length; i++) {
+                        listhtml +='<div class="Answerdetails" onclick="Answerdetails('+answerlist[i].id+')">'+'<h5><img src="'+answerlist[i].pic+'" />&ensp;<span class="username">'+answerlist[i].username+'</span>'
+                        if (data.data[0].teacher_name == '') {
+                            listhtml += '<span>挑战了'+data.data[0].username+'老师的练习题</span>'
+                        }else{
+                            listhtml += '<span>挑战了'+data.data[0].teacher_name+'老师的练习题</span>'
+                        }
+
+                        listhtml +='</h5>'+'<h5 class="anstitle">#'+answerlist[i].atitle+'</h5>'+'<p class="intro">'+answerlist[i].answers+'</p>'
+                                    +'<p class="tr">'+answerlist[i].commentnum+'评论<span></span>'+answerlist[i].readnum+'人看过</p>'+'</div>'
+                    }
+                    $('.answerlist').append(listhtml);
+                    $('.loading').hide();
+                }
+            } else {
+                $('.loading').hide();
+                $('.middle .nodata').css('display','block');
+                $('.middle .ex').css('display','none');
+                $('.middle .answer').css('display','none');
+            }
+        });
+    }
+
+    function Answerdetails(id) {
+        api.openWin({
+            name: 'Answerdetails',
+            url: './Answerdetails.html',
+            pageParam: {
+                id: id,
+                questiontitle:questiontitle,
+                listtitle:listtitle
+            },
+            bgColor: 'rgba(0,0,0,0)',
+            animation: {
+                type: 'none'
+            }
+        });
+    }
+
+
+    // 练习跳转
+    function comment() {
+        api.openWin({
+            name: 'comment',
+            url: './comment.html',
+            pageParam: {
+                name: 'exercises',
+                id:questionid
+            },
+            bgColor: 'rgba(0,0,0,0)',
+            animation: {
+                type: 'none'
+            }
+        });
+    }
+
+    function Custom() {
+        api.openWin({
+            name: 'custom',
+            url: './custom.html',
+            pageParam: {
+                name: 'test'
+            },
+            bgColor: 'rgba(0,0,0,0)',
+            animation: {
+                type: 'none'
+            }
+        })
+    }
+</script>
+
+</html>

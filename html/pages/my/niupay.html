@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>充值牛背</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/ygtcommon.css" />
+    <link rel="stylesheet" href="../../css/my/niupay.css">
+</head>
+
+<body>
+    <header class="top" id="header">
+        <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span class="title">我的账户</span>
+        </h1>
+    </header>
+    <section class="section">
+        <div class="balancemoney">
+            <p class="balance">0.00</p>
+            <P>账户余额（牛贝）</P>
+        </div>
+        <div class="mt10 Recharge">
+            <h5>充值牛贝<span id="iosshow" style="float:right;color:#ff9913;" onclick="pay();">苹果支付教程</span></h5>
+            <ul id="chargeul">
+                <li data-price="6"  data-productid="6npay"  onclick="selectli(this);">
+                    <p class="big">6牛贝</p>
+                    <p>6元</p>
+                </li>
+                <li data-price="68"  data-productid="68npay"  onclick="selectli(this);">
+                    <p class="big">68牛贝</p>
+                    <p>68元</p>
+                </li>
+                <li data-price="98"  data-productid="98npay"  onclick="selectli(this);">
+                    <p class="big">98牛贝</p>
+                    <p>98元</p>
+                </li>
+                <li class="active"  data-price="198"  data-productid="198npay"  onclick="selectli(this);">
+                    <p class="big">198牛贝</p>
+                    <p>198元</p>
+                </li>
+                <li data-price="298" data-productid="298npay"  onclick="selectli(this);">
+                    <p class="big">298牛贝</p>
+                    <p>298元</p>
+                </li>
+                <li data-price="618"  data-productid="618npay"  onclick="selectli(this);">
+                    <p class="big">618牛贝</p>
+                    <p>618元</p>
+                </li>
+            </ul>
+        </div>
+        <div class="mt10 word" id="chargedesc">
+            <p>1.牛贝是医管通平台的虚拟货币，可用于医管通iOS版中购买虚拟内容；</p>
+            <p>2.牛贝只能在iOS版中使用，无法在其他平台使用；</p>
+            <p>3.牛贝为虚拟币，充值后不会过期，但无法退款、提现或转赠他人；</p>
+            <p>4.遇到无法充值或充值失败等问题，可拨打400-8955-676咨询。</p>
+        </div>
+    </section>
+    <footer>
+        <span class="charge">充值</span>
+    </footer>
+</body>
+<script src="../../js/lib/jquery-2.1.4.js"></script><script src="../../js/common.js"></script>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = '';
+
+    apiready = function() {
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled: false
+        });
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+        $api.addEvt($api.dom('.charge'), 'click', function() {
+            chargepay();
+        });
+        api.addEventListener({name: 'viewappear'}, function(ret, err){
+            getcoin();
+        });
+        // getcoin();
+    };
+
+    function getcoin() {
+        if (ygtuserinfo.id == -1) {
+
+            api.ajax({
+                url: memberurl +'tourist/getCoin',
+                method: 'post',
+                headers: {
+                    'UUID': ygtuserinfo.deviceid
+                },
+                data: {
+                    values: {
+                        uuid: ygtuserinfo.deviceid
+                    }
+                }
+            }, function(ret, err) {
+                console.log(JSON.stringify(ret));
+                console.log(JSON.stringify(err));
+                if (ret) {
+                    if (ret.data.result == null) {
+                        $api.html($api.dom('.balance'), '0.00');
+                    }else {
+                        $api.html($api.dom('.balance'), ret.data.result.coin / 100);
+                    }
+                    // $api.html($api.dom('.balance'), ret.data.result.coin / 100);
+                } else {
+                    //alert( JSON.stringify( err ) );
+                }
+            });
+            var deschtml = '<p style="color:orange;">5.游客模式下充值金额只限于本设备使用，需要多个设备使用请登录充值</p>';
+            $api.append($api.byId('chargedesc'), deschtml);
+
+        }else {
+            api.ajax({
+                url: wtkurl +'myhome/getcoin',
+                method: 'post',
+                headers: {
+                    'TOKEN': ygtuserinfo.token
+                },
+                data: {
+                    values: {
+                        uid: ygtuserinfo.id
+                    }
+                }
+            }, function(ret, err) {
+                console.log(JSON.stringify(ret));
+                console.log(JSON.stringify(err));
+                if (ret) {
+                    if (ret.data.result == null) {
+                        $api.html($api.dom('.balance'), '0.00');
+                    }else {
+                        $api.html($api.dom('.balance'), ret.data.result.coin / 100);
+                    }
+                } else {
+                    //alert( JSON.stringify( err ) );
+                }
+            });
+        }
+
+
+    }
+    // 选择一个充值金额
+    function selectli(obj) {
+        if ($api.hasCls(obj, 'active')) {
+            return false;
+        }
+        $api.removeCls($api.dom('.active'), 'active');
+        $api.addCls(obj, 'active');
+
+    }
+    // 充值
+    function chargepay() {
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+
+
+            var productid = $api.attr($api.dom('.active'), 'data-productid');
+            var fee = $api.attr($api.dom('.active'), 'data-price');
+
+            var iap = api.require('iap');
+            api.showProgress({text : "拉取商品列表，请稍后"});
+            iap.getProducts({
+                productIds: [
+                    productid
+                ]
+            }, function(proret, proerr) {
+                console.log('getProducts');
+                console.log(JSON.stringify(proret));
+                console.log(JSON.stringify(proerr));
+                if (proret) {
+                    if (ygtuserinfo.id == -1) {
+                        // 跳到充值页面
+                        api.ajax({
+                            url: memberurl +'tourist/preiospay',
+                            method: 'post',
+                            headers: {
+                                'UUID': ygtuserinfo.deviceid
+                            },
+                            data: {
+                                values: {
+                                    uuid: ygtuserinfo.deviceid,
+                                    coin: proret.products[0].price
+                                }
+                            }
+                        }, function(preret, preerr) {
+                            console.log('preiospay');
+                            console.log(JSON.stringify(preret));
+                            console.log(JSON.stringify(preerr));
+                            if (preret.code == 1) {
+                                api.showProgress({text : "正在连接苹果商店"});
+                                iap.purchase({
+                                    productId: proret.products[0].productId
+                                }, function(iapret, iaperr) {
+                                    console.log('purchase');
+                                    console.log(JSON.stringify(iapret));
+                                    console.log(JSON.stringify(iaperr));
+                                    if (iapret) {
+
+                                        if (iapret.state == 1) {
+                                            api.ajax({
+                                                url: memberurl +'tourist/iospay',
+                                                method: 'post',
+                                                headers: {
+                                                    'UUID': ygtuserinfo.deviceid
+                                                },
+                                                data: {
+                                                    values: {
+                                                        uuid: ygtuserinfo.deviceid,
+                                                        coin: proret.products[0].price,
+                                                        productId: iapret.productId,
+                                                        transactionId: iapret.transactionId,
+                                                        originalTransactionId: '',
+                                                        ygtuserinfo: '',
+                                                        receipt: iapret.receipt,
+                                                        state: iapret.state,
+                                                        errorCode: 0,
+                                                        errormsg: '',
+                                                        payid: preret.data.coinpay.id
+                                                    }
+                                                }
+                                            }, function(payret, payerr) {
+                                                api.hideProgress();
+                                                console.log('iospay yk:');
+                                                console.log(JSON.stringify(payret));
+                                                console.log(JSON.stringify(payerr));
+                                                if (payret) {
+                                                    var ygtuserinfo = payret.data.ygtuserinfo;
+                                                    $api.setStorage('ygtuserinfo', ygtuserinfo);
+                                                    api.closeWin({
+                                                        name: 'niupay'
+                                                    });
+
+                                                } else {
+                                                    // 支付后数据失败
+                                                    alert(JSON.stringify(payerr));
+                                                }
+                                            });
+                                        } else if (iapret.state == 2) {
+
+
+                                            api.ajax({
+                                                url: memberurl +'tourist/iospay',
+                                                method: 'post',
+                                                headers: {
+                                                    'UUID': ygtuserinfo.deviceid
+                                                },
+                                                data: {
+                                                    values: {
+                                                        uuid: ygtuserinfo.deviceid,
+                                                        coin: proret.products[0].price,
+                                                        productId: iapret.productId,
+                                                        transactionId: iapret.transactionId,
+                                                        originalTransactionId: '',
+                                                        ygtuserinfo: '',
+                                                        receipt: '',
+                                                        state: iapret.state,
+                                                        errorCode: iapret.errorCode,
+                                                        errormsg: iapret.errorMsg,
+                                                        payid: preret.data.coinpay.id
+                                                    }
+                                                }
+                                            }, function(payret, payerr) {
+                                                api.hideProgress();
+                                                console.log(JSON.stringify(payret));
+                                                console.log(JSON.stringify(payerr));
+                                                alert('充值失败');
+                                                // alert(iapret.errorMsg);
+                                            });
+                                        }
+                                    } else {
+                                        alert(JSON.stringify(iaperr));
+                                    }
+                                });
+                            }else {
+                                alert('预支付失败');
+                            }
+                        })
+                    }else {
+                        // 跳到充值页面
+                        api.ajax({
+                            url: wtkurl +'myhome/preiospay',
+                            method: 'post',
+                            headers: {
+                                'TOKEN': ygtuserinfo.token
+                            },
+                            data: {
+                                values: {
+                                    uid: ygtuserinfo.id,
+                                    coin: proret.products[0].price
+                                }
+                            }
+                        }, function(preret, preerr) {
+                            console.log('preiospay');
+                            console.log(JSON.stringify(preret));
+                            console.log(JSON.stringify(preerr));
+                            if (preret.code == 1) {
+                                api.showProgress({text : "正在连接苹果商店"});
+                                iap.purchase({
+                                    productId: proret.products[0].productId
+                                }, function(iapret, iaperr) {
+                                    console.log('purchase');
+                                    console.log(JSON.stringify(iapret));
+                                    console.log(JSON.stringify(iaperr));
+                                    if (iapret) {
+
+                                        if (iapret.state == 1) {
+                                            api.ajax({
+                                                url: wtkurl +'myhome/iospay',
+                                                method: 'post',
+                                                headers: {
+                                                    'TOKEN': ygtuserinfo.token
+                                                },
+                                                data: {
+                                                    values: {
+                                                        uid: ygtuserinfo.id,
+                                                        coin: proret.products[0].price,
+                                                        productId: iapret.productId,
+                                                        transactionId: iapret.transactionId,
+                                                        originalTransactionId: '',
+                                                        ygtuserinfo: '',
+                                                        receipt: iapret.receipt,
+                                                        state: iapret.state,
+                                                        errorCode: 0,
+                                                        errormsg: '',
+                                                        payid: preret.data.coinpay.id
+                                                    }
+                                                }
+                                            }, function(payret, payerr) {
+                                                api.hideProgress();
+                                                console.log('iospay:');
+                                                console.log(JSON.stringify(payret));
+                                                console.log(JSON.stringify(payerr));
+                                                if (payret) {
+                                                    api.closeWin({
+                                                        name: 'niupay'
+                                                    });
+
+                                                } else {
+                                                    // 支付后数据失败
+                                                    alert(JSON.stringify(payerr));
+                                                }
+                                            });
+                                        } else if (iapret.state == 2) {
+
+
+                                            api.ajax({
+                                                url: wtkurl +'myhome/iospay',
+                                                method: 'post',
+                                                headers: {
+                                                    'TOKEN': ygtuserinfo.token
+                                                },
+                                                data: {
+                                                    values: {
+                                                        uid: ygtuserinfo.id,
+                                                        coin: proret.products[0].price,
+                                                        productId: iapret.productId,
+                                                        transactionId: iapret.transactionId,
+                                                        originalTransactionId: '',
+                                                        ygtuserinfo: '',
+                                                        receipt: '',
+                                                        state: iapret.state,
+                                                        errorCode: iapret.errorCode,
+                                                        errormsg: iapret.errorMsg,
+                                                        payid: preret.data.coinpay.id
+                                                    }
+                                                }
+                                            }, function(payret, payerr) {
+                                                api.hideProgress();
+                                                console.log(JSON.stringify(payret));
+                                                console.log(JSON.stringify(payerr));
+                                                alert('充值失败');
+                                                // alert(iapret.errorMsg);
+                                            });
+                                        }
+                                    } else {
+                                        alert(JSON.stringify(iaperr));
+                                    }
+                                });
+                            }else {
+                                alert('预支付失败');
+                            }
+                        })
+                    }
+
+
+
+                } else {
+                    alert(JSON.stringify(proerr));
+                }
+            });
+
+    }
+    //支付教程
+    function pay() {
+        api.openWin({
+            name: 'payteach',
+            url: './payteach.html',
+            pageParam: {
+                name: 'test'
+            },
+            animation:{
+              type:'none'
+            }
+        });
+    }
+</script>
+
+</html>

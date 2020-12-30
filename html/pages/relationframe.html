@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>布置作业</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/ygtcommon.css" />
+    <link rel="stylesheet" href="../css/index/relationframe.css">
+</head>
+
+<body>
+
+    <div id="Tolist" data-url='Management'>
+        <!-- <div class="list selected">
+            <img src="../img/classroom.jpg" />
+            <div class="right">
+                <h5 class="title">88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888</h5>
+                <p>
+                    <span class="Selfsupport"><img src="../img/zy.png" /></span>
+                    <span class="address">上海市</span>
+                    <span class="time">2019-08-05</span>
+                </p>
+            </div>
+        </div>
+        <div class='lasttitle'>已无更多数据</div> -->
+    </div>
+    <div class="loading">
+        <span>
+            <img src="../img/loading.gif" />
+        </span>
+    </div>
+    <!-- <div id="audioclick" >
+        <p onclick="audioto();" style="display:inline-block;width:90%;">
+            <span class="hed">
+                <img class="pic" src="" />
+            </span>
+            <span >
+                <b class="title"></b>
+                <b class="listtitle"></b>
+            </span>
+        </p>
+        <img class="close" src="../img/round_close.png" />
+    </div> -->
+</body>
+<script src="../js/lib/jquery-2.1.4.js"></script><script src="../js/common.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var page = 1;
+    var pagesize = 4;
+    var loading = false;
+    var isover = false;
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    var systemtype = '';
+    var iswxpay = $api.getStorage('iswxpay');
+    var calsstitle = ''
+    apiready = function() {
+        systemtype = api.systemType;
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled: false
+        });
+        //  禁止左右滑动
+        api.setRefreshHeaderInfo({
+            bgColor: '#fefefe',
+            textColor: '#999',
+            textDown: '下拉刷新...',
+            textUp: '松开刷新...',
+            //  textLoading:'<img src="widget://img/loading.gif" />',
+            showTime: false
+        }, function(ret, err) {
+            //在这里从服务器加载数据，加载完成后调用api.refreshHeaderLoadDone()方法恢复组件到默认状态
+            if (!loading) {
+                isover = false;
+                page = 1;
+                $api.html($api.byId('Tolist'), '');
+                api.refreshHeaderLoading();
+                loadData();
+              //api.refreshHeaderLoadDone();
+            }
+
+        });
+        api.addEventListener({
+            name: 'scrolltobottom',
+            extra: {
+                threshold: 0 //设置距离底部多少距离时触发，默认值为0，数字类型
+            }
+        }, function(ret, err) {
+            if (loading || isover) {
+                return;
+            }
+            page++; //页数
+            loadData();
+        });
+        $(".loading").show();
+        $api.rmStorage('taskid');
+        loadData();
+    };
+
+
+    function loadData() {
+
+        //var type = $('#headernav').find('.active').data('type');
+        var type = 1;
+        if (!ygtuserinfo || !ygtuserinfo.id) {
+            return false;
+        }
+        listid = $api.getStorage('livelistid');
+
+        // var id = $api.getStorage('liveid');
+        // console.log(id);
+        // var id = 5;
+        loading == true;
+        api.ajax({
+            url: wtkurl +'Special/guide',
+            method: 'post',
+            headers: {
+                'TOKEN':ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    uid: ygtuserinfo.id,
+                    id:api.pageParam.id
+                }
+            }
+        }, function(ret, err) {
+            $(".loading").hide();
+            console.log(JSON.stringify(ret));
+            console.log(JSON.stringify(err));
+          if (ret.code == 1) {
+              var len = ret.data.info.detailJSON;
+              var audiohtml = '';
+              var activeid = 0;
+              if (len.length > 0) {
+                  $("#Tolist").html('');
+                  for (var i = 0; i < len.length; i++) {
+                      audiohtml += '<h5 class="title">'+len[i].name+'</h5><ul class="classlist">';
+                      var classdetail = len[i].content;
+                      var question_id = '';
+                      var classroomd_id = '';
+                      if (classdetail.length > 0) {
+                          for (var a = 0; a < classdetail.length; a++) {
+                              if (classdetail[a].datatype == 1) {
+                                  question_id = classdetail[a].task.id;
+                                  classroomd_id = classdetail[a].task.classroom_id;
+                              }
+                              if (classdetail[a].datatype == 2) {
+                                  var id = classdetail[a].courses;
+                                  if (classroomd_id == classdetail[a].courses.id) {
+                                      audiohtml += '<li onclick="openList(this)" dataval="'+classdetail[a].courses.id+'" questionid='+question_id+'><span class="title">'+classdetail[a].prename+'、</span>&ensp;<span>'+classdetail[a].name+'</span><img class="select" src="../img/selected.png"></li>';
+                                  }else{
+                                    audiohtml += '<li onclick="openList(this)" dataval="'+classdetail[a].courses.id+'" questionid= ""><span class="title">'+classdetail[a].prename+'、</span>&ensp;<span>'+classdetail[a].name+'</span><img class="select" src="../img/selected.png"></li>';
+                                  }
+
+                              }
+                          }
+                      }
+                      audiohtml += '</ul>';
+                  }
+                  $("#Tolist").append(audiohtml);
+              }
+          } else {
+              alert(ret.msg);
+          }
+        });
+    }
+
+    function openList(obj) {
+        $api.removeCls($api.dom('.active'), 'active');
+        $("#Tolist li").removeClass('active')
+        $api.addCls(obj, 'active');
+        taskid = $('.active').attr('dataval');
+        relquestionid = $('.active').attr('questionid');
+        $api.setStorage('taskid',taskid);
+        $api.setStorage('relquestionid',relquestionid)
+        console.log(taskid)
+        console.log(relquestionid)
+    }
+</script>
+
+</html>

@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>直播间</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/ygtcommon.css">
+    <link rel="stylesheet" href="../css/classroom.css">
+    <link rel="stylesheet" href="../css/index/classroomvide.css">
+    <script type="text/javascript" src="../js/jweixin.js"></script>
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript" src="http://cdn.ronghub.com/protobuf-2.1.1.min.js"></script>
+    <script src="http://cdn.ronghub.com/RongIMLib-2.1.1.min.js"></script>
+    <script src="http://cdn.ronghub.com/RongIMVoice-2.1.1.min.js"></script>
+</head>
+<body ontouchstart>
+    <header class="top" id="header">
+        <h1>
+              <span class="back" onclick="closethiswin();"></span>
+              <span class="title">直播间</span>
+              <span class="share" id="share"></span>
+          </h1>
+
+    </header>
+    <div id="countdownparentsli"></div>
+    <div class="swiper-container">
+        <div class="swiper-wrapper" id="swiper-wrapper" >
+            <div class="swiper-slide" style="min-height:130px;">
+                <img src="" alt="" class="swiper-lazy" />
+                <div class="swiper-lazy-preloader"></div>
+            </div>
+            <!-- <div class="swiper-slide">
+                <img src="" alt="" class="swiper-lazy" />
+                <div class="swiper-lazy-preloader"></div>
+            </div> -->
+        </div>
+        <div class="swiper-pagination"></div>
+        <span class="videobth"><img src="../img/play.png"></span>
+    </div>
+    <div class="users">
+        <span class="users-item"><img src="" width="25" /></span>
+    </div>
+    <section class="section " id="section">
+        <div id="listdiv">
+            <ul class='message-list content-padded' id='list'>
+                <div class="weui-pull-to-refresh__layer" id="pullscollid">
+                    <div class="weui-pull-to-refresh__arrow"></div>
+                    <!-- 上下拉动的时候显示的箭头 -->
+                    <div class="weui-pull-to-refresh__preloader"></div>
+                    <!-- 正在刷新的菊花 -->
+                    <div class="down">下拉刷新</div>
+                    <!-- 下拉过程显示的文案 -->
+                    <div class="up">释放刷新</div>
+                    <!-- 下拉超过50px显示的文案 -->
+                    <div class="refresh">正在刷新...</div>
+                    <!-- 正在刷新时显示的文案 -->
+                </div>
+                <li></li>
+            </ul>
+        </div>
+        <!-- <a href="javascript:void(0);" data-target="#tools" class="refreshbut iconfont tools open-popup" id="toolsbut">&#xe629;</a> -->
+        <div class="fast oh">
+            <a href="javascript:void(0);" id="openlist" class="openlist msg" onclick="openpt()">
+                <i class="iconfont">&#xe62f;</i>
+                <!--有新消息时显示-->
+                <i class="iconfont msg" id="msg" style="display:none;">&#xe6df;</i>
+            </a>
+            <a href="javascript:void(0);" id="questionbut" >问</a>
+
+            <a href="javascript:void(0);" onclick="location.reload();"><i class="iconfont">&#xe603;</i></a>
+        </div>
+
+        <div class="PTmessage-listbox">
+            <!-- <a class="openlist" id="openlist"><i class="iconfont">&#xe610;</i>众聊</a> -->
+            <ul class="oh PTmessage-list" id="PTmessage">
+
+
+            </ul>
+            <a class="closelist iconfont" id="closelist" onclick="closept();">&#xe610;</a>
+        </div>
+
+    </section>
+    <!-- 红包 -->
+    <div class="redwrap oh" id="redselect" style="display:none;">
+        <div class="redcont oh">
+            <i class="iconfont close">&#xe605;</i>
+            <div class="redcont-head">
+                <p class="w100 redcont-headimg"><img src="" /></p>
+            </div>
+            <p class="w100 redcont-name">赵钧</p>
+            <input type="hidden" value="" id="tochid" />
+            <p class="w100 redcont-tip">爱赞赏的人，运气不会太差~</p>
+            <ul class="redcont-num" id='redcontpa'>
+                <li><button><em>2</em>元</button></li>
+                <li><button><em>5</em>元</button></li>
+                <li><button><em>10</em>元</button></li>
+                <li><button><em>50</em>元</button></li>
+                <li><button><em>100</em>元</button></li>
+                <li><button><em>200</em>元</button></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="redwrap oh" id="redmsg" style="display:none;">
+        <div class="redcont oh">
+            <i class="iconfont close">&#xe605;</i>
+            <div class="redcont-head">
+                <p class="w100 redcont-headimg"><img src="" /></p>
+            </div>
+            <p class="w100 redcont-tip"></p>
+            <p class="w100 redcont-name"><em></em><b>元</b></p>
+        </div>
+    </div>
+
+    <!-- 底部工具栏 -->
+    <footer class="footer" id="footer">
+        <div class="enter">
+            <div class="left">
+                <!--普通用户s-->
+                <div class="text" id="text">
+                    <div class="textarea">
+                        <textarea id="txtContent" rows="1" onpropertychange="ResizeTextarea()" oninput="ResizeTextarea()"></textarea>
+                        <button type="button" hidden id="txtsendbtn" class="submitbut">发送</button>
+                    </div>
+                </div>
+                <!--普通用户e-->
+            </div>
+        </div>
+
+
+        <!--录音提示s-->
+        <div class="prompt" id="prompt" hidden>
+            <p class="text">准备中…</p>
+            <p class="icon"><i class="iconfont">&#xe61a;</i><i id="chang"></i></p>
+            <p>
+                <a href="javascript:void(0);" id="cancelBut">点击此处 取消发送</a>
+            </p>
+        </div>
+        <!--录音提示e-->
+
+    </footer>
+
+    <!-- 分享弹框 -->
+    <div class="footer foot"  id="foot">
+        <h5>邀请好友一起来听课吧</h5>
+      <div class="tools" id="tool">
+          <ul>
+              <li id='share_friend' onclick="sharefriend();">
+                    <a href="javascript:void(0)" id="shareFriends">
+                        <img src="../img/frend.png" />
+                        <p>微信好友</p>
+                    </a>
+                </li>
+                <li id="share" onclick="sharefriends();">
+                    <a href="javascript:void(0)" id="shareCFriends">
+                        <img src="../img/frends.png" />
+                        <p>朋友圈</p>
+                    </a>
+                </li>
+                <li id="share" onclick="poster();">
+                    <a href="javascript:void(0)" id="Invitation">
+                        <img src="../img/Invitation.png" />
+                        <p>邀请卡</p>
+                    </a>
+                </li>
+          </ul>
+      </div>
+      <p id="opentool" >取消</p>
+    </div>
+    <!-- 语音播放 -->
+    <audio id="audioPlayer" src=""></audio>
+    <input type="hidden" id="page" value="0" />
+    <input type="hidden" id="isall" value=0 />
+
+    <!-- 提问问题 -->
+    <div id="Qform" class="Qform">
+        <a href="javascript:void(0);" class="returnbut" id="return" ><i class="iconfont" >&#xe613;</i>返回直播室</a>
+        <div class="qpop" id="qpop">
+            <!--普通用户 -->
+            <div class="oh qpoptit">
+                <span>提问</span>
+                <a href="javascript:void(0);" id="qsubmit" >提交问题</a>
+            </div>
+            <div class="oh qpopcon">
+                <textarea class="weui-textarea textarea" placeholder="请输入问题内容" rows="3" maxlength="200" ></textarea>
+                <p class="zinum"><em></em><span id="indexnum">0</span>/200</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="endadmitip" id="beginadmitip" style="display:none;">
+        <div class="con">
+            <div class="conhead">
+                <p><i class="iconfont">&#xe61f;</i></p>
+                <p>成功进入直播</p>
+            </div>
+            <div class="concenter">
+                <p>直播尚未开始</p>
+                <p><input type="checkbox" name="isbeginfollow" id="followbegin" value=1 checked="checked" />关注本直播间，有新课会通知你</p>
+                <p></p>
+            </div>
+            <div class="conbottom">
+                <p><a href="javascript:void(0);" id="begintipenter">直接进入</a></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="bg"></div>
+    <div class="loading">
+        <span>
+            <img src="../img/loading.gif" />
+        </span>
+    </div>
+    <script src="../js/lib/jquery-2.1.4.js"></script><script src="../js/common.js"></script>
+    <script type="application/javascript" src="../js/lib/fastclick.js"></script>
+    <script src="../js/jquery-weui.js"></script>
+    <script src="../js/swiper.min.js" charset='utf-8'></script>
+    <script src="../js/jquery.liMarquee.js"></script>
+    <script type="text/javascript">
+        var classroomid = 0;
+        var ygtuserinfo = '';
+        var starttime = '';
+        var is_reward = 1;
+        var sharetitle = '';
+        var sharedesc = '';
+        var shareurl = '';
+        var shareicon  = '';
+        var timebegin = '';
+        var timend = '';
+        var apihost = $api.getStorage('apihost');
+        var endtime = '';
+        var baiduPlayer  = ''
+        var isseekto = 0;
+        var seektotime = 0;
+        if (apihost == undefined || apihost == '') {
+            apihost = 'http://member.ygt.cm';
+            $api.setStorage('apihost', apihost);
+        }
+        apiready = function() {
+            var header = $api.byId('header');
+            $api.fixStatusBar(header);
+            classroomid = api.pageParam.id;
+            ygtuserinfo = $api.getStorage('ygtuserinfo');
+            toph = parseInt($api.offset($api.byId('header')).h) + parseInt($api.offset($api.byId('swiper-wrapper')).h);
+            baiduPlayer  = api.require('baiduPlayer');
+            baiduPlayer.setAccessKey({
+                accessKey: "3c97033803274109aeed30fd9adc617a"
+            })
+            baiduPlayer.init({
+                ttf:"widget://res/UKIJTor.ttf",
+                logo:"widget://res/cklogo.png",
+                // background:data.data.info.thumb,
+                fullBtnPlan : 1,
+                isImmerse : true,//APP是否开启 沉浸式
+            }, function(ret, err) {
+                console.log(JSON.stringify(ret))
+            });
+            // alert('addrevent');
+            $api.css($api.byId('section'),'top:'+toph+'px')
+            //  禁止左右滑动
+            api.setWinAttr({
+                slidBackEnabled : false
+            });
+            //  禁止左右滑动
+            var status = api.pageParam.time;
+            console.log(status+'这是时间')
+            if (status == '0') {
+                $("#footer").hide();
+            }
+            loadData();
+            // 窗口打开
+            api.addEventListener({
+                name:'viewappear'
+            }, function(ret, err){
+                var time = new Date().getTime();
+                timebegin= Math.floor(time/1000);
+                // alert(timebegin);
+            });
+            // 点击返回
+            api.addEventListener({
+                name: 'keyback'
+            }, function(ret, err) {
+
+            });
+            // 应用进入后台
+            api.addEventListener({
+                name:'pause'
+            }, function(ret, err){
+              baiduPlayer.pause();
+            });
+            api.addEventListener({
+                name:'resume'
+            }, function(ret, err){
+              if (endtime ==0 ) {
+                baiduPlayer.seekTo({
+                    process: new Date() - starttime
+                },function(ret, err) {
+                    console.log(JSON.stringify(ret));
+                })
+              }
+              baiduPlayer.start();
+            });
+
+            $('.loading').show();
+        }
+        //var classroomid = api.pageParam.id;
+        var hasinvite = 0;
+        var inviteurl = "http://www.wtk.so/live/teachers/crid/" + classroomid;
+
+        var publicinviteurl = '';
+
+        var getryurl = apihost+"/api/wtk_01/classroom/getrytoken",
+            getchaturl = apihost+"/api/wtk_01/classroom/getchatlist",
+            getinfo = wtkurl +'classroom/getinfo',
+            sendmsgrul = apihost+"/api/wtk_01/classroom/sendMsg",
+            getuserurl = apihost+"/api/wtk_01/classroom/getUser",
+            getpayparents = apihost+"/api/wtk_01/classroom/getAppParameters",
+            sendrewardurl = apihost+"/api/wtk_01/classroom/sendRewardMsg";
+
+        var userlist = '';
+        var token, groupid, rykey;
+        var listid = 0;
+
+        var selfpic = "";
+        var selfname = "";
+        var selfpos = 0;
+        var time = 0;
+        var ispc = false;
+        var isend = false;
+        var infotype = 1;
+
+        var bucketsarr = [];
+        var thisurl = window.location.href;
+        var myswiper = null;
+        var PTmessage = $('#PTmessage'),
+            openlist = $('#openlist'),
+            closelist = $('#closelist');
+
+        // var jsfun = 'funcGoto();';
+        // api.execScript({ name: 'audioclass', script: jsfun });
+        function video(videopath, seekTo) {
+            var toph = $api.offset($api.byId('header')).h;
+            baiduPlayer.play({
+              rect: {
+                  x: 0,
+                  y: toph,
+                  w: api.frameWidth,
+                  h: 210
+              },
+              url: videopath,
+              title:' ',
+              isBackBtn:false,
+              repeat:false,
+              defaultBtn:true,
+              isTopView:true,
+              isFullBtn:true,
+              autoPlay: false,
+              fixed: false,
+              autorotation:false,
+              isShowProcessView:false,
+              isShowTimeLable:false
+            }, function(ret, err) {
+              console.log(JSON.stringify(ret))
+              //alert(seekTo)
+              if (seekTo > 0) {
+                if ( new Date().getTime() / 1000 > starttime && endtime == 0 && isseekto !=1) {
+                  var durationtime = setInterval(function() {
+                    baiduPlayer.getCurrentPosition(function(ret, err) {
+                      console.log('get deuration:::'+JSON.stringify(ret));
+                      if (ret.currentPosition > 1000) {
+                        clearInterval(durationtime)
+                      }else {
+                        console.log(' < 10000')
+                        baiduPlayer.seekTo({
+                            process:seekTo
+                        },function(ret, err) {
+                            if (ret) {
+                            }
+                        });
+                      }
+                    });
+                  }, 500)
+                }
+              }
+            });
+        }
+        //主要操作
+        function closept() {
+            $('#PTmessage').slideUp(200, function() {
+                $('#openlist').show();
+                $('#msg').hide();
+                $('#closelist').hide();
+            });
+        }
+
+        // 开
+        function openpt() {
+            // alert('dakai');
+            $('#closelist').show();
+            //  PTmessage.slideDown(200);
+            $('#PTmessage').show();
+            $('#openlist').hide();
+        }
+
+        //工具展开关闭操作
+
+        function opentools() {
+            var tools = $('#tools');
+            if (tools.is(":hidden") == true) {
+                tools.removeAttr('hidden');
+                $('#opentools').addClass('in');
+                $('#bg').show();
+            } else {
+                tools.attr('hidden', true)
+                $('#opentools').removeClass('in');
+                $('#bg').hide();
+            }
+        }
+
+
+        //分享
+        $('#share').bind('click', function(e) {
+            $('#bg').show();
+            $("#foot").addClass('sh');
+        });
+        //分享关闭
+        $('#opentool').bind('click', function(e) {
+            $('#bg').hide();
+            $("#foot").removeClass('sh');
+        });
+
+        $('#bg').bind('click', function(e) {
+            $('#bg').hide();
+            $("#foot").removeClass('sh');
+            var tools = $('#tools');
+            tools.attr('hidden', true)
+            $('#opentools').removeClass('in');
+            $('#bg').hide();
+        });
+
+        //分享朋友
+        function sharefriend() {
+
+            var wx = api.require('wx');
+            wx.shareWebpage({
+                apiKey: '',
+                scene: 'session',
+                title: sharetitle,
+                description: sharedesc,
+                thumb: 'widget://img/shareicon.png', // shareicon,//http://img1.wtk.so/2016/08/19/57b6dbc29e7cc.png
+                contentUrl: shareurl,
+            }, function(ret, err) {
+                if (ret.status) {
+                    alert('分享成功');
+                    $('#bg').hide();
+                    $("#foot").removeClass('sh')
+                } else {
+                    alert('分享失败');
+                    console.log(JSON.stringify(err));
+                }
+            });
+        }
+
+        //分享朋友圈
+        function sharefriends() {
+            var wx = api.require('wx');
+            wx.shareWebpage({
+                apiKey: '',
+                scene: 'timeline',
+                title: sharetitle,
+                description: sharedesc,
+                thumb: 'widget://img/shareicon.png', // shareicon,
+                contentUrl: shareurl
+            }, function(ret, err) {
+                if (ret.status) {
+                    alert('分享成功');
+                    $('#bg').hide();
+                    $("#foot").removeClass('sh')
+                } else {
+                    alert('分享失败');
+                    console.log(JSON.stringify(err));
+                }
+            });
+        }
+
+        //邀请卡
+        function poster() {
+            classroomid = api.pageParam.id;
+            api.openWin({
+                name: 'poster',
+                url: './poster.html',
+                pageParam: {
+                    id: classroomid,
+                    objecttype:1
+                },
+                animation: {
+                    type: 'none'
+                }
+            });
+        }
+
+        //  关闭红包弹框
+
+        $('.close').bind('click', function(e) {
+            $(this).parents('.redwrap').hide();
+        });
+        function ShowCountDown(leftsecond, divname, videopath) {
+            var cc = document.getElementById(divname);
+            if (leftsecond <= 0) {
+                clearInterval(inter);
+                $('#countdownparentsli').hide();
+                return;
+            }
+            var day1 = Math.floor(leftsecond / (60 * 60 * 24));
+            var hour = Math.floor((leftsecond - day1 * 24 * 60 * 60) / 3600);
+            var minute = Math.floor((leftsecond - day1 * 24 * 60 * 60 - hour * 3600) / 60);
+            var second = Math.floor(leftsecond - day1 * 24 * 60 * 60 - hour * 3600 - minute * 60);
+            if (day1 > 0) {
+                cc.innerHTML = "<i>" + day1 + "</i>天<i>" + hour + "</i>时<i>" + minute + "</i>分<i>" + second + "</i>秒";
+            } else if (hour > 0) {
+                cc.innerHTML = "<i>" + hour + "</i>时<i>" + minute + "</i>分<i>" + second + "</i>秒";
+            } else if (minute > 0) {
+                cc.innerHTML = "<i>" + minute + "</i>分<i>" + second + "</i>秒";
+            } else if (second > 0) {
+                cc.innerHTML = "<i>" + second + "</i>秒";
+            } else {
+                cc.innerHTML = '<em>直播已开始</em>';
+                clearInterval(inter);
+                video(videopath);
+                return;
+            }
+        };
+        function closethiswin() {
+            var time = new Date().getTime();
+            timend= Math.floor(time/1000);
+            var timelog = (timend)-(timebegin);
+            classroomid = api.pageParam.id;
+            api.ajax({
+                url: wtkurl +'classroom/setlog',
+                method: 'post',
+                headers: {
+                    'TOKEN':ygtuserinfo.token
+                },
+                data: {
+                    values: {
+                        classroomid:classroomid,
+                        specialid:0,
+                        timelength:timelog,
+                        uid:ygtuserinfo.id
+                    }
+                }
+            },function(ret, err){
+                console.log(JSON.stringify(ret));
+                console.log(JSON.stringify(err));
+                if (ret) {
+                    console.log( JSON.stringify( ret ) );
+                    api.closeWin();
+                } else {
+                    console.log( JSON.stringify( err ) );
+                }
+            });
+
+
+        }
+    </script>
+    <script src="../js/classroomvideo.js"></script>
+    <script src="../js/play.js"></script>
+    <script src="../js/record.js"></script>
+    <script src="../js/reward.js"></script>
+</body>
+
+</html>

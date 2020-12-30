@@ -1,0 +1,26 @@
+body{width: auto;}
+.middle{margin-top: 70px;padding: 10px;}
+.middle div{border-radius: 5px;background: #fff;text-align: center;padding: 50px 0;}
+.middle div img{width: 100px;}
+.middle div h5{font-size: 18px;color: #333;font-weight: normal;margin-top: 10px;}
+.middle div p{color: #999;margin-top: 10px;}
+@media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+  .middle {
+      margin-top: 90px;
+  }
+
+}
+/* xr */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) {
+  .middle {
+      margin-top: 90px;
+  }
+
+}
+/* xs max */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) {
+  .middle {
+      margin-top: 90px;
+  }
+
+}

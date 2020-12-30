@@ -1,0 +1,15 @@
+#Tolist .Arrangement{position: absolute;right: 10px;top: 40%;display: inline-block;padding: 5px;background:#ff9913;color:#fff;border-radius:5px;z-index: 111;}
+#Tolist h5{padding: 0 2%;margin: 0;font-weight: normal;line-height: 30px;}
+#Tolist .tab{display: inline-block;padding: 5px 15px;font-size: 15px;border-bottom: 1px solid #ff9913;color: #ff9913;}
+#Tolist .go{position: absolute;right: 20px;color: #999;}
+#Tolist .classlist{width: 96%;background: #fff;z-index: 112;padding: 2%}
+#Tolist .classlist .title{line-height: 40px;font-size: 14px;background: #f8f8f8;text-align: left;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding:0 10px;}
+#Tolist .classlist li{list-style: none;line-height: 45px;text-align: left;color: #999;font-size: 13px;margin-top: 3px;height: 45px;border-bottom: 1px solid #fafafa;position: relative;}
+#Tolist .classlist li span{display: inline-block;width: 75%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;color: #999;}
+#Tolist .classlist li .title{width: auto;line-height: 45px;background:#fff;font-size: 13px;padding: 0;}
+#Tolist .classlist li:first-child{margin-top: 0;}
+#Tolist .classlist .close{background: #fafafa;text-align: center;color: #999;font-size: 13px;font-weight: normal;}
+#Tolist .classlist li .select{width: 30px;position: absolute;right: 0px;top: 10px;display: none}
+#Tolist .classlist li .listen{width: 25px;position:absolute;color: #ff9913;border-radius: 5px;border: 1px solid #ff9913;font-size: 10px;right: 0;line-height: 18px;padding: 0;margin: 0;top: 11px;display: none;padding: 0 5px;text-overflow: inherit;}
+#Tolist .classlist .active .select{display:block;}
+#Tolist .classlist .active .listen{display: inline-block;}

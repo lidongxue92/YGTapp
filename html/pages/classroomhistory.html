@@ -1,0 +1,661 @@
+<html>
+
+<head>
+    <title>直播间回顾</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/ygtcommon.css">
+    <link rel="stylesheet" href="../css/index/classroomhistory.css">
+    <script type="text/javascript" src="../js/jweixin.js"></script>
+    <script type="text/javascript" src="../script/api.js"></script>
+</head>
+<body ontouchstart>
+    <header class="header top" id="header" >
+          <img class='bgimg' src="" />
+          <span class="back" onclick="goback();"></span>
+          <span class='share' id="share" ></span>
+          <div class="swiper-container">
+              <div class="swiper-wrapper" id="swiper-wrapper" >
+
+              </div>
+              <div class="swiper-pagination"></div>
+          </div>
+          <p id="title"></p>
+    </header>
+    <div class="audio">
+        <source id="audio" controls="true" src="" style="width:25%" onended="over()"></source>
+        <button id="prev" onclick="prev();" disabled ><img class="prev opciaty" src="../img/next.png" /></button>
+        <img class="play"  id="play" imgpage ='0' onclick="togglePlay();" data-id ='' src="../img/play.png" />
+        <button id="next" onclick="next();" disabled ><img class="next opciaty"  src="../img/next.png"/></button>
+        <input id="page" value="" />
+    </div>
+    <footer class="foot">
+        <p onclick="dofavorite();" class="dofavorite">
+            <img id="dofavorite" src="../img/Collection.png" />
+            <b>收藏</b>
+        </p>
+        <p onclick="speed();">
+            <span class="speed"><b id="speed">1</b></span>
+            <b>倍速播放</b>
+        </p>
+        <p onclick="classroom();">
+            <img src="../img/class.png" />
+            <b>上课模式</b>
+        </p>
+    </footer>
+    <div class="bg" id="bg"></div>
+    <div class="choosespeed" id="choosespeed">
+        <ul>
+            <li class='active' onclick="control(this);">x<span class="one">1</span></li>
+            <li onclick="control(this);">x<span class="one">1.3</span></li>
+            <li onclick="control(this);">x<span class="one">1.5</span></li>
+            <li onclick="control(this);">x<span class="one">2</span></li>
+            <li class="close" onclick="clos();">关闭</li>
+        </ul>
+    </div>
+    <div class='sharetoast'>
+        <h5>邀请好友一起来听课吧~</h5>
+        <ul>
+            <li id='share_friend' onclick="sharefriend();">
+                  <a href="javascript:void(0)" id="shareFriends">
+                      <img src="../img/frend.png" />
+                      <p>微信好友</p>
+                  </a>
+              </li>
+              <li id="share" onclick="sharefriends();">
+                  <a href="javascript:void(0)" id="shareCFriends">
+                      <img src="../img/frends.png" />
+                      <p>朋友圈</p>
+                  </a>
+              </li>
+              <li id="share" onclick="poster();">
+                  <a href="javascript:void(0)" id="Invitation">
+                      <img src="../img/Invitation.png" />
+                      <p>邀请卡</p>
+                  </a>
+              </li>
+        </ul>
+        <p id='opentool'>取消<p>
+    </div>
+    <div class="loading">
+        <span>
+            <img src="../img/loading.gif" />
+        </span>
+    </div>
+    <script src="../js/lib/jquery-2.1.4.js"></script><script src="../js/common.js"></script>
+    <script src="../js/jquery-weui.js"></script>
+    <script src="../js/swiper.min.js" charset='utf-8'></script>
+    <script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+
+    var sharetitle = '';
+    var sharedesc = '';
+    var shareicon = '';
+    var shareurl ='';
+    var timebegin = '';
+    var timend = '';
+    var classroomid = '';
+    var audioElm = $api.byId("audio");
+    apiready = function() {
+    //     var jsfun = 'funcGoto();';
+    //    api.execScript({ name: 'audioclass', script: jsfun });
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+        loadData();
+        refreshlist();
+        api.addEventListener({
+            name:'viewappear'
+        }, function(ret, err){
+            var time = new Date().getTime();
+            timebegin= Math.floor(time/1000);
+            // alert(timebegin);
+        });
+        api.addEventListener({
+            name:'pause'
+        }, function(ret, err){
+            var time = new Date().getTime();
+            timend= Math.floor(time/1000);
+            var timelog = (timend)-(timebegin);
+            classroomid = api.pageParam.id;
+            api.ajax({
+                url: wtkurl +'classroom/setlog',
+                method: 'post',
+                headers: {
+                    'TOKEN':ygtuserinfo.token
+                },
+                data: {
+                    values: {
+                        classroomid:classroomid,
+                        specialid:0,
+                        timelength:timelog,
+                        uid:ygtuserinfo.id
+                    }
+                }
+            },function(ret, err){
+                console.log(JSON.stringify(ret));
+                console.log(JSON.stringify(err));
+            });
+        });
+    };
+
+
+    // 控制播放
+    function togglePlay() {
+        var audioElmurl = $api.attr(audioElm,'src')
+        //alert(audioElmurl);
+        if (audioElmurl == '') {
+            $api.attr($api.byId('play'),'src','../img/play.png');
+        }else{
+            if(audioElm != null ){
+              //检测播放是否已暂停.audio.paused 在播放器播放时返回false.
+                  if(audioElm.paused){
+                      var speend = $api.html($api.byId('speed'));
+                      audioElm.playbackRate = speend;
+                      audioElm.play();//播放
+                      $api.attr($api.byId('play'),'src','../img/pause.png');
+                  }else{
+                      audioElm.pause();//暂停
+                      $api.attr($api.byId('play'),'src','../img/play.png');
+                  }
+              }
+        }
+    }
+    function speed() {
+        $api.css($api.byId('bg'),'display:block');
+        $api.css($api.byId('choosespeed'),'display:block');
+    }
+    // 选择倍速
+    function control(obj) {
+        $(".choosespeed li").removeClass('active');
+        $api.addCls(obj, 'active');
+        var one = $api.dom(obj, 'span');
+        var speend = $api.html(one);
+        $api.html($api.byId('speed'),speend);
+        audioElm.playbackRate = speend;
+        $api.css($api.byId('bg'),'display:none');
+        $api.css($api.byId('choosespeed'),'display:none');
+    }
+    //关闭
+    function clos() {
+        $api.css($api.byId('bg'),'display:none');
+        $api.css($api.byId('choosespeed'),'display:none')
+    }
+    //收藏
+    function dofavorite() {
+        classroomid = api.pageParam.id;
+        api.ajax({
+            url: wtkurl +'classroom/dofavorite',
+            method: 'post',
+            headers:{
+                'TOKEN':ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    'objectid':classroomid,
+                    'type':1,
+                    objecttype:1,
+                    uid:ygtuserinfo.id
+                }
+            }
+        },function(ret, err){
+            if (ret) {
+                $api.toast('提示',ret.msg,'2000');
+                $api.attr($api.byId('dofavorite'),'src','../img/Collectionend.png');
+                $(".dofavorite b").html('已收藏')
+            } else {
+                alert('收藏失败');
+                console.log( JSON.stringify( err ) );
+            }
+        });
+    }
+
+    //PPT数据
+    function loadData() {
+        $(".loading").show();
+         classroomid = api.pageParam.id;
+        console.log('这是视频id' + classroomid);
+        api.ajax({
+                url: wtkurl +'classroom/getinfo',
+                method: 'post',
+                headers: {
+                    'TOKEN':ygtuserinfo.token
+                },
+                data: {
+                    values: {
+                        classroomid: classroomid,
+                        uid:ygtuserinfo.id
+                    }
+                }
+            },
+            function(data, err) {
+                console.log(JSON.stringify(data)+'直播的数据');
+                console.log(JSON.stringify(err));
+                $(".loading").hide();
+
+                if (data) {
+                    if (data.code == 1) {
+                        time = data.time;
+                        $("#title").html(data.data.info.name);
+                        if (data.data.info.thumb != '') {
+                            $api.attr($api.dom('#header .bgimg'), 'src', data.data.info.thumb);
+                        }
+                        // 分享信息
+                        sharetitle = data.data.titles.title;
+                        sharedesc = data.data.titles.description;
+                        shareurl = data.data.titles.shareurl;
+                        var shareimg = data.data.titles.shareimg;
+                        img = shareimg.split('?')[0];
+                        shareicon = img;
+
+                        // 处理swip图片
+                        var photos = data.data.photos;
+                        var plen = photos.length;
+                        var phtml = '';
+                        if (plen > 0) {
+                            for (var i = 0; i < plen; i++) {
+                                phtml += '<div class="swiper-slide">' +
+                                    '<img src="' + photos[i]['photo'] + '?imageView2/2/h/380" alt="" class="swiper-lazy" />' +
+                                    '<div class="swiper-lazy-preloader"></div>' +
+                                    '</div>';
+                            }
+                            $('#swiper-wrapper').html(phtml);
+                            myswiper =  new Swiper('.swiper-container', {
+                                pagination: '.swiper-pagination',
+                                paginationType: 'fraction',
+                                lazyLoading : true,
+                                onSlideChangeEnd: function(swiper){
+                                    var imgpage = $(".swiper-pagination-current").text();
+                                    var adu = $api.getStorage('aarry');
+                                    console.log(JSON.stringify(adu));
+                                    if (adu == undefined) {
+                                        // myswiper =  new Swiper('.swiper-container', {
+                                        //     pagination: '.swiper-pagination',
+                                        //     paginationType: 'fraction',
+                                        //     lazyLoading : true
+                                        // });
+                                    }else{
+                                        if (imgpage >0) {
+                                            for (var i = 1; i < adu.length; i++) {
+                                                 if (adu[i].id == imgpage) {
+                                                      srcstr = adu[i].voice;
+                                                      $("#audio").attr('src',srcstr);
+                                                      imgpage = i+1;
+                                                      break;
+                                                  }
+                                              }
+                                              $api.attr($api.byId('play'),'src','../img/pause.png');
+                                              var speend = $api.html($api.byId('speed'));
+                                              audioElm.playbackRate = speend;
+                                              audioElm.play();
+                                              $('.prev').removeClass('opciaty');
+                                              $('.next').removeClass('opciaty');
+                                              $('button').removeAttr("disabled");
+                                              $api.val($api.byId('page'),imgpage-1);
+                                            }
+                                        }
+                                    }
+
+                            });
+                        }
+                        if (data.data.isfavorite > 0) {
+                            $api.attr($api.byId('dofavorite'),'src','../img/Collectionend.png');
+                            $(".dofavorite b").html('已收藏');
+                        } else {
+                            $api.attr($api.byId('dofavorite'),'src','../img/Collection.png');
+                            $(".dofavorite b").html('收藏');
+                        }
+                    }
+                }else{
+                    if (err.statusCode == 401) {
+                        api.openFrame({
+                            name: 'loginframe',
+                            url: './loginframe.html',
+                            rect: {
+                                marginLeft:0,    //相对父 window 左外边距的距离
+                                marginTop:0,    //相对父 window 上外边距的距离
+                                marginBottom:0,    //相对父 window 下外边距的距离
+                                marginRight:0
+                            },
+                            pageParam: {
+
+                            },
+                            bounces: true,
+                            vScrollBarEnabled: false,
+                            hScrollBarEnabled: false
+                        });
+                    }
+                }
+            });
+
+    }
+
+    //聊天数据
+    function refreshlist() {
+         classroomid = api.pageParam.id;
+        //alert(classroomid+'ppt')
+        api.ajax({
+            url: wtkurl +'classroom/getvcmsg',
+            method: 'post',
+            headers: {
+                'TOKEN':ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    classroomid: classroomid,
+                    uid:ygtuserinfo.id
+                },
+            }
+        }, function(data, err) {
+            if (data) {
+                console.log(JSON.stringify(data)+'yuyinshuju');
+                if (data.code == 1) {
+                    var source = data.data;
+                    var aarry = new Array();
+                    if (source.length > 0) {
+                        for (var i = 0; i < source.length; i++) {
+                            if (source[i].object_name == "RC:VcMsg") {
+                                var voices = source[i].content;
+                                var audio =  voices.substr(0, voices.length-4);
+                                var img = source[i].imgpage;
+                                var userid = source[i].userid;
+                                var obj = {
+                                        voice:audio +'.aac',
+                                        id:img
+                                    };
+                                aarry.push(obj);
+                            }
+                        }
+                        var b = 0;
+                        srcstr = aarry[b].voice;
+                        img = aarry[b].id;
+                        $("#audio").attr('src',srcstr);
+                        $('#play').attr('imgpage',img);
+                        $('#play').attr('data-id',img);
+                        $api.val($api.byId('page'),b);
+                        $api.setStorage('aarry', aarry);
+                    }
+                }
+            } else {
+                console.log('接口错误信息getchatlist：');
+                console.log(JSON.stringify(err));
+            }
+        });
+
+    }
+
+
+
+    function over(){
+        var pages = $api.val($api.byId('page'));
+        var adu = $api.getStorage('aarry');
+        var page = parseFloat(pages) +1;
+        console.log(pages+'yeshi')
+        if (page < adu.length) {
+            srcst= adu[page].voice;
+            imgage = adu[page].id;
+            console.log(srcst+'lianjie');
+            $("#audio").attr('src',srcst);
+            $('#play').attr('imgpage',imgage);
+            var imgpage = $api.attr($api.byId("play"),'imgpage');
+            if (imgpage > 0) {
+                myswiper.slideTo((imgpage - 1),1000,false);
+            }
+            var speend = $api.html($api.byId('speed'));
+            audioElm.playbackRate = speend;
+            $api.attr($api.byId('play'),'src','../img/pause.png');
+            audioElm.play();
+            $('.prev').removeClass('opciaty');
+            $('.next').removeClass('opciaty');
+            $('button').removeAttr("disabled");
+            $api.val($api.byId('page'),page);
+        }else{
+            audioElm.pause();
+            $api.attr($api.byId('play'),'src','../img/play.png');
+            $('.next').addClass('opciaty')
+
+        }
+    }
+    function next() {
+        var page = ''
+        var adu = $api.getStorage('aarry');
+        imgpage = $(".swiper-pagination-current").text();
+        myswiper.slideTo(imgpage ,1000,false);
+        if (imgpage > 0) {
+            for (var i = 0; i < adu.length; i++) {
+                 if (adu[i].id == parseFloat(imgpage) +1) {
+                      page = i
+                      break;
+                  }else{
+                      page =  parseFloat($api.val($api.byId('page'))) + 1;
+                  }
+              }
+              $('.next').removeClass('opciaty');
+              $('.prev').removeClass('opciaty');
+              $('button').removeAttr("disabled");
+              if (page == adu.length) {
+                  $api.attr($api.byId('play'),'src','../img/play.png');
+                  $('.next').addClass('opciaty')
+                  $("#next").attr('disabled');
+              }
+              if (page < adu.length) {
+                  srcst= adu[page].voice;
+                  imgage = adu[page].id;
+                  $("#audio").attr('src',srcst);
+                  var speend = $api.html($api.byId('speed'));
+                  audioElm.playbackRate = speend;
+                  $api.attr($api.byId('play'),'src','../img/pause.png');
+                  playPromise = audioElm.play();
+                    if (playPromise) {
+                        playPromise.then(() => {
+                            // 音频加载成功
+                            // 音频的播放需要耗时
+                            setTimeout(() => {
+                                // 后续操作
+                                console.log("done");
+                            }, audioElm.duration * 10000); // audio.duration 为音频的时长单位为秒
+                        }).catch((e) => {
+                            console.log("Operation is too fast, audio play fails");
+                        });
+                    }
+                    $api.val($api.byId('page'),page);
+              }else{
+                  audioElm.pause();
+                  $api.attr($api.byId('play'),'src','../img/play.png');
+                  $('.next').addClass('opciaty')
+
+              }
+        }
+
+    }
+
+    function prev() {
+        var page = ''
+        var adu = $api.getStorage('aarry');
+        imgpage = $(".swiper-pagination-current").text();
+        image = imgpage -2;
+        myswiper.slideTo(image ,1000,false);
+        if (imgpage > 0) {
+            for (var i = 0; i < adu.length; i++) {
+                 if (adu[i].id == parseFloat(image) +1) {
+                      page = i
+                      break;
+                  }else{
+                      page =  parseFloat($api.val($api.byId('page'))) + 1;
+                  }
+              }
+              $('.next').removeClass('opciaty');
+              $('.prev').removeClass('opciaty');
+              $('button').removeAttr("disabled");
+              if (page == adu.length) {
+                  $api.attr($api.byId('play'),'src','../img/play.png');
+                  $('.prev').addClass('opciaty')
+                  $("#prev").attr('disabled');
+              }
+              if (page < adu.length) {
+                  srcst= adu[page].voice;
+                  imgage = adu[page].id;
+                  $("#audio").attr('src',srcst);
+                  var speend = $api.html($api.byId('speed'));
+                  audioElm.playbackRate = speend;
+                  $api.attr($api.byId('play'),'src','../img/pause.png');
+                  playPromise = audioElm.play();
+                    if (playPromise) {
+                        playPromise.then(() => {
+                            // 音频加载成功
+                            // 音频的播放需要耗时
+                            setTimeout(() => {
+                                // 后续操作
+                                console.log("done");
+                            }, audioElm.duration * 10000); // audio.duration 为音频的时长单位为秒
+                        }).catch((e) => {
+                            console.log("Operation is too fast, audio play fails");
+                        });
+                    }
+                    $api.val($api.byId('page'),page);
+              }else{
+                  audioElm.pause();
+                  $api.attr($api.byId('play'),'src','../img/play.png');
+                  $('.prev').addClass('opciaty')
+
+              }
+        }
+    }
+
+    //跳转页面
+    function  classroom() {
+         id =api.pageParam.id;
+        audioElm.pause();
+        $api.attr($api.byId('play'),'src','../img/play.png');
+      api.openWin({
+        name: 'classroom',
+        url: './classroom.html',
+        pageParam: {id:id},
+        animation: {
+            type: 'none'
+        }
+      })
+  };
+  //分享
+  $('#share').bind('click',function(e){
+    $('#bg').show();
+    $(".sharetoast").addClass('sh');
+  });
+  //分享关闭
+  $('#opentool').bind('click',function(e){
+    $('#bg').hide();
+    $(".sharetoast").removeClass('sh');
+  });
+
+  $('#bg').bind('click',function(e){
+    $('#bg').hide();
+    $(".sharetoast").removeClass('sh');
+    $('#bg').hide();
+    clos();
+  });
+
+  //分享朋友
+  function sharefriend() {
+    var wx = api.require('wx');
+    wx.shareWebpage({
+        apiKey: '',
+        scene: 'session',
+        title: sharetitle,
+        description: sharedesc,
+        thumb: 'widget://img/shareicon.png',//http://img1.wtk.so/2016/08/19/57b6dbc29e7cc.png
+        contentUrl:shareurl
+    }, function(ret, err) {
+        if (ret.status) {
+            alert('分享成功');
+            $('#bg').hide();
+            $(".sharetoast").removeClass('sh')
+        } else {
+            alert('分享失败');
+            console.log(JSON.stringify(err));
+        }
+    });
+  }
+
+  //分享朋友圈
+  function sharefriends() {
+    var wx = api.require('wx');
+    wx.shareWebpage({
+        apiKey: '',
+        scene: 'timeline',
+        title: sharetitle,
+        description:sharedesc,
+        thumb: 'widget://img/shareicon.png',
+        contentUrl: shareurl
+    }, function(ret, err) {
+        if (ret.status) {
+            alert('分享成功');
+            $('#bg').hide();
+            $(".sharetoast").removeClass('sh')
+        } else {
+            alert('分享失败');
+            console.log(JSON.stringify(err));
+        }
+    });
+  }
+
+  //邀请卡
+  function poster() {
+      classroomid  =  api.pageParam.id
+      api.openWin({
+          name: 'poster',
+          url: './poster.html',
+          pageParam: {
+              id: classroomid,
+              objecttype:1
+          },
+          animation: {
+              type: 'none'
+          }
+      });
+  }
+
+  //返回
+  function goback() {
+
+     var time = new Date().getTime();
+     timend= Math.floor(time/1000);
+     var timelog = (timend)-(timebegin);
+     classroomid = api.pageParam.id;
+     api.ajax({
+         url: wtkurl +'classroom/setlog',
+         method: 'post',
+         headers: {
+             'TOKEN':ygtuserinfo.token
+         },
+         data: {
+             values: {
+                 classroomid:classroomid,
+                 specialid:0,
+                 timelength:timelog,
+                 uid:ygtuserinfo.id
+             }
+         }
+     },function(ret, err){
+         console.log(JSON.stringify(ret));
+         console.log(JSON.stringify(err));
+         if (ret) {
+            console.log( JSON.stringify( ret ) );
+             api.closeWin();
+         } else {
+             console.log( JSON.stringify( err ) );
+         }
+     });
+
+  }
+    </script>
+</body>
+
+</html>

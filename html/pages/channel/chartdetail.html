@@ -1,0 +1,180 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>医管通APP</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/ygtcommon.css">
+
+    <style type ="text/css">
+    input, button,select, textarea:focus {
+        outline: none !important;
+        border:0;
+    }
+    .top{background:-webkit-gradient(linear, 0% 0%, 0% 100%,from(#aea9a5), to(#b0a8a5));height: 160px;padding-top: 40px;text-align: left;position: relative;}
+    .top .left img{width: 30px;transform: rotate(180deg);margin-left: 10px;}
+    .top .right{float: right;margin-right: 15px;}
+    .top .right img{width: 20px;}
+    .top .dec{padding: 10px 15px;position: relative;margin-top: 10px;}
+    .top .dec h5{font-size: 18px;color: #f4f0ef;}
+    .top .dec p{color: #f4f0ef;line-height: 20px;margin-top: 10px;}
+    .top .dec .gropimg{position: absolute;top: 10px;right: 20px;width: 60px;height:60px;border-radius: 50%;border: 2px solid #fff;}
+    .middle{position: relative;top: -20px;z-index: 20;}
+    .middle .owner{background: #fff;border-top-left-radius: 5px;border-top-right-radius: 5px;color: #333;padding: 10px;}
+    .middle .owner h5{font-weight: normal;font-size: 16px;margin-top: 10px;}
+    .middle .owner h5 span{float: right;font-size: 15px;color: #999;}
+    .middle .owner h5 span img{width: 10px;margin-left: 10px;position: relative;top: -1px;}
+    .middle .owner .users{margin-top: 30px;}
+    .middle .owner .users .personal{width: 50px;height: 50px;border-radius: 50%;display: inline-block;position: relative;overflow: hidden;margin-right: 10px;}
+    .middle .owner .users .personal img{width: 100%;}
+    .middle .owner .users .personal b{display: inline-block;position: absolute;width: 100%;height: 18px;color: #fff;background: #ff9913;font-size: 12px;font-weight: normal;bottom:0;text-align: center;z-index: 111;}
+    .middle .owner .users .add3{display: inline-block;width: 45px;height: 45px;background: #eee;border-radius: 50%;text-align: center;line-height: 40px;position: relative;}
+    .middle .owner .users .add3 img{width: 30px;}
+    .middle .list{margin-top: 10px;background: #fff;}
+    .middle .list li{padding: 20px 10px;border-bottom: 1px solid #f8f8f8}
+    .middle .list li span{float: right;}
+    .middle .list li span input{border: 0;}
+    .middle .list li span b{font-weight: normal;}
+    .middle .list li span img{width: 10px;}
+   </style>
+
+
+<body >
+    <div class="top">
+        <span class="left" onclick="api.closeWin()"><img src="../img/more.png" /></span>
+        <!-- <span class="right" onclick="confim()"><img src="../img/more3.png" /></span> -->
+        <div class="dec">
+            <h5>医疗</h5>
+            <p>群号：<span>59875246</span></p>
+            <img class="gropimg" src="../img/noavatar1.png" />
+        </div>
+    </div>
+    <div class="middle">
+        <div class="owner">
+            <h5 onclick="Users()">群中用户 <span>1人<img src="../img/back_right.png" /></span></h5>
+            <div class="users">
+                <span class="personal">
+                    <img src="../img/noavatar1.png">
+                    <b>群主</b>
+                </span>
+                <span class="personal">
+                    <img src="../img/noavatar.png">
+                    <b>管理员</b>
+                </span>
+                <!-- <span class="add3">
+                    <img src="../img/add3.png" />
+                </span> -->
+            </div>
+        </div>
+        <ul class="list">
+            <li>
+                群公告
+                <span>
+                    <input /><img src="../img/back_right.png" />
+                </span>
+            </li>
+            <li>
+                群资料
+                <span>
+                    <input onclick="Establish()" placeholder="编辑群基本信息 简介等" /><img src="../img/back_right.png" />
+                </span>
+            </li>
+            <li>
+                加群方式
+                <span>
+                    <b></b><img src="../img/back_right.png" />
+                </span>
+            </li>
+        </ul>
+    </div>
+</body>
+<script src="../js/lib/jquery-2.1.4.js"></script><script src="../js/common.js"></script>
+<script type="application/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+        //  禁止左右滑动
+        $api.fixStatusBar(header);
+        api.addEventListener({name: 'viewappear'}, function(ret, err){
+               loaddata();
+         })
+    };
+
+
+    function loaddata() {
+        api.ajax({
+            url: apihost + '/api/wtk/myhome/mywallet',
+            method: 'post',
+            headers: {
+                'TOKEN': ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    uid: ygtuserinfo.id
+                }
+            }
+        }, function(data, err) {
+            console.log(JSON.stringify(data));
+            console.log(JSON.stringify(err))
+                $('.bgimg .money').html(data.data.wallet.amount);
+                $('.profit .left .money').html(data.data.wallet.allamount);
+                $('.profit .right .money').html(data.data.todayamount);
+                amount = data.data.wallet.amount;
+                $api.setStorage('amount', amount);
+        });
+    }
+
+    //询问
+    function confim() {
+        api.confirm({
+        title: '',
+        msg: '确定解散此群',
+        buttons: ['确定', '取消']
+        }, function(ret, err) {
+            var index = ret.buttonIndex;
+        });
+    }
+
+    function Establish() {
+        api.openWin({
+          name: 'establish',
+          url: './establish.html',
+          pageParam: {name: 'Establish'},
+          bgColor: 'rgba(0,0,0,0)',
+          animation:{
+            type:'none'
+          }
+        })
+    }
+
+    //群中用户
+    function Users() {
+        api.openWin({
+          name: 'users',
+          url: './users.html',
+          bgColor: 'rgba(0,0,0,0)',
+          animation:{
+            type:'none'
+          }
+        })
+    }
+</script>
+
+</html>

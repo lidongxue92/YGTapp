@@ -1,0 +1,295 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Hello APP</title>
+    <link rel="stylesheet" type="text/css" href="css/api.css" />
+    <style type="text/css">
+      html,body { width: 100%; height: 100%; background-color: #fff; position: relative; }
+      body { font-family: "微软雅黑"; text-align: center; }
+      .btn { left: 5%; width: 40%; height: 50px; position: fixed; background-color: #fff; line-height: 50px; font-size: 15px; color: #ff9913; text-align: center; border-radius: 8px; bottom: 100px;
+          border: 1px solid #ff9913; }
+      .btn-visitor { right: 5%; width: 40%; height: 50px; position: fixed; background-color: #fff; line-height: 50px; font-size: 15px; color: #ff9913; text-align: center; border-radius: 8px;
+          bottom: 100px; border: 1px solid #ff9913; }
+      .btn-third-party { left: 5%; display: block; position: fixed; width: 90%; height: 50px; box-sizing: border-box; margin-left: auto; margin-right: auto; font-size: 18px;
+          background: linear-gradient(-135deg, rgb(255, 153, 113) 0%, rgb(255, 153, 19) 100%);color: #fff; line-height: 50px; border-radius: 10px; text-align: center; bottom: 180px; }
+      .smallimg { width: 1.5rem; position: relative; top: 6px; }
+        #img { width: 10rem; margin-top:11rem; }
+      .agree { position: fixed; bottom: 30px; font-size: 12px; color: #b6b6b6; text-align: center; width: 100%; }
+      .loading{position: absolute;width: 100%;height: 100%;z-index: 1111;top: 0;left: 0;background: rgba(0,0,0,.5);display: none;}
+      .loading p{margin-top: 120px;}
+    </style>
+    <body>
+        <div><img id="img" src="./img/logo2.png" / style=""></div>
+        <div id="wxloginbtn" class="btn-third-party" tapmode onclick="loginWithWX();"><img class='smallimg' src="./img/share_friend.png" />&ensp;微信登录</div>
+        <div class="btn" tapmode onclick="lginWithPhoneNumber();" >手机快捷登录</div>
+        <div class="btn-visitor" tapmode onclick="logintoast()" >游客模式</div>
+        <div class="loading">
+          <p>登录中...</p>
+            <span>
+                <img src="./img/loading.gif" />
+            </span>
+        </div>
+        <div class="restost"></div>
+    </body>
+    <script src="./js/lib/jquery-2.1.4.js"></script>
+    <script src="./js/common.js"></script>
+    <script type="text/javascript" src="./script/api.js"></script>
+    <script type="text/javascript">
+        var apihost = $api.getStorage('apihost');
+        if (apihost == undefined || apihost == '') {
+            apihost = 'http://member.ygt.cm';
+            $api.setStorage('apihost', apihost);
+        }
+        var systemtype = '';//api.systemtype;
+        //判断系统
+        apiready = function() {
+            //输出Log，Log将显示在APICloud Studio控制台
+            console.log("Hello World! Hello APICloud!");
+            systemtype = api.systemType;
+            var wx = api.require('wx');
+            wx.isInstalled(function(ret, err) {
+                if (!ret.installed) {
+                    $api.css($api.byId('wxloginbtn'), 'display:none;');
+                }
+            });
+            //  禁止左右滑动
+            api.setWinAttr({
+                slidBackEnabled: false
+            });
+            if(systemtype == 'android'){
+                $api.css($api.dom('.btn-visitor'), 'display:none;');
+                $api.css($api.dom('.btn'), 'width:90%;');
+            }
+            api.addEventListener({
+                name: 'keyback'
+            }, function(ret, err) {
+                api.confirm({
+                    title: '提示',
+                    msg: '是否退出应用',
+                    buttons: ['确定', '取消']
+                }, function(ret, err) {
+                    if (ret.buttonIndex == 1) {
+                        // 关闭当前的主Widget，就可以实现推出APP的效果
+                        api.closeWidget({
+                            silent: true //直接退出，无需提示
+                        });
+                    }
+                });
+            });
+            openconfim();
+        };
+
+        //微信登录跳转
+        function loginWithWX() {
+            var wx = api.require('wx');
+            wx.isInstalled(function(ret, err) {
+                if (ret.installed) {
+                    wx.auth({
+                        apiKey: ''
+                    }, function(aret, aerr) {
+                        if (aret.status) {
+                            // 获取用户信息
+                            wx.getToken({
+                                apiKey: '',
+                                apiSecret: '',
+                                code: aret.code
+                            }, function(tret, terr) {
+                                if (tret.status) {
+                                    wx.getUserInfo({
+                                        accessToken: tret.accessToken,
+                                        openId: tret.openId
+                                    }, function(uret, uerr) {
+
+                                        if (uret.status) {
+                                            // 获取用户信息成功
+                                            api.ajax({
+                                                url: memberurl +'user/wxlogin',
+                                                method: 'post',
+                                                headers: {},
+                                                data: {
+                                                    values: {
+                                                        status: uret.status,
+                                                        openid: uret.openid,
+                                                        nickname: uret.nickname,
+                                                        sex: uret.sex,
+                                                        headimgurl: uret.headimgurl,
+                                                        unionid: uret.unionid
+                                                    }
+                                                }
+                                            }, function(lret, lerr) {
+                                                console.log(JSON.stringify(lret) + 'wexxx');
+                                                console.log(JSON.stringify(lerr) + 'weix');
+                                                if (lret) {
+                                                  if (lret.code == 1) {
+                                                    var userinfo = lret.data.userinfo;
+                                                    $api.setStorage('ygtuserinfo', userinfo);
+                                                    api.closeToWin({
+                                                        name: 'root'
+                                                    });
+                                                  }else{
+                                                    alert(lret.msg)
+                                                  }
+                                                    //openindex();
+                                                }else if (lerr.statusCode == 401) {
+                                                    // 登录没绑定手机，需要去绑定手机页面
+                                                    api.openWin({
+                                                        name: 'BindingCellPhone',
+                                                        url: 'login0.html',
+                                                        pageParam: {
+                                                            status: uret.status,
+                                                            openid: uret.openid,
+                                                            nickname: uret.nickname,
+                                                            sex: uret.sex,
+                                                            headimgurl: uret.headimgurl,
+                                                            unionid: uret.unionid
+                                                        }
+                                                    });
+
+                                                }
+                                            });
+                                        } else {
+                                            console.log(JSON.stringify(uerr));
+                                        }
+                                    });
+                                } else {
+                                    console.log(JSON.stringify());
+                                }
+                            });
+                        } else {
+                            console.log('auth error');
+                            console.log(JSON.stringify(aerr));
+                        }
+                        if (aerr.code == -1) {
+                            alert('未知错误');
+                        }
+                    });
+                    // auth end
+                } else {
+                    alert('当前设备没有安装微信客户端');
+                }
+            });
+
+
+        }
+        // 手机号登录
+        function lginWithPhoneNumber() {
+            api.openWin({
+                name: 'loginPhone',
+                url: 'loginphone.html',
+                pageParam: {
+                    name: 'test'
+                },
+                animation: {
+                    type: 'none'
+                }
+            });
+
+        }
+
+        //游客登录 弹窗
+        function logintoast() {
+            api.confirm({
+                title: '温馨提示',
+                msg: '尊敬的用户，您将使用游客方式登录，此模式的数据（购买的课程、充值记录、账户余额）只限于本设备使用，请优先选择手机或者微信登录。',
+                buttons: ['继续游客身份登录', '取消']
+            }, function(ret, err) {
+                if (ret.buttonIndex == 1) {
+                    nologin();
+                }
+            });
+        }
+        // 游客登录
+        function nologin() {
+            // 进行游客登录
+            var deviceid = api.deviceId;
+            api.ajax({
+                url: memberurl +'user/deviceidLogin',
+                method: 'post',
+                data: {
+                    values: {
+                        'uuid':deviceid
+                    }
+                }
+            },function(ret, err){
+                console.log(JSON.stringify(ret));
+                console.log(JSON.stringify(err));
+                if (ret) {
+                    if (ret.code == 2) {
+                        var userinfo = {
+                            'id':-1,
+                            'nickname':'游客'+ret.data.id,
+                            'tid':ret.data.id,
+                            'deviceid':deviceid,
+                            'token':'',
+                            'avatar':'http://avatar.ygt.cm/noavatar-app.png'
+                        };
+                        $api.setStorage('ygtuserinfo', userinfo);
+                        api.closeToWin({
+                            name: 'root',
+                            animation: {
+                                type: 'none'
+                            }
+                        });
+                    }else {
+                        var userinfo = ret.data.userinfo;
+                        $api.setStorage('ygtuserinfo', userinfo);
+                        api.closeToWin({
+                            name: 'root',
+                            animation: {
+                                type: 'none'
+                            }
+                        });
+                    }
+                    // alert( JSON.stringify( ret ) );
+                } else {
+                    // alert( JSON.stringify( err ) );
+                }
+            });
+
+        }
+
+        function openindex() {
+            //alert('tiaozhuan')
+            api.openWin({
+                name: 'root',
+                url: 'index.html',
+                pageParam: {
+                    name: 'test'
+                },
+                animation: {
+                    type: 'none'
+                }
+            });
+
+        }
+
+        // 打开隐私协议
+        function openconfim() {
+          if ($api.getStorage('agreerules') !=1) {
+            api.openFrame({
+                name: 'confimframe',
+                url: './confimframe.html',
+                rect: {
+                    marginLeft:0,    //相对父 window 左外边距的距离
+                    marginTop:0,    //相对父 window 上外边距的距离
+                    marginBottom:0,    //相对父 window 下外边距的距离
+                    marginRight:0
+                },
+                pageParam: {
+                    name: 'test'
+                },
+                bounces: true,
+                bgColor: 'rgba(0,0,0,0.3)',
+                vScrollBarEnabled: true,
+                hScrollBarEnabled: true
+            });
+          }
+        }
+
+    </script>
+
+</html>

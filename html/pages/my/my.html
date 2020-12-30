@@ -1,0 +1,563 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>医管通APP</title>
+    <link rel="stylesheet" type="text/css" href="./css/api.css" />
+    <link rel="stylesheet" href="../../css/base.css">
+    <link rel="stylesheet" href="../../css/ygtcommon.css">
+    <script src="../../js/lib/jquery2.js"></script>
+    <link rel="stylesheet" href="../../css/my/my.css">
+    <body>
+        <div class="usercenter">
+            <div class="info" >
+                <p class="headimg" ><img src="" class="head"></p>
+                <div class="left">
+                    <p id="nicknamep"></p>
+                    <p class="vipstatus"><img src="../../img/mymember.png"><b></b></p>
+                    <p class="viptime"></p>
+
+                </div>
+            </div>
+        </div>
+        <div class="middle">
+            <ul>
+                <li onclick="buylog();">
+                    <img src="../../img/buylog.png" />订单记录
+                    <span class="right"><img  src="../../img/back_right.png" /></span>
+                </li>
+                <li onclick="vip();">
+                    <img src="../../img/mymember.png" />开通会员
+                    <span class="right">预存全年梦想&emsp;<img  src="../../img/back_right.png" /></span>
+                </li>
+                <li onclick="bonus();">
+                    <img src="../../img/bonus.png" />我的奖学金
+                    <span class="right">邀请好友听课赚奖学金&emsp;<img  src="../../img/back_right.png" /></span>
+                </li>
+                <li id='money' onclick="niupay();">
+                    <img src="../../img/money.png" />牛贝
+                    <span class="right"><img  src="../../img/back_right.png" /></span>
+                </li>
+                <li onclick="concerned();">
+                    <img src="../../img/heart-fill.png" />我的收藏
+                    <span class="right"><img  src="../../img/back_right.png" /></span>
+                </li>
+                <li onclick="myquestion();">
+                    <img src="../../img/myquestion.png" />我的问题
+                    <span class="right"><img  src="../../img/back_right.png" /></span>
+                </li>
+                <li onclick="mytask();">
+                    <img src="../../img/task.png" />我的作业
+                    <span class="right"><img  src="../../img/back_right.png" /></span>
+                </li>
+            </ul>
+            <ul class="mt10">
+                <li onclick="profit();">
+                    <img src="../../img/Profit.png" />网师收益中心
+                    <span class="right"><img  src="../../img/back_right.png" /></span>
+                </li>
+            </ul>
+            <!-- <ul class="mt10">
+                <li onclick="certificate();">
+                    <img src="../../img/certificate.png" />线下课证书查询
+                    <span class="right"><img  src="../../img/back_right.png" /></span>
+                </li>
+            </ul> -->
+            <ul class="mt10">
+                <li onclick="teacher();">
+                    <img src="../../img/teacher1.png" />我是网师
+                    <span class="right"><img  src="../../img/back_right.png" /></span>
+                </li>
+            </ul>
+            <ul class="mt10">
+                <li onclick="tel();">
+                    <img src="../../img/phone.png" />电话咨询
+                    <span class="right">周一至周日 9:00-18:00&emsp;<img  src="../../img/back_right.png" /></span>
+                </li>
+
+            </ul>
+            <ul class="mt10">
+                <li onclick="set();">
+                    <img src="../../img/set.png" />设置
+                    <span class="right"><img  src="../../img/back_right.png" /></span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 底部导航栏 -->
+        <footer class="foot" id="footer">
+            <span class="tab" tapmode onclick="live2();">
+                  <img src='../../img/shangke-3.png'/>
+                  <p>频道</p>
+            </span>
+            <span class="tab"  tapmode onclick="index();">
+                  <img src='../../img/faxian-3.png'/>
+                  <p>发现</p>
+              </span>
+              <span class="tab" tapmode onclick="study();">
+                <img src='../../img/yigou-3.png'/>
+                <p>学习</p>
+            </span>
+
+            <span class="tab">
+                  <img src='../../img/wode-2.png'/>
+                  <p class='c-2577e3'>我的</p>
+              </span>
+        </footer>
+    </body>
+    <script src="../../js/jquery-weui.min.js"></script><script src="../../js/common.js"></script>
+    <script type="application/javascript" src="../../js/lib/fastclick.js"></script>
+    <script type="text/javascript" src="../../script/api.js"></script>
+    <script type="text/javascript">
+        var apihost = $api.getStorage('apihost');
+        if (apihost == undefined || apihost == '') {
+            apihost = 'http://trade.ygt.cm';
+            $api.setStorage('apihost', apihost);
+        }
+        var ygtuserinfo = '';
+        var iswxpay = $api.getStorage('iswxpay');
+
+        apiready = function() {
+            //输出Log，Log将显示在APICloud Studio控制台
+            console.log("Hello World! Hello APICloud!");
+            //  禁止左右滑动
+            api.setWinAttr({
+                slidBackEnabled: false
+            });
+            //  禁止左右滑动
+
+            // 判断是否显示牛币
+            var systemtype = api.systemType;
+            if (systemtype != 'ios' || iswxpay == 1) {
+                $api.byId('money').remove();
+            }
+            checklogin();
+            api.addEventListener({name: 'viewappear'}, function(ret, err){
+                ygtuserinfo = $api.getStorage('ygtuserinfo');
+                console.log(JSON.stringify(ygtuserinfo));
+                if (ygtuserinfo.avatar != '') {
+                    $('.head').attr('src', ygtuserinfo.avatar);
+                } else {
+                    $('.head').attr('src', '../../img/noavatar.png');
+                }
+                $('#nicknamep').html(ygtuserinfo.nickname);
+                checkvip();
+            });
+        };
+
+        function checklogin() {
+            userinfo = $api.getStorage('ygtuserinfo');
+            if (!userinfo || !userinfo.id) {
+                api.openWin({
+                    name: 'login',
+                    url: './login.html',
+                    animation: {
+                        type: 'none'
+                    }
+                });
+            }
+        }
+        // 获取会员时间
+        function checkvip() {
+          api.ajax({
+              url: wtkurl +'classroom/checkvip',
+              method: 'post',
+              headers: {
+                  'TOKEN': ygtuserinfo.token
+              },
+              data: {
+                  values: {
+                      'uid': ygtuserinfo.id
+                  }
+              }
+          }, function(ret, err) {
+            console.log(JSON.stringify(ret))
+              if (ret) {
+                if (ret.data.isvip == 0) {
+                    if (ret.data.vipinfo != "" && ret.data.endtime != 0) {
+                      var html = '';
+                      html +='<p>会员到期时间：'+(format(ret.data.vipinfo.endtime*1000)).split(' ')[0]+'</p>'
+                                  +'<p>请立即购买会员</p>'
+                      $('.vipstatus').html(html);
+                      $('.vipstatus').click(function(){
+                          vip()
+                      })
+                    }else{
+                        $('.vipstatus').html('购买会员，vip内容免费听');
+                        $('.vipstatus').click(function(){
+                            vip()
+                        })
+                    }
+                }else{
+                   if (ret.data.vipinfo.vip_type_id == 3) {
+                        $('.vipstatus b').html('季卡会员')
+                        $('.viptime').html(ret.data.vipinfo.endtime.split(' ')[0]+'到期')
+                    }else if (ret.data.vipinfo.vip_type_id== 4) {
+                        $('.vipstatus b').html('体验会员')
+                        $('.viptime').html(ret.data.vipinfo.endtime.split(' ')[0]+'到期')
+                    }else if (ret.data.vipinfo.vip_type_id == 1 || ret.data.vipinfo.vip_type_id == 2) {
+                        $('.vipstatus b').html('年卡会员')
+                        $('.viptime').html(ret.data.vipinfo.endtime.split(' ')[0]+'到期')
+                    }
+                }
+              }
+          });
+        }
+        //发现
+        function index() {
+            api.openWin({
+                name: 'root',
+                url: '../../index.html',
+                pageParam: {
+                    name: 'test'
+                },
+                bgColor: 'rgba(0,0,0,0)',
+                animation: {
+                    type: 'none'
+                }
+            })
+
+            setTimeout('api.closeWin();', '200');
+        }
+        //底部学习
+        function study() {
+            api.openWin({
+                name: 'study',
+                url: '../study.html',
+                pageParam: {
+                    name: 'test'
+                },
+                bgColor: 'rgba(0,0,0,0)',
+                animation: {
+                    type: 'none'
+                }
+            });
+            setTimeout('api.closeWin();', '200');
+        }
+        //底部频道
+        function live2() {
+            api.addEventListener({
+                name:'viewdisappear'
+            }, function(ret, err){
+               api.closeWin();
+            });
+            api.openWin({
+                name: 'live',
+                url: '../channel/live.html',
+                pageParam: {
+                    name: 'test'
+                },
+                bgColor: 'rgba(0,0,0,0)',
+                animation: {
+                    type: 'none'
+                }
+            })
+        }
+        //个人资料
+        function member() {
+          api.openWin({
+            name: 'member',
+            url: './member.html',
+            pageParam: {name: 'test'},
+            bgColor: 'rgba(0,0,0,0)',
+            animation:{
+              type:'none'
+            }
+          })
+        }
+        //牛币
+        function niupay() {
+            api.openWin({
+                name: 'niupay',
+                url: './niupay.html',
+                pageParam: {
+                    name: 'test'
+                },
+                bgColor: 'rgba(0,0,0,0)',
+                animation: {
+                    type: 'none'
+                }
+            })
+        }
+
+        //我的收藏
+        function concerned() {
+            ygtuserinfo = $api.getStorage('ygtuserinfo');
+            if (ygtuserinfo.id == -1) {
+                api.openWin({
+                    name: 'loginframe',
+                    url: '../loginframe.html',
+                    animation: {
+                        type: 'none'
+                    }
+                });
+
+            }else {
+                api.openWin({
+                    name: 'concerned',
+                    url: './concerned.html',
+                    pageParam: {
+                        name: 'test'
+                    },
+                    bgColor: 'rgba(0,0,0,0)',
+                    animation: {
+                        type: 'none'
+                    },
+                    reload:true
+                });
+            }
+        }
+        //线上课购买记录
+        function buylog() {
+            ygtuserinfo = $api.getStorage('ygtuserinfo');
+            if (ygtuserinfo.id == -1) {
+                api.openWin({
+                    name: 'loginframe',
+                    url: '../loginframe.html',
+                    animation: {
+                        type: 'none'
+                    }
+                });
+
+            }else {
+                api.openWin({
+                    name: 'buylog',
+                    url: './buylog.html',
+                    pageParam: {
+                        name: 'test'
+                    },
+                    bgColor: 'rgba(0,0,0,0)',
+                    animation: {
+                        type: 'none'
+                    },
+                    reload:true
+                });
+            }
+        }
+        //我的作业
+        function mytask() {
+            ygtuserinfo = $api.getStorage('ygtuserinfo');
+            if (ygtuserinfo.id == -1) {
+                api.openWin({
+                    name: 'loginframe',
+                    url: '../loginframe.html',
+                    animation: {
+                        type: 'none'
+                    }
+                });
+
+            }else {
+                api.openWin({
+                    name: 'mytask',
+                    url: './mytask.html',
+                    pageParam: {
+                        name: 'test'
+                    },
+                    bgColor: 'rgba(0,0,0,0)',
+                    animation: {
+                        type: 'none'
+                    },
+                    reload:true
+                });
+            }
+        }
+
+        //我的收益
+        function profit() {
+            ygtuserinfo = $api.getStorage('ygtuserinfo');
+            if (ygtuserinfo.id == -1) {
+                api.openWin({
+                    name: 'loginframe',
+                    url: '../loginframe.html',
+                    animation: {
+                        type: 'none'
+                    }
+                });
+
+            }else {
+                api.openWin({
+                    name: 'profit',
+                    url: './profit.html',
+                    pageParam: {
+                        name: 'test'
+                    },
+                    bgColor: 'rgba(0,0,0,0)',
+                    animation: {
+                        type: 'none'
+                    },
+                    reload:true
+                });
+            }
+        }
+        //我的奖学金
+
+        function bonus() {
+            ygtuserinfo = $api.getStorage('ygtuserinfo');
+            if (ygtuserinfo.id == -1) {
+                api.openWin({
+                    name: 'loginframe',
+                    url: '../loginframe.html',
+                    animation: {
+                        type: 'none'
+                    }
+                });
+
+            }else {
+                api.openWin({
+                    name: 'bonus',
+                    url: './bonus.html',
+                    pageParam: {
+                        name: 'test'
+                    },
+                    bgColor: 'rgba(0,0,0,0)',
+                    animation: {
+                        type: 'none'
+                    },
+                    reload:true
+                });
+            }
+        }
+        //证书查询
+        function certificate() {
+            api.openWin({
+                name: 'sweepcode',
+                url: './sweepcode.html',
+                pageParam: {
+                    id: 'Sweepcode'
+                },
+                animation: {
+                    type: 'none'
+                }
+            })
+        }
+        //会员
+        function vip() {
+            api.openWin({
+                name: 'vipsure',
+                url: '../vipsure.html',
+                pageParam: {
+                    id: 'my'
+                },
+                animation: {
+                    type: 'none'
+                }
+            })
+        }
+        //个人资料
+        function member() {
+            api.openWin({
+                name: 'member',
+                url: './member.html',
+                animation: {
+                    type: 'none'
+                },
+            })
+
+        }
+        //设置
+        function set() {
+            api.openWin({
+                name: 'set',
+                url: './set.html',
+                pageParam: {
+                    name: 'test'
+                },
+                bgColor: 'rgba(0,0,0,0)',
+                animation: {
+                    type: 'none'
+                }
+            })
+        }
+        //关于我们
+        function towtk() {
+            api.openWin({
+                name: 'wtk',
+                url: './wtk.html',
+                pageParam: {
+                    name: 'test'
+                },
+                bgColor: 'rgba(0,0,0,0)',
+                animation: {
+                    type: 'none'
+                }
+            })
+        }
+
+        //我是网师
+        function teacher() {
+            api.openWin({
+                name: 'teacher',
+                url: './teacher.html',
+                pageParam: {
+                    name: 'test'
+                },
+                bgColor: 'rgba(0,0,0,0)',
+                animation: {
+                    type: 'none'
+                }
+            })
+        }
+
+
+        //暂未开通页面
+        function nomount() {
+            api.toast({
+                msg: '暂未开通请耐心等待',
+                duration: 2000,
+                location: 'middle'
+            });
+
+        }
+
+        //拨打电话
+        function tel() {
+            api.call({
+                type: 'tel_prompt',
+                number: '4008955676'
+            });
+        }
+
+        //头像修改
+        function headpic() {
+            api.openWin({
+              name: 'headpic',
+              url: './headpic.html',
+              pageParam: {name: 'test'},
+              bgColor: 'rgba(0,0,0,0)',
+              animation:{
+                type:'none'
+              }
+            })
+        }
+        // 我的问题
+      function myquestion(){
+        api.openWin({
+          name: 'myquestion',
+          url: './myquestion.html',
+          pageParam: {name: 'test'},
+          bgColor: 'rgba(0,0,0,0)',
+          animation:{
+            type:'none'
+          }
+        })
+      }
+
+      // // 时间戳转日期
+    function add0(m){return m<10?'0'+m:m };
+    function format(shijianchuo){
+        //shijianchuo是整数，否则要parseInt转换
+        var time = new Date(shijianchuo);
+        var y = time.getFullYear();
+        var m = time.getMonth()+1;
+        var d = time.getDate();
+        var h = time.getHours();
+        var mm = time.getMinutes();
+        var s = time.getSeconds();
+        return y+'-'+add0(m)+'-'+add0(d)+' '+add0(h)+':'+add0(mm)+':'+add0(s);
+    }
+    </script>
+
+</html>

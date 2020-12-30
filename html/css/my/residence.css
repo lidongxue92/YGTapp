@@ -1,0 +1,25 @@
+input, button,select, textarea:focus {
+    outline: none !important;
+    border:0;
+}
+.middle{margin-top: 100px;}
+.middle .status{text-align: center;line-height: 30px;}
+.middle .status .circle{width: 10px;height: 10px;display: inline-block;background: #ff9913;border-radius: 50%;}
+.middle .status .line{width: 80px;height: 3px;display: inline-block;margin-left: 5px;margin-right: 5px;background: #ff9913;position: relative;top: -3px;}
+.middle .status .op{opacity: .5}
+.middle .dec{background: #fff;padding: 15px 10px;position: relative;margin-top: 10px;}
+.middle .dec h5{font-size: 16px;color: #333;font-weight: normal;}
+.middle .dec select{width: 100%;line-height: 40px;height: 40px;margin-top: 10px;border: 1px solid #ddd;color: #999;-webkit-appearance: none;background-color:transparent;padding-left: 10px;border-color:transparent;border: 1px solid #ddd;}
+.middle .dec .icon{position: absolute;width: 10px;transform: rotate(90deg);bottom: 25px;right: 25px;}
+.middle .auxiliary{background: #fff;margin-top: 10px;text-align: center;padding: 15px 10px;}
+.middle .auxiliary img{width: 20px;}
+.middle .auxiliary h5{color: #ff9913;font-weight: normal;font-size: 14px;}
+.middle .auxiliary .select select{padding-left: 10px;width: 100%;line-height: 40px;height: 40px;margin-top: 10px;border: 1px solid #ddd;color: #999;-webkit-appearance: none;background-color:transparent; border-color:transparent;border: 1px solid #ddd;}
+.middle .auxiliary .select .icon{position: absolute;width: 10px;transform: rotate(90deg);bottom: 10px;right: 15px;}
+.middle .introduction{background: #fff;padding: 15px 10px;margin-top: 10px;}
+.middle .introduction h5{font-size: 14px;font-weight:normal;color: #333;}
+.middle .introduction textarea{width: 94%;height: 140px;border: 1px solid #ddd;margin-top: 10px;padding: 3%;font-size: 13px;}
+.gonext{position: relative;width: 90%;margin-left: 5%;background: #ff9913;height: 50px;line-height: 50px;text-align: center;color: #fff;border-radius: 30px;font-size: 14px;top: 100px;}
+@media screen and (max-width: 320px){
+    .gonext{top: 30px;}
+}

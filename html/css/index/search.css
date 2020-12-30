@@ -1,0 +1,29 @@
+body{position: relative;background: #f8f8f8;}
+.top{background: #f8f8f8;}
+.top h1{background: #f8f8f8;}
+.middletab{white-space: nowrap;position: relative;top: 65px;padding:5px 10px;height:30px;}
+.middletab .bgserach{width: calc(100% - 85px);background: #eee;border-radius: 30px;height: 10px;display: inline-block;color: #666;font-size: 12px;padding: 10px 0;padding-left: 35px;;}
+.middletab .search{position: absolute;left: 25px;width: 15px;top: 13px;}
+.middletab .calce{font-size: 14px;color: #666;display: inline-block;width: 40px;text-align: center;line-height: 30px;height: 30px;position: relative;top: -10px;}
+.history{margin-top: 80px;display: none;}
+.history h5{font-size: 16px;color: #999;padding: 0 10px;margin:15px 0;}
+.history h5 img{width: 17px;float: right;}
+.history ul{padding: 0 10px;margin: 0;}
+.history ul li{background: #eee;border-radius: 30px;display: inline-block;width: auto;padding: 6px 15px;color: #666;font-size: 13px;margin-right: 10px;margin-bottom: 10px}
+.mt20{margin-top: 20px;}
+@media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+  .middletab{top: 90px;}
+  .history{margin-top: 100px;}
+
+}
+/* xr */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) {
+  .middletab{top: 90px;}
+  .history{margin-top: 100px;}
+
+}
+/* xs max */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) {
+  .middletab{top: 90px;}
+  .history{margin-top: 100px;}
+}

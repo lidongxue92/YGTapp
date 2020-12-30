@@ -1,0 +1,592 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>语音直播工具-教师端</title>
+  <link rel="stylesheet" type="text/css" href="../css/weui.min.css" />
+    <link rel="stylesheet" type="text/css" href="../res/icon/iconfont.css" />
+    <link rel="stylesheet" href="../script/swiper.min.css">
+<script type="text/javascript" src="../res/js/jquery-1.10.2.min.js"></script>
+<style type="text/css">
+      .media{ width: 100%; height: 250px; background-color: #333; color: #fff; position: relative;}
+      .media .media_cantent{ position: absolute; width: 100%; height: 100%; background-color: #272727; top: 0;left: 0;z-index: 1;}
+      .media .media_cantent iframe{ width: 100%; height: 100%; border: 0; }
+      .media_teacher{ position: absolute; top:10px; left: 10px; background-color: rgba(0,0,0,0.6); color: #fff; z-index: 2; padding: 10px;
+      border-radius: 40px; padding:5px; padding-right: 15px;line-height: 15px; font-size: 12px;}
+      .media_teacher img{ width: 30px; height: 30px; border-radius: 50%; float: left; margin-right: 5px;}
+      .media .media_yuyin{ position: absolute; top: 80px; left: 50%;z-index: 2;width:90px; margin-left: -45px;height: 120px; text-align: center;}
+      .media .media_yuyin span{ background-color: #000; padding:5px 10px;border-radius: 10px; margin-top: 10px;}
+      .media .media_yuyin_btn{width: 80px; height: 80px;  background-color: #ff9600; border-radius: 50%; border: 5px #ffe1b6 solid; margin-bottom: 10px;}
+      .media_tool{ position: absolute; right: 10px; top: 0px; z-index: 2; line-height: 40px;  }
+      .media_tool  .iconfont{font-size: 1.6em;margin-left: 10px; padding: 15px 5px; display: inline-block;}
+      .mannuber{ position: absolute; bottom: 10px; left: 10px; z-index: 2; }
+      .media  .media_yuyin2{width:240px; margin-left: -120px; margin-bottom: 10px;}
+      .media .btn2{ width: 90px; float:left; margin:15px; }
+      .media .time{position: absolute; bottom: 10px; right:  10px; z-index: 2;line-height: 20px; }
+      .jiaoan{ width: 800px; height: 600px; background-color: #eee; position:relative; display: none;}
+      .jiaoan .jiaoan_wr{ position:absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;}
+      .tongxun{ position: relative; background-color: #e2e2e2; overflow-y:scroll;}
+      .tongxun .log{ background-color: #eee; text-align: center; color: #999;border-radius: 5px; width: 60%; display:block; margin: 5px auto; padding:2px 5px; font-size: 12px;}
+      #zhibozhuangtai{ display: inline-block; width: 15px; height: 15px; border-radius: 50%; background-color: #999;}
+
+      .yinliangtiao{ position:fixed; width: 96%; top: 0; left: 0; background-color: #fff; z-index: 999999; padding: 2%; box-shadow: 1px 13px 13px #000;}
+      .yinliangtiao .miaoshu{ line-height: 1.5em; padding: 5px 0;}
+      .weui-cell .iconfont{font-size: 28px;}
+      .chat-message_item{margin: 5px; background-color: #fff; border-radius: 5px; padding: 5px; float: left; clear: both;}
+      .chat-message_item .chat-username{ color: #39f}
+      .chat-message_item .chat-message-body{ color: #333}
+      .talk_teacher{ background-color: #39f; color: #fff; float: right;}
+      .talk_teacher .chat-username{ color: #fff;}
+      .talk_teacher .chat-message-body{ color: #fff}
+      .manping{ position: fixed; width: 100%; height: 100%; left: 0; top: 0; background-color: #fff;    z-index: 99999; padding-top: 100px;}
+      #liveoverdiv{ text-align: center;}
+      #liveoverdiv img{ width: 80px; height: 80px; border-radius:50%; display: block; margin: 0 auto; margin-bottom: 10px;}
+      .liveovertitle{ border-top:3px #fff solid; border-bottom: 3px #fff solid; margin: 20px auto; padding: 20px; width: 40%; }
+  </style>
+</head>
+
+<body>
+<div class="media" id="media">
+  <div class="media_cantent" id="yulan" >
+
+  </div>
+
+  <div class="media_teacher" >
+    <img src="../images/avatar.png" id="userImg" class="userImg">
+    <span class="teacher_name">新启科技<br />王老师</span>
+  </div>
+
+  <div class="media_tool">
+    <i class="iconfont icon-beijingyinle" onclick="bgmshow()" style="padding-top:0px; display:none"></i> <i class="iconfont icon-guanbi" onclick="liveover()"></i>
+  </div>
+
+  <div class="media_yuyin" id="livestart" onclick="livego()">
+    <div class="media_yuyin_btn"><i class="iconfont" style="font-size:35px;line-height:80px;">&#xe68e;</i></div>
+    <span>语音上麦</span>
+  </div>
+
+  <div class="media_yuyin media_yuyin2" id="liveing" style="display:none">
+      <div class="btn2" onclick="jingyin()">
+    <div class="media_yuyin_btn" id="jingyinbtn" style="background-color:#00aacf; border:0; margin:5px;"><i class="iconfont icon-jingyin" style=" font-size:35px;line-height:80px;"></i></div>
+    <span>静音</span></div>
+    <div class="btn2" onclick="liveend()">
+  <div class="media_yuyin_btn"  style="background-color:#cf002c; border:0; margin:5px;"><i class="iconfont icon-tingzhi" style="font-size:35px;line-height:80px;"></i></div>
+  <span>下麦</span></div>
+  </div>
+
+  <div class="mannuber"><i class="iconfont icon-renshu"></i> <span id="usercount">12</span>人</div>
+  <div class="time"><span id="zhibozhuangtai"></span> <span id="zbtiem">00:00:00</span></div>
+</div>
+
+<div class="jiaoan swiper-container" id="jiaoan">
+    <div class="swiper-wrapper" id="swiper-wrapper">
+    </div>
+    <div class="swiper-pagination"></div>
+    <canvas id="Canvas_Tea" width="800" height="600" style="cursor: default; position:absolute;top:0;left:0;z-index:5;"></canvas>
+</div>
+
+<div class="tongxun" id="chat-messages">
+    <div class="log">正在连接通信服务器</div>
+</div>
+
+<div class="yinliangtiao " id="bgmdiv" style="top:-110%;height:99%; ">
+  <div class="weui-cells" id="bgmlist" style="height:100%; overflow-y:auto;">
+  <div class="weui-cells__title" style="font-size: 18px;height:30px;line-height:30px;">请选择背景音乐
+
+      <span style=" float:right"><i class="iconfont icon-tongxin1"  style="font-size: 24px; color:#39f; padding-right:10px;"  onclick="yinliangshow()"></i>
+        <i class="iconfont icon-guanbi" style="font-size: 24px" onclick="bgmclose()"></i></span>
+  </div>
+
+  提示:您可以通过HOME键返回桌面，使用任意音乐播放软件播放音乐，系统会自动混音；混音音量在上面按钮处修改！
+
+
+
+</div>
+</div>
+
+<div class="yinliangtiao" id="yinliangtiao" style="display:none">
+<br />
+<div class="miaoshu">麦克风音量：</div>
+<br /><br />
+<div class="miaoshu">背景音乐音量：</div>
+<br /><br />
+  <i class="iconfont icon-guanbi" style="font-size: 24px;position:absolute; right:10px; top:10px;" onclick="yinlianghide()"></i>
+
+</div>
+
+
+<div id="tishi" class="manping" style="display:none;color:red"></div>
+
+<div id="liveoverdiv" class="manping" style="background-color:rgba(0,0,0,0.8); color:#fff; display:none;">
+<img src="../images/avatar.png" class="userImg">
+<span class="teacher_name">新启科技<br />王老师</span>
+
+<div class="liveovertitle">
+  <h2 style="margin:0">直播结束</h2>总时长：<span id="lievLengthoftime">00:00:00</span>
+</div>
+
+<div style="margin:10px auto; width:40%;">
+<a href="javascript:api.closeWin();" class="weui-btn weui-btn_primary">确定</a>
+</div>
+</div>
+</body>
+<script type="text/javascript" src="../res/config.js"></script>
+<script type="text/javascript" src="rtmp_push.js"></script>
+<script type="text/javascript" src="socket_push.js"></script>
+<script type="text/javascript" src="../script/swiper.min.js"></script>
+<script type="text/javascript">
+var zbtiem  = 0,//直播时间
+talkId = "52377501-3e18-4009-912c-2dbb31263348";//"e74fb716-ff98-460a-85a5-5fa761f3c524" ,//房间编号
+livetype = 1, // 1、语言+白板  2、单视频或OBS  3、视频+白板
+pushurl = "rtmp://123.57.255.51:9001/live/911",
+sysUserInfo ={},
+userobj = {id:sysUserInfo.user_ID+'-0',name:sysUserInfo.user_Name+'(移动端)',type:0},
+swiper = null,
+zbflag = true, //是否在直播中
+micid="" //当前在上麦的;
+var ctx;//白板
+var socketserver ="";
+  $(function(){
+      sysUserInfo=GetlocalStorage("userinfo");
+      if(sysUserInfo!=null&&sysUserInfo!=""&&sysUserInfo!=undefined){
+          //console.log(JSON.stringify(sysUserInfo));
+            userobj.id = sysUserInfo.user_ID+'-0';
+            userobj.name =sysUserInfo.user_Name+'(APP)';
+            $(".userImg").attr("src",sysUserInfo.user_Img);
+      }
+      //页面载入完成(对一些样式性问题处理)
+      if(QueryString("roomid")!=null)
+      {
+          talkId = QueryString("roomid");
+      }
+      if(QueryString("liveserver")!=null)
+      {
+          liveserver = QueryString("liveserver");
+
+      }
+      //alert(talkId);
+      //alert(liveserver);
+      // alert("talkId" + talkId);
+      // alert("liveserver" + liveserver);
+      //2、计算互动区域显示高度
+      var zonggao = $(window).height();
+      $("#chat-messages").height(zonggao-$("#media").height());
+
+      ctx = document.getElementById("Canvas_Tea").getContext("2d");
+      var zongkuan = $(window).width();
+      var jiaoankuan = $('#jiaoan').width();
+      var r = zongkuan / jiaoankuan;
+      if (zongkuan < jiaoankuan) { //如果超出屏幕则缩小到100%屏幕宽
+           if (r < 1) {
+                 $("#jiaoan").css("zoom", r );
+           }
+      }
+      //3、异步读取一些远程参数
+      //(推流地址，通信服务地址,PPT对象，当前播放页码,当前直播时间，主播人ID)
+
+/** 背景音乐
+      var bgmserver = "http://ka.jisupeixun.com/Resources/bgm/";
+      //5、读取加载资源
+      var mobjlist = [
+	{        
+		bgmimg: bgmserver + "10.jpg",
+		        name: "HandClap",
+		        miaoshu: "Fitz & the Tantrums[暖场音乐]",
+		        url: bgmserver + "10.mp3",
+		      
+	},
+	{        
+		bgmimg: bgmserver + "11.jpg",
+		        name: "Stronger",
+		        miaoshu: "Kelly Clarkson[暖场音乐]",
+		        url: bgmserver + "11.mp3",
+		      
+	}	,
+	{        
+		bgmimg: bgmserver + "12.jpg",
+		        name: "Game Changer",
+		        miaoshu: "Mark Petrie[暖场音乐]",
+		        url: bgmserver + "12.mp3",
+		      
+	},
+	{        
+		bgmimg: bgmserver + "16.jpg",
+		        name: "Nevada",
+		        miaoshu: "Vicetone[暖场音乐]",
+		        url: bgmserver + "16.mp3",
+		      
+	},
+	{        
+		bgmimg: bgmserver + "20.jpg",
+		      name: "Hoaprox",
+		        miaoshu: "绘师岸田[背景音乐]",
+		        url: bgmserver + "20.mp3",
+		      
+	},
+	{        
+		bgmimg: bgmserver + "22.jpg",
+		        name: "初恋的微笑",
+		        miaoshu: "文劲松[背景音乐]",
+		        url: bgmserver + "22.mp3",
+	},
+	{        
+		bgmimg: bgmserver + "23.jpg",
+		        name: "轻音乐（Drum）",
+		        miaoshu: "文劲松[背景音乐]",
+		        url: bgmserver + "23.mp3",
+	}
+];
+      for(var i=0;i<mobjlist.length;i++)
+      {
+        addbgmlist(mobjlist[i]);
+      }
+**/
+
+  });
+
+///<summary>
+///加载教学记录
+///</summary>
+var fileguidstring ="";
+var liveRecord = new function () {
+  this.loadImg = function (data) {
+    //console.log(JSON.stringify(data));
+    //alert(fileguidstring+","+data.fileguid)
+    if(fileguidstring != data.fileguid || swiper == undefined){
+          if(data.hasOwnProperty("fileguid"))
+          {
+            fileguidstring =  data.fileguid;
+          }
+          else {
+            fileguidstring =  data.id;
+            //alert(fileguidstring);
+          }
+
+          $("#swiper-wrapper").html("");
+          var html = "";
+          if((typeof data.filenames) == "string" && data.filenames.indexOf('[') >0){ //可能为JSON字符类型的，也可能为对象，也有可能是字符
+              filename = eval(data.filenames.replace('""', '"'));
+          }
+          else if((typeof data.filenames) == "string"){
+             filename = eval(data.filenames);
+          }
+          else {
+              filename = data.filenames;
+          }
+          if(data.hasOwnProperty("fxpathmax"))
+          {
+              data.fxpathMax = data.fxpathmax;
+          }
+        //  alert((typeof data.filenames));
+          //console.log(JSON.stringify(filename));
+          try {
+              if ((typeof filename) == "object" && filename.length > 1) {
+                //alert(filename);
+                  for (var i = 0; i < filename.length; i++) {
+                      if (i == data.pagenum) {
+                          html += "<div class=\"swiper-slide swiper-slide-active\" style=\"width: 100%; height: 100%;\">" +
+                                      "<div class=\"swiper-zoom-container\" style=\"width: 100%; height: 100%; position: absolute;top: 0; left: 0\">" +
+                                          "<img src=\"" +liveserver+ data.fxpathMax + filename[i] + "\" class=\"swiper-lazy swiper-lazy-loaded\" style=\"\" />" +
+                                      "</div>" +
+                                  "</div>";
+                      } else {
+                          html += "<div class=\"swiper-slide\" style=\"width: 100%; height: 100%;\">" +
+                                      "<div class=\"swiper-zoom-container\" style=\"width: 100%; height: 100%; position: absolute;top: 0; left: 0\">" +
+                                          "<img src=\"" +liveserver+ data.fxpathMax + filename[i] + "\" class=\"swiper-lazy swiper-lazy-loaded\" style=\"\" />" +
+                                      "</div>" +
+                                  "</div>";
+
+                      }
+                      //console.log(liveserver+ data.fxpathMax + filename[i]);
+                  }
+
+                  pagecount = filename.length;
+              }
+              else {
+                //    alert(liveserver+ data.fxpathMax + filename);
+                  html += "<div class=\"swiper-slide swiper-slide-active\" style=\"width: 100%; height: 100%;\">" +
+                                      "<div class=\"swiper-zoom-container\" style=\"width: 100%; height: 100%; position: absolute;top: 0; left: 0\">" +
+                                          "<img src=\"" + liveserver+ data.fxpathMax + filename + "\" class=\"swiper-lazy swiper-lazy-loaded\" style=\"\" />" +
+                                      "</div>" +
+                                  "</div>";
+                  pagecount = 1;
+              }
+          } catch (e) {
+          //  alert(JSON.stringify(e));
+              html += "<div class=\"swiper-slide swiper-slide-active\" style=\"width: 100%; height: 100%;\">" +
+                                      "<div class=\"swiper-zoom-container\" style=\"width: 100%; height: 100%; position: absolute;top: 0; left: 0\">" +
+                                          "<img src=\"" + liveserver+ data.fxpathMax + filename + "\" class=\"swiper-lazy swiper-lazy-loaded\" style=\"\" />" +
+                                      "</div>" +
+                                  "</div>";
+              pagecount = 1;
+          }
+          $("#swiper-wrapper").html(html);
+          //1、计算教案显示尺寸
+          $("#jiaoan").show();
+           var zongkuan = $(window).width();
+           var jiaoankuan = $('#jiaoan').width();
+           var r = zongkuan / jiaoankuan;
+           if (zongkuan < jiaoankuan) { //如果超出屏幕则缩小到100%屏幕宽
+                if (r < 1) {
+                      $("#jiaoan").css("zoom", r );
+                }
+           }
+          //2、计算互动区域显示高度
+        //  var zonggao = $(window).height();
+        //  $("#chat-messages").height(zonggao-($("#jiaoan").height()*r)-$("#media").height());
+
+          swiper = new Swiper('#jiaoan', {
+              zoom: true,
+              lazyLoading: true,
+              pagination: '.swiper-pagination',
+              paginationType: 'fraction',
+              //swipeHandler : '.swipe-handler',
+              onSlideNextEnd: function (swiper) {
+                  eduCanvas.clearArea();
+                //  alert('n');
+                  //fanye(swiper.activeIndex);
+              },
+              onSlidePrevEnd: function (swiper) {
+                  eduCanvas.clearArea();
+                //alert('x');
+                //  fanye(swiper.activeIndex);
+              },
+              onInit: function(swiper){
+                //Swiper初始化了
+                  swiper.slideTo(data.pagenum-1, 500, false);
+              }
+          });
+      }
+      else {//如果没换文件就只换页
+        alert(data.pagenum);
+          swiper.slideTo(data.pagenum, 500, true);
+          eduCanvas.clearArea();
+      }
+          //跳转到当前图片
+
+      }
+}
+  ///<summary>
+  ///操作系统浏览器相关配置
+  ///</summary>
+var sysConfig = new function () {
+        ///<summary>
+           ///直播计时器
+           ///</summary>
+           this.zhibotime = function () {
+               zbtiem++;
+               var hht = 0, mmt = 0, sst = 0;
+               var hh = "00", mm = "00", ss = "00";
+               if (zbtiem < 60) {
+                   if ((zbtiem + "").length == 1) { ss = "0" + zbtiem; } else { ss = zbtiem; }
+               } else if (zbtiem >= 60 && zbtiem < 3600) {
+                   mmt = parseInt(zbtiem / 60);
+                   if ((mmt + "").length == 1) { mm = "0" + mmt; } else { mm = mmt; }
+                   sst = zbtiem - (mmt * 60);
+                   if ((sst + "").length == 1) { ss = "0" + sst; } else { ss = sst; }
+
+               } else if (zbtiem >= 3600) {
+                   hht = parseInt(zbtiem / 3600);
+                   if ((hht + "").length == 1) { hh = "0" + hht; } else { hh = hht; }
+                   mmt = parseInt((zbtiem - (hht * 3600)) / 60);
+                   if ((mmt + "").length == 1) { mm = "0" + mmt; } else { mm = mmt; }
+                   sst = (zbtiem - (hht * 3600) - (mmt * 60));
+                   if ((sst + "").length == 1) { ss = "0" + sst; } else { ss = sst; }
+               }
+               $("#zbtiem").html(hh + ":" + mm + ":" + ss);
+               $("#lievLengthoftime").html(hh + ":" + mm + ":" + ss);
+               if (zbflag) { setTimeout(sysConfig.zhibotime, 1000); }
+           }
+}
+
+var addbgmlist = function(mobj){
+  var mhtml = ("<div class=\"weui-cell\">");
+      mhtml +=("        <div class=\"weui-cell__hd\" style=\"position: relative;margin-right: 10px;\">");
+      mhtml +=("                <img src=\""+mobj.bgmimg+"\" style=\"width: 50px;display: block\">");
+      mhtml +=("        </div>");
+      mhtml +=("        <div class=\"weui-cell__bd\">");
+      mhtml +=("            <p>"+mobj.name+"</p>");
+      mhtml +=("          <p style=\"font-size: 13px;color: #888888;\">"+mobj.miaoshu+"</p>");
+      mhtml +=("        </div>");
+      mhtml +=("        <div class=\"weui-cell__ft\" style=\"font-size: 0\">");
+      mhtml +=("          <span style=\"padding:5px;\" onclick=\"bgmgo(\'"+mobj.url+"\',this)\"><i class=\"iconfont icon-bofang\"></i></span>");
+      mhtml +=("        </div>");
+      mhtml +=("  </div>");
+  $("#bgmlist").append(mhtml);
+}
+var eduCanvas = new function () {
+  ///<summary>
+    ///白板重绘
+    ///</summary>
+    this.drowDTX = function (xyParmer, obj, init) {
+        //alert("重绘");
+        proportion = 1;
+        //如果obj等于1 重绘所有线条，否则只在原来基础上追加
+        obj == 1 ? xy = xyParmer : Array.prototype.push.apply(xy, xyParmer);
+        //        if (obj == 1) {
+        //            xy = xyParmer;
+        //        } else {
+        //            Array.prototype.push.apply(xy, xyParmer);
+        //        }
+        //************重绘数据到画板***************//
+        ctx.clearRect(0, 0, 0, 0); //先清空mycanvas，避免累计绘制产生重叠
+
+        ctx.save();
+        if (xy.length > 1) {
+            for (var a = 0; a < xy.length; a++) {
+                if ((a + 1) < xy.length) {
+                    var por = xy[a + 1][4];
+                    if (xy[a + 1][0] != undefined) {
+                        if (xy[a + 1][0] == 0.1) //根据数组特定标记判断是否是此次绘画的结束点
+                        {
+                            a += 2;
+                            continue;
+                        }
+                        if (xy[a][0] == 0.1)  //根据数组特定标记判断是否是此次绘画的结束点
+                        {
+                            a++;
+                            continue;
+                        }
+                        ctx.beginPath();
+                        ctx.strokeStyle = xy[a + 1][2];
+                        ctx.lineWidth = xy[a + 1][3] / por * proportion * init;
+                        ctx.lineJoin = "round";
+                        ctx.moveTo(xy[a][0] / por * proportion * init, xy[a][1] / por * proportion * init);
+                        //console.log("放大后", xy[a][0] + "----" + xy[a][0] / por * proportion);
+                        ctx.lineTo(xy[a + 1][0] / por * proportion * init, xy[a + 1][1] / por * proportion * init);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+        ctx.restore();
+        //******************************//
+        // console.log(ctx);
+
+        $("#jiaoan").show();
+    }
+
+    ///<summary>
+    ///白板清除
+    ///</summary>
+    this.clearArea = function () {
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    }
+
+    ///<summary>
+    ///这个也是格式化
+    ///</summary>
+    this.Liveue = function () {
+        var list = [],
+                    errorList, //错误对象
+                    self = {
+                        add: function (obj) {
+                            //                    console.log(obj);
+                            //                    if (obj.toString && obj.toString() === typeString) {
+                            ////                        obj.each(function (item) {
+                            //                            list.push(item);
+                            ////                        });
+                            //                        return this;
+                            //                    }
+
+                            //                    if (!obj === this.LiveObj) return this;
+                            //                            alert(obj);
+                            list.push(obj);
+                            //  return this;
+                        },
+
+                        length: function () {
+                            ///	<summary>
+                            ///     获取Liveue对象长度
+                            ///	</summary>
+                            ///	<returns type="Int" />
+                            return list.length;
+                        },
+                        toString: function () {
+                            return typeString;
+                        },
+                        toArray: function () {
+                            ///	<summary>
+                            ///     将Liveue转换为原生数组
+                            ///	</summary>
+                            return list;
+                        }
+                    };
+        return self;
+    }
+}
+/**
+  *工具 || 获得URL GET参数
+*/
+function QueryString(fieldName) {
+    /// <summary>
+    ///   获得URL GET参数
+    /// </summary>
+    /// <param name="fieldName" type="String">
+    ///   参数名
+    /// </param>
+    /// <returns type="void" />如果不存在返回NULL
+    var reg = new RegExp("(^|&)" + fieldName.toLowerCase() + "=([^&]*)(&|$)", "i");
+    var r = window.location.search.substr(1).match(reg);
+    if (r != null) return decodeURI(r[2]); return null;
+}
+/**
+* 工具 || 获得本地存储
+*/
+function GetlocalStorage(name) {
+    // / <summary>
+    // / 获得本地数据
+    // / </summary>
+    if (window.localStorage) {
+        var value = localStorage.getItem(name);
+        if (value != null) {
+            return JSON.parse(value);
+        } else {
+            return value;
+        }
+    } else {
+        alert("您需要升级浏览器");
+    }
+}
+/**
+*工具 || 存储
+*/
+function SetlocalStorage(name, obj) {
+    // / <summary>
+    // / 重写本地数据
+    // / </summary>
+    if (window.localStorage) {
+        try {
+            localStorage.setItem(name, JSON.stringify(obj));
+        }
+        catch (oException) {
+            if (oException.name == 'QuotaExceededError') {
+                console.log('超出本地存储限额！');
+                //如果历史信息不重要了，可清空后再设置
+                localStorage.clear();
+                localStorage.setItem(name, JSON.stringify(obj));
+            }
+        }
+    } else {
+        alert("您需要升级浏览器才能够进行学习");
+    }
+}
+//异步载入
+    function loadJs(file,fun){
+        var scriptTag = document.getElementById('loadScript');
+        var head = document.getElementsByTagName('head').item(0);
+        if(scriptTag) head.removeChild(scriptTag);
+        script = document.createElement('script');
+        script.src = file;
+        script.type = 'text/javascript';
+        script.id = 'loadScript';
+        head.appendChild(script);
+
+		script.onload = fun;
+    }
+</script>
+
+</html>

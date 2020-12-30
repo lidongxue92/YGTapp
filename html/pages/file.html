@@ -1,0 +1,195 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>文件列表</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/ygtcommon.css">
+    <link rel="stylesheet" href="../css/index/file.css">
+<body >
+    <header class="top" id="header">
+        <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span class="title">群文件</span>
+        </h1>
+    </header>
+    <div class="middle">
+        <div class="Datatoday">
+            <!-- <div class="livelist" >
+                <img src="../img/pdf.png" />
+                <div>
+                    <h5>块一u影如打了个盹卡里块一u影如打了个盹卡里块一u影如打了个盹卡里块一u影如打了个盹卡里块一u影如打了个盹卡里</h5>
+                    <p>视频专栏v范德萨</p>
+                    <img onclick="shareshareweb(2)" src="../img/share.png" />
+                </div>
+            </div>
+            <div class="livelist" >
+                <img src="../img/pdf.png" />
+                <div>
+                    <h5>块一u影如打了个盹卡里块一u影如打了个盹卡里块一u影如打了个盹卡里块一u影如打了个盹卡里块一u影如打了个盹卡里</h5>
+                    <p>视频专栏v范德萨</p>
+                    <img onclick="shareshareweb(2)" src="../img/share.png" />
+                </div>
+            </div> -->
+        </div>
+    </div>
+    <div class="loading">
+        <span>
+            <img src="../img/loading.gif" />
+        </span>
+    </div>
+</body>
+<script src="../js/lib/jquery-2.1.4.js"></script><script src="../js/common.js"></script>
+<script type="application/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var page = 1;
+    var pagesize = 10;
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    var loading = false;
+    var allpagesize = '';
+    var dataobj = '';
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+        //  禁止左右滑动
+        $api.fixStatusBar(header);
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+        api.addEventListener({
+            name:'scrolltobottom',
+            extra:{
+                threshold:0            //设置距离底部多少距离时触发，默认值为0，数字类型
+            }
+        }, function(ret, err){
+            if (loading != true) {
+                page++; //页数
+                loaddata();
+                loading = false;
+            }
+
+
+        });
+        $('.loading').show();
+         loaddata();
+    };
+
+
+    function loaddata() {
+        api.ajax({
+            url: wtkurl +'Material/getList',
+            method: 'post',
+            headers: {
+                'TOKEN': ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    uid: ygtuserinfo.id,
+                    listid:api.pageParam.id,
+                    page:page,
+                    pagesize:pagesize
+                }
+            }
+        }, function(data, err) {
+            console.log(JSON.stringify(data));
+            console.log(JSON.stringify(err))
+            if (data.data !='') {
+                $('.loading').hide();
+                var listhtml = '';
+                var list = data.data.list;
+                for (var i = 0; i < data.data.list.length; i++) {
+                    listhtml +='<div class="livelist">'+
+                                '<img src="../img/pdf.png" />'+'<div><h5>'+list[i].title+'</h5>'+
+                                '<p>'+list[i].update_time+'</p>'+'<img onclick="shareshareweb('+list[i].id+')" src="../img/share.png" />'+
+                                '</div></div>'
+                }
+                allpagesize = data.data.total;
+                $('.Datatoday').append(listhtml)
+
+                if (list.length < 10) {
+                    var html2 = ' ';
+                    html2 += "<div class='lasttitle'>已无更多数据</div>";
+                    $('.Datatoday').append(html2)
+                    loading = true;
+                }
+            }else{
+                $('.loading').hide();
+                var html3 = ' ';
+                html3 += "<div class='lasttitle'>暂无数据</div>";
+                $('.Datatoday').append(html3)
+                loading = true;
+            }
+            alldata();
+        });
+    }
+    //入驻
+    function shareshareweb(id) {
+
+        var title = '';
+        var pdffile = '';
+        var obj = dataobj.find(function (obj) {
+            return obj.id === id
+        })
+        //alert(JSON.stringify(obj));
+        title = obj.title
+        pdffile = obj.pdffile
+        if (pdffile == '/' || pdffile == '') {
+            alert('暂不支持分享')
+        }else{
+            var wx = api.require('wx');
+            wx.shareWebpage({
+                apiKey: '',
+                scene: 'session',
+                title: title,
+                description: '',
+                thumb: 'widget://img/pdf.png',
+                contentUrl: pdffile
+            }, function(ret, err) {
+                if (ret.status) {
+                    alert('分享成功');
+                } else {
+                    alert(err.code);
+                }
+            });
+        }
+    }
+
+    function alldata() {
+        api.ajax({
+            url: wtkurl +'Material/getList',
+            method: 'post',
+            headers: {
+                'TOKEN': ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    uid: ygtuserinfo.id,
+                    listid:api.pageParam.id,
+                    page:1,
+                    pagesize:allpagesize
+                }
+            }
+        }, function(data, err) {
+            console.log(JSON.stringify(data));
+            console.log(JSON.stringify(err))
+            if (data.data !='') {
+                dataobj = data.data.list
+            }
+        });
+    }
+</script>
+
+</html>

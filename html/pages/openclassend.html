@@ -1,0 +1,202 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>医管通APP</title>
+    <link rel="stylesheet" type="text/css" href="./css/api.css" />
+    <link rel="stylesheet" href="../css/ygtcommon.css">
+    <script src="../js/lib/jquery2.js"></script>
+    <link rel="stylesheet" href="../css/index/openclassend.css">
+    <body>
+        <header id='header'>
+            <h1 class="name">线下训练营</h1>
+        </header>
+        <!-- 切换按钮 -->
+        <div class="weui-flex nav" id="headernav">
+            <div class="weui-flex__item" onclick="openclass()">
+                <a data-type="0">未开始</a>
+            </div>
+            <div class="weui-flex__item">
+                <a class="active" data-type="1">已结束</a>
+            </div>
+        </div>
+        <div class="content livelist">
+            <div class="list-main-mian weui-form-preview infinite weui-pull-to-refresh" id="zhibolive" style="height:100%; margin-top: 1px;overflow:auto;  z-index: 1">
+                <!--下拉刷新-->
+                <div class="weui-pull-to-refresh__layer" style="padding: 5px;">
+                    <div class="weui-pull-to-refresh__arrow"></div>
+                    <div class="weui-pull-to-refresh__preloader"></div>
+                    <div class="down">下拉刷新</div>
+                    <div class="up">释放刷新</div>
+                    <div class="refresh">正在刷新</div>
+                </div>
+                <div class="weui-form-preview" id="Tolist">
+                    <!--内容展示区域-->
+                </div>
+                <div class="weui-loadmore" style="padding-bottom:30px;height:20px">
+                    <i class="weui-loading"></i>
+                    <!-- <span class="weui-loadmore__tips">正在加载</span> -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部导航栏 -->
+        <footer class="foot" id="footer">
+            <span class="tab" onclick="index()">
+          <img src='../img\home.png'/>
+          <p>首页</p>
+      </span>
+            <span class="tab" onclick="Livebroadcast()">
+          <img src='../img/record_light.png'/>
+          <p>直播课</p>
+      </span>
+            <span class="tab" onclick="openclass()">
+          <img src='../img/fire-fill.png'/>
+          <p class='c-2577e3'>公开课</p>
+      </span>
+            <span class="tab" onclick="my()">
+          <img src='../img/people.png'/>
+          <p>我的</p>
+      </span>
+        </footer>
+    </body>
+    <script src="../js/jquery-weui.min.js"></script><script src="../js/common.js"></script>
+    <script type="application/javascript" src="../js/lib/fastclick.js"></script>
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript">
+        var apihost = $api.getStorage('apihost');
+        if (apihost == undefined || apihost == '') {
+            apihost = 'http://member.ygt.cm';
+            $api.setStorage('apihost', apihost);
+        }
+        apiready = function() {
+            //输出Log，Log将显示在APICloud Studio控制台
+            console.log("Hello World! Hello APICloud!");
+            var header = $api.byId('header');
+            $api.fixStatusBar(header);
+            //  禁止左右滑动
+            api.setWinAttr({
+                slidBackEnabled: false
+            });
+            //  禁止左右滑动
+            loadData()
+        };
+
+
+        var openpage = 1;
+        var pagesize = '';
+        var loading = false; //状态标记
+        $("#zhibolive").pullToRefresh().on("pull-to-refresh", function() {
+            setTimeout(function() {
+                openpage = 1;
+                $("#Tolist").html("");
+                loadData();
+                if (loading) loading = false;
+                $("#zhibolive").pullToRefreshDone(); // 重置下拉刷新
+            }, 1500); //模拟延迟
+        });
+        $("#zhibolive").infinite().on("infinite", function() {
+            var noproduct = $('.weui-cells__title').text();
+            if (noproduct) {
+
+            } else {
+                loading = true;
+                openpage++; //页数
+                $('.weui-loadmore').show();
+                loadData();
+                loading = false;
+            }
+
+        });
+        //公开课按钮切换
+        // $('#headernav a').on('click', function() {
+        //     $('#headernav a').removeClass('active');
+        //
+        //     $(this).addClass('active');
+        //     $('#Tolist').html(' ');
+        //     openpage = 1
+        //     loadData();
+        // });
+
+        //底部首页
+        function index() {
+            api.openWin({
+                name: 'root',
+                url: '../index.html',
+                pageParam: {
+                    name: 'test'
+                },
+                bgColor: 'rgba(0,0,0,0)',
+                animation: {
+                    type: 'none'
+                }
+            })
+        }
+
+        //底部直播课
+        function Livebroadcast() {
+
+            api.openWin({
+                name: 'livebroadcast',
+                url: './livebroadcast.html',
+                pageParam: {
+                    name: 'test'
+                },
+                bgColor: 'rgba(0,0,0,0)',
+                animation: {
+                    type: 'none'
+                },
+                reload: true,
+            })
+        }
+        //底部公开课
+        function openclass() {
+            api.openWin({
+                name: 'openclass',
+                url: './openclass.html',
+                pageParam: {
+                    name: 'test'
+                },
+                bgColor: 'rgba(0,0,0,0)',
+                animation: {
+                    type: 'none'
+                }
+            })
+        }
+        //底部我的
+        function my() {
+
+            api.openWin({
+                name: 'my',
+                url: './my.html',
+                pageParam: {
+                    name: 'test'
+                },
+                bgColor: 'rgba(0,0,0,0)',
+                animation: {
+                    type: 'none'
+                }
+            })
+        }
+
+
+        //未开始
+        // function openclass1() {
+        //     api.openWin({
+        //         name: 'openclass',
+        //         url: './openclass.html',
+        //         pageParam: {
+        //             name: 'test'
+        //         },
+        //         bgColor: 'rgba(0,0,0,0)',
+        //         animation: {
+        //             type: 'none'
+        //         }
+        //     })
+        // }
+    </script>
+
+</html>

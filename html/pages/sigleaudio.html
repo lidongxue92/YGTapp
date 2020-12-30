@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>音频模块</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/ygtcommon.css">
+    <link rel="stylesheet" href="../css/audio.css">
+    <link rel="stylesheet" href="../css/index/sigleaudio.css">
+    <script type="text/javascript" src="../js/jweixin.js"></script>
+
+</head>
+<body ontouchstart id="audio" data-url='audioclass'>
+    <header class="header top" id="header" >
+          <img class='bgimg' src="" />
+          <span class="back" onclick="api.closeWin();"></span>
+          <span class='share' onclick="share();"></span>
+          <img class="backimg" src="" />
+          <p id="title"></p>
+    </header>
+    <div class="audio">
+        <audio id="audioplay" controls="true" src=""  onended="over()"></audio>
+        <button id="prev"  ><img class="prev " src="../img/next.png" /></button>
+        <button class="fullopciaty play"><img  id="play" imgpage ='0' onclick="togglePlay();" data-id ='' src="../img/play.png" /></button>
+        <button id="next"  ><img class="next"  src="../img/next.png"/></button>
+        <input id="page" value="" />
+    </div>
+    <footer class="foot">
+        <!-- <p onclick="category();" >
+            <img id="Category" src="../img/Category.png" />
+            <b>查看课程</b>
+        </p> -->
+        <p onclick="edit();" >
+            <img id="edit" src="../img/edit.png" />
+            <b>文稿</b>
+        </p>
+        <p onclick="speed();">
+            <span class="speed"><b id="speed">1</b></span>
+            <b>倍速播放</b>
+        </p>
+        <p onclick="dofavorite();" class="dofavorite">
+            <img id="dofavorite" src="../img/Collection.png" />
+            <b>收藏</b>
+        </p>
+    </footer>
+    <div class="bg" id="bg"></div>
+    <div class="choosespeed" id="choosespeed">
+        <ul>
+            <li class='active' onclick="control(this);">x<span class="one">1</span></li>
+            <li onclick="control(this);">x<span class="one">1.3</span></li>
+            <li onclick="control(this);">x<span class="one">1.5</span></li>
+            <li onclick="control(this);">x<span class="one">2</span></li>
+            <li class="close" onclick="clos();">关闭</li>
+        </ul>
+    </div>
+    <div class="classlist" id="classlist">
+
+
+    </div>
+    <div class='sharetoast'>
+        <h5>邀请好友一起来听课吧~</h5>
+        <ul>
+            <li id='share_friend' onclick="sharefriend();">
+                  <a href="javascript:void(0)" id="shareFriends">
+                      <img src="../img/frend.png" />
+                      <p>微信好友</p>
+                  </a>
+              </li>
+              <li id="share" onclick="sharefriends();">
+                  <a href="javascript:void(0)" id="shareCFriends">
+                      <img src="../img/frends.png" />
+                      <p>朋友圈</p>
+                  </a>
+              </li>
+              <li id="share" onclick="poster();">
+                  <a href="javascript:void(0)" id="Invitation">
+                      <img src="../img/Invitation.png" />
+                      <p>邀请卡</p>
+                  </a>
+              </li>
+        </ul>
+        <p id='opentool' onclick="opentool();">取消<p>
+    </div>
+    <div class="loading">
+        <span>
+            <img src="../img/loading.gif" />
+        </span>
+    </div>
+
+    <script>
+        var curcourse = [];
+    </script>
+    <script src="../js/lib/jquery-2.1.4.js"></script><script src="../js/common.js"></script>
+    <script src="../js/jquery-weui.js"></script>
+    <script src="../js/swiper.min.js" charset='utf-8'></script>
+    <script src="../script/api.js"></script>
+    <script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+
+    var sharetitle = '';
+    var sharedesc = '';
+    var shareicon = '';
+    var shareurl ='';
+    var srcstr = '';
+    var audiourl = '';
+    var classroomid = '';
+    var timebegin ='';
+    var timend ='';
+    var audioElm = $api.byId("audioplay");
+    apiready = function() {
+        var jsfun = 'funcGoto();';
+        api.execScript({ name: 'audioclass', script: jsfun });
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled: false
+        });
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        classroomid = api.pageParam.id;
+        var wit = $(window).width();
+        var h = $(window).height();
+        $('body').css('height',h);
+        var wid = ($(window).width()-parseFloat(194))/2;
+        $('#audio .audio').css('left',wid);
+        loadData();
+
+        api.addEventListener({
+            name:'viewappear'
+        }, function(ret, err){
+            var time = new Date().getTime();
+            timebegin= Math.floor(time/1000);
+            //  alert(timebegin);
+        });
+        api.addEventListener({
+            name:'pause'
+        }, function(ret, err){
+            var time = new Date().getTime();
+            timend= Math.floor(time/1000);
+            var timelog = (timend)-(timebegin);
+            // alert(timelog);
+            classroomid = api.pageParam.id;
+            api.ajax({
+                url: wtkurl +'classroom/setlog',
+                method: 'post',
+                headers: {
+                    'TOKEN':ygtuserinfo.token
+                },
+                data: {
+                    values: {
+                        classroomid:classroomid,
+                        specialid:0,
+                        timelength:timelog,
+                        uid:ygtuserinfo.id
+                    }
+                }
+            },function(ret, err){
+                console.log(JSON.stringify(ret));
+                console.log(JSON.stringify(err));
+                if (ret) {
+                    console.log(JSON.stringify(ret));
+                } else {
+                    console.log( JSON.stringify( err ) );
+                }
+            });
+        });
+        $(".loading").show();
+    };
+
+    // 控制播放
+    function togglePlay() {
+        var audioElmurl = $api.attr(audioElm,'src')
+        // alert(audioElmurl);
+        if (audioElmurl == '') {
+            $api.attr($api.byId('play'),'src','../img/play.png');
+        }else{
+            if(audioElm != null ){
+              //检测播放是否已暂停.audio.paused 在播放器播放时返回false.
+                  if(audioElm.paused){
+                      var speend = $api.html($api.byId('speed'));
+                      audioElm.playbackRate = speend;
+                      audioElm.play();//播放
+                      $api.attr($api.byId('play'),'src','../img/pause.png');
+                  }else{
+                      audioElm.pause();//暂停
+                      $api.attr($api.byId('play'),'src','../img/play.png');
+                  }
+              }
+        }
+    }
+
+    function control(obj) {
+        $(".choosespeed li").removeClass('active');
+        $api.addCls(obj, 'active');
+        var one = $api.dom(obj, 'span');
+        var speend = $api.html(one);
+        $api.html($api.byId('speed'),speend);
+        audioElm.playbackRate = speend;
+        $api.css($api.byId('bg'),'display:none');
+        $api.css($api.byId('choosespeed'),'display:none');
+    }
+    //关闭
+    function clos() {
+        $api.css($api.byId('bg'),'display:none');
+        $api.css($api.byId('choosespeed'),'display:none')
+    }
+    function speed() {
+        $api.css($api.byId('bg'),'display:block');
+        $api.css($api.byId('choosespeed'),'display:block');
+    }
+    function category() {
+        $api.css($api.byId('bg'),'display:block');
+        $api.css($api.byId('classlist'),'display:block');
+    }
+    // 选择倍速
+    function control(obj) {
+        $(".choosespeed li").removeClass('active');
+        $api.addCls(obj, 'active');
+        var one = $api.dom(obj, 'span');
+        var speend = $api.html(one);
+        $api.html($api.byId('speed'),speend);
+        audioElm.playbackRate = speend;
+        $api.css($api.byId('bg'),'display:none');
+        $api.css($api.byId('choosespeed'),'display:none');
+    }
+    // 选择课程
+    function contr(obj) {
+        $(".classlist li").removeClass('active');
+        $api.addCls(obj, 'active');
+    }
+    //关闭
+    function clos() {
+        $api.css($api.byId('bg'),'display:none');
+        $api.css($api.byId('choosespeed'),'display:none')
+        $api.css($api.byId('classlist'),'display:none')
+    }
+    //收藏
+    function dofavorite() {
+        classroomid = api.pageParam.id;
+        api.ajax({
+            url: wtkurl +'classroom/dofavorite',
+            method: 'post',
+            headers:{
+                'TOKEN':ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    'objectid':classroomid,
+                    'type':4,
+                    objecttype:1,
+                    uid:ygtuserinfo.id
+                }
+            }
+        },function(ret, err){
+            if (ret) {
+                $api.toast('提示',ret.msg,'2000');
+                $api.attr($api.byId('dofavorite'),'src','../img/Collectionend.png');
+                $(".dofavorite b").html('已收藏')
+            } else {
+                alert('收藏失败');
+                console.log( JSON.stringify( err ) );
+            }
+        });
+    }
+
+    //PPT数据
+    function loadData() {
+        classroomid = api.pageParam.id;
+        console.log('这是视频id' + classroomid);
+        api.ajax({
+                url: wtkurl +'classroom/getinfo',
+                method: 'post',
+                headers: {
+                    'TOKEN':ygtuserinfo.token
+                },
+                data: {
+                    values: {
+                        classroomid: classroomid,
+                        uid:ygtuserinfo.id
+                    }
+                }
+            },
+            function(ret, err) {
+                console.log(JSON.stringify(ret)+'直播的数据');
+                console.log(JSON.stringify(err));
+                $(".loading").hide();
+                if (ret) {
+                    if (ret.code == 1) {
+                        $("#title").html( ret.data.info.name);
+                        $api.attr($api.dom('#header .bgimg'), 'src', ret.data.info.thumb);
+                        $(".backimg").attr('src',ret.data.info.thumb);
+                        $("#audioplay").attr('src', ret.data.info.videourl);
+                        $api.setStorage('classtitle',ret.data.info.name);
+                        $api.setStorage('bakcimg',ret.data.info.thumb);
+                        $api.setStorage('listtitle',ret.data.info.listtitle);
+                        $api.setStorage('audiokey', '0');
+
+                    }
+                }else{
+                    if (err.statusCode == 401) {
+                        api.openFrame({
+                            name: 'loginframe',
+                            url: './loginframe.html',
+                            rect: {
+                                marginLeft:0,    //相对父 window 左外边距的距离
+                                marginTop:0,    //相对父 window 上外边距的距离
+                                marginBottom:0,    //相对父 window 下外边距的距离
+                                marginRight:0
+                            },
+                            pageParam: {
+
+                            },
+                            bounces: true,
+                            vScrollBarEnabled: false,
+                            hScrollBarEnabled: false
+                        });
+                    }
+                }
+            });
+    }
+
+
+    //跳转页面
+    function  classroom() {
+      var id =api.pageParam.id;
+      $api.attr($api.byId('play'),'src','../img/play.png');
+      api.openWin({
+        name: 'classroom',
+        url: './classroom.html',
+        pageParam: {id:id}
+      })
+    };
+    //分享
+    function share() {
+      $('#bg').show();
+      $(".sharetoast").addClass('sh');
+    }
+    //分享关闭
+    function opentool() {
+        $('#bg').hide();
+        $(".sharetoast").removeClass('sh');
+    }
+
+
+    $('#bg').bind('click',function(e){
+    $('#bg').hide();
+    $(".sharetoast").removeClass('sh');
+    $('#bg').hide();
+    clos()
+    });
+
+    //分享朋友
+    function sharefriend() {
+
+    var wx = api.require('wx');
+    //var sharetitle = $api.getStorage('sharetitle');
+    //var sharedesc =$api.getStorage('sharedesc');
+    //var shareurl =$api.getStorage('shareurl');
+    wx.shareWebpage({
+        apiKey: '',
+        scene: 'session',
+        title: sharetitle,
+        description: sharedesc,
+        thumb: 'widget://img/shareicon.png',//http://img1.wtk.so/2016/08/19/57b6dbc29e7cc.png
+        contentUrl:shareurl
+    }, function(ret, err) {
+        if (ret.status) {
+            alert('分享成功');
+            $('#bg').hide();
+            $(".sharetoast").removeClass('sh')
+        } else {
+            alert('分享失败');
+            console.log(JSON.stringify(err));
+        }
+    });
+    }
+
+    //分享朋友圈
+    function sharefriends() {
+    var wx = api.require('wx');
+    // var sharetitle = $api.getStorage('sharetitle');
+    // var sharedesc =$api.getStorage('sharedesc');
+    // var shareurl =$api.getStorage('shareurl');
+    wx.shareWebpage({
+        apiKey: '',
+        scene: 'timeline',
+        title: sharetitle,
+        description:sharedesc,
+        thumb: 'widget://img/shareicon.png',
+        contentUrl: shareurl
+    }, function(ret, err) {
+        if (ret.status) {
+            alert('分享成功');
+            $('#bg').hide();
+            $(".sharetoast").removeClass('sh')
+        } else {
+            alert('分享失败');
+            console.log(JSON.stringify(err));
+        }
+    });
+    }
+
+    function toback() {
+        var time = new Date().getTime();
+        timend= Math.floor(time/1000);
+        var timelog = (timend)-(timebegin);
+        classroomid = api.pageParam.id;
+        api.ajax({
+            url: wtkurl +'classroom/setlog',
+            method: 'post',
+            headers: {
+                'TOKEN':ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    classroomid:classroomid,
+                    specialid:0,
+                    timelength:timelog,
+                    uid:ygtuserinfo.id
+                }
+            }
+        },function(ret, err){
+            console.log(JSON.stringify(ret));
+            console.log(JSON.stringify(err));
+            if (ret) {
+                console.log(JSON.stringify(ret));
+            } else {
+                console.log( JSON.stringify( err ) );
+            }
+        });
+        tourl = $("#audio").attr('data-url');
+        $api.setStorage('tourl', tourl);
+        url = $api.getStorage('url');
+        var audiosta = $('#play').attr('src')
+        $api.setStorage('audiosta', audiosta);
+        var audioupdata = true;
+        $api.setStorage('audioupdata', audioupdata);
+        var classroomid1 = api.pageParam.specialid;
+        if (url == 'index') {
+            api.openWin({
+                name: 'root',
+                url: '../index.html',
+                pageParam: {
+                    name: 'test',
+                },
+                animation:{
+                    type:"reveal",                //动画类型（详见动画类型常量）
+                    subType:"from_top",       //动画子类型（详见动画子类型常量）
+                    duration:300
+                }
+            });
+        }else{
+            tourl = $('#audio').attr('data-url');
+            tourl = $api.setStorage('tourl', tourl);
+            api.openWin({
+                name: url,
+                url:url+'.html',
+                pageParam: {
+                    name: 'test',
+                },
+                bgColor: 'rgba(0,0,0,0)',
+                animation:{
+                    type:"reveal",                //动画类型（详见动画类型常量）
+                    subType:"from_top",       //动画子类型（详见动画子类型常量）
+                    duration:300
+                }
+            });
+        }
+    }
+    // 文稿
+    function edit() {
+        api.openWin({
+            name: 'manuscript',
+            url: 'manuscript.html',
+            pageParam: {
+                name: 'test',
+                id:classroomid
+            },
+            reload:true
+        });
+    }
+    function classlist() {
+        api.openWin({
+            name: 'classlist',
+            url: 'classlist.html',
+            pageParam: {
+                name: 'test'
+            },
+            animation: {
+                type: 'none'
+            }
+        });
+    }
+
+    //邀请卡
+    function poster() {
+        classroomid = api.pageParam.id;
+        api.openWin({
+            name: 'poster',
+            url: './poster.html',
+            pageParam: {
+                id: classroomid,
+                objecttype:1
+            },
+            animation: {
+                type: 'none'
+            }
+        });
+    }
+    </script>
+</body>
+
+</html>

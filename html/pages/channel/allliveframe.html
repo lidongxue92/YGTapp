@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>直播列表Frame</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/ygtcommon.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/channel/allliveframe.css" />
+</head>
+<body>
+    <div id="Tolist" >
+        <!-- <div class="list">
+            <img src="../img/classroom.jpg" />
+            <div class="right">
+                <h5 class="title">88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888</h5>
+                <p>2019-08-05</p>
+                <p>2019-08-05</p>
+            </div>
+        </div>
+        <div class='lasttitle'>已无更多数据</div> -->
+    </div>
+    <div class="loading">
+        <span>
+            <img src="../../img/loading.gif" />
+        </span>
+    </div>
+
+</body>
+<script src="../../js/lib/jquery-2.1.4.js"></script><script src="../../js/common.js"></script>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var page = 1;
+    var pagesize = 4;
+    var loading = false;
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    var isover = false;
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+        //  禁止左右滑动
+        api.setRefreshHeaderInfo({
+             bgColor: '#fefefe',
+             textColor: '#999',
+             textDown: '下拉刷新...',
+             textUp: '松开刷新...',
+            //  textLoading:'<img src="widget://img/loading.gif" />',
+             showTime:false
+         }, function(ret, err) {
+             //在这里从服务器加载数据，加载完成后调用api.refreshHeaderLoadDone()方法恢复组件到默认状态
+             if (loading == false) {
+                 $api.html($api.byId('Tolist'), '');
+                 page = 1;
+                 api.refreshHeaderLoading();
+                 isover = false;
+                 loadData();
+             }
+         });
+         api.addEventListener({
+             name:'scrolltobottom',
+             extra:{
+                 threshold:0            //设置距离底部多少距离时触发，默认值为0，数字类型
+             }
+         }, function(ret, err){
+             if (loading) {
+                 return ;
+             }
+             if (isover) {
+                 return ;
+             }
+             page++; //页数
+             loadData();
+         });
+        $('.loading').show();
+        loadData();
+    };
+    function  loadData(){
+      //var type = $('#headernav').find('.active').data('type');
+
+      var type = 1;
+      if (!ygtuserinfo || !ygtuserinfo.id) {
+         return false;
+      }
+
+    var id = $api.getStorage('liveid');
+    console.log(id);
+    loading = true;
+    // var id = 5;
+      api.ajax({
+              url: wtkurl +'classroom/getList',
+              method: 'post',
+              headers: {
+                  'TOKEN':ygtuserinfo.token
+              },
+              data: {
+                  values: {
+                      page: page,
+                      pagesize: '20',
+                      type: '0'
+                  }
+              }
+          },function(ret, err) {
+              if (ret) {
+                  console.log(JSON.stringify(ret));
+                  if (ret.data.result.length > 0) {
+                      $('.loading').hide();
+                      var len = ret.data.result.length;
+                      var html = '';
+                      for (var i = 0; i < len; i++) {
+                        html += '<div class="list" onclick="openList('+ ret.data.result[i]['id'] + ');" >'+
+                            '<img src="' + ret.data.result[i]['pic'] + '">' +
+                            '<div class="right">' +
+                            '<h5 class="title">' + ret.data.result[i]['title'] + '</h5>'
+                            // '<p >' + ret.data.result[i]['intro'] + '</p>'
+                            // '<p>' + '<span class="time">'+ret.data.result[i]['create_time'] +'</span>';
+                            html += '</div>' +
+                            '</div>';
+                      }
+
+                      $api.append($api.byId('Tolist'), html);
+                      if (len < 10) {
+                          var html2 = ' ';
+                          html2 += "<div class='lasttitle'>已无更多数据</div>";
+                          $api.append($api.byId('Tolist'), html2);
+                          isover = true;
+                      }
+                      api.refreshHeaderLoadDone();
+                }
+                loading = false;
+            }else{
+                $('.loading').hide();
+            }
+          });
+    }
+
+    // 管理/护理课程
+    function openList(id) {
+        var livelistid = $api.setStorage('livelistid', id);
+        api.openWin({
+            name: 'livedetail',
+            url: 'livedetail.html',
+            pageParam: {
+                id: id
+            },
+            animation:{
+              type:'none'
+            }
+        });
+
+    }
+
+
+</script>
+
+</html>

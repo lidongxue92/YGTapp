@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>证书查询</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/ygtcommon.css" />
+    <link rel="stylesheet" href="../../css/my/sweepcode.css">
+</head>
+
+<body>
+    <header class="top" id="header">
+        <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span class="title">证书查询</span>
+        </h1>
+    </header>
+    <section>
+        <button class="button" onclick="sweepcode();">扫描二维码</button>
+
+        <input class="code" />
+
+        <button class="sub">提交查询</button>
+
+        <div class="certificate"></div>
+    </section>
+</body>
+<script src="../../js/lib/jquery-2.1.4.js"></script><script src="../../js/common.js"></script>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+      //  禁止左右滑动
+      api.setWinAttr({
+          slidBackEnabled : false
+      });
+      //  禁止左右滑动
+    };
+    function sweepcode() {
+        var FNScanner = api.require('FNScanner');
+        FNScanner.openScanner({
+            autorotation: true
+        }, function(ret, err) {
+            if (ret) {
+                // alert(JSON.stringify(ret));
+                $('.certificate').html(ret.content);
+            } else {
+                //alert(JSON.stringify(err));
+            }
+        });
+    }
+</script>
+
+</html>

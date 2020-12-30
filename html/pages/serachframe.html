@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>直播列表Frame</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/ygtcommon.css" />
+    <link rel="stylesheet" href="../css/index/serachframe.css">
+</head>
+
+<body>
+    <h5 class="tab">
+        <span class="select" data-vla='' onclick=" openList(this)">推荐</span>
+        <span data-vla='3' class="gro" onclick=" openList(this)">群</span>
+        <span data-vla='2' class="use" onclick=" openList(this)">系列课</span>
+        <span data-vla='1' class="single" onclick=" openList(this)">单课</span>
+    </h5>
+    <div id="Tolist" class="Datatoday">
+        <div class="group mt10">
+            <h5 class="Title"><img src="../img/group1.png">&ensp;群<span class="right"  onclick="groupmore()">更多</span></h5>
+            <div class="list"></div>
+            <!-- <div class="livelist">
+                <img src="../img/1.png" />
+                <div>
+                    <h5>gap发誓生生世世看来是哪里j</h5>
+                    <p>音频未开课</p>
+                </div>
+            </div> -->
+        </div>
+        <div class="user mt10">
+            <h5 class="Title"><img src="../img/series.png">&ensp;系列课<span class="right" onclick="usermore()">更多</span></h5>
+            <div class="list"></div>
+            <!-- <div class="livelist" >
+                <img src="../img/classroom.jpg" />
+                <div class="right">
+                    <h5 class="title">附近都看啦刚看到阿来</h5>
+                    <p>
+                        <span class="listtitle">附近都看</span>
+                        <span class="charge">￥15</span></p>
+                </div>
+            </div>
+            <div class="livelist" >
+                <img src="../img/classroom.jpg" />
+                <div class="right">
+                    <h5 class="title">附近都看啦刚看到阿来概括的来看该路段看该路口的附近都看啦刚看到阿来概括的来看该路段看该路口的</h5>
+                    <p>
+                        <span class="listtitle">附近都看</span>
+                        <span class="charge">￥15</span></p>
+                </div>
+            </div> -->
+        </div>
+        <div class="singleclass mt10">
+            <h5 class="Title"><img src="../img/singleclass.png">&ensp;单课 <span class="right" onclick="singleclass()">更多</span></h5>
+            <div class="list"></div>
+            <!-- <div class="livelist" >
+                <img src="../img/classroom.jpg" />
+                <div class="right">
+                    <h5 class="title">附近都看啦刚看到阿来概括的来看该路段看该路口的附近都看啦刚看到阿来概括的来看该路段看该路口的</h5>
+                    <p>
+                        <span>附近都看</span>
+                        <span class="charge">免费</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="lasttitle">义务更多数据</div> -->
+
+        </div>
+    </div>
+    <div class="loading">
+        <span>
+            <img src="../img/loading.gif" />
+        </span>
+    </div>
+</body>
+<script src="../js/lib/jquery-2.1.4.js"></script><script src="../js/common.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var page = 1;
+    var pagesize = 10;
+    var loading = false;
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    var disabl = false;
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+        //  禁止左右滑动
+        api.addEventListener({
+            name:'scrolltobottom',
+            extra:{
+                threshold:0            //设置距离底部多少距离时触发，默认值为0，数字类型
+            }
+        }, function(ret, err){
+            if (loading != true) {
+                if ($('.tab .select').attr('data-vla') != 0) {
+                    page++; //页数
+                    loading = false;
+                    listdata();
+                }
+            }
+        });
+
+        $('.loading').show();
+        loadData();
+    };
+    function  loadData(){
+      api.ajax({
+          url: wtkurl +'classroomlist/search',
+          method: 'post',
+          headers: {
+              'TOKEN':ygtuserinfo.token
+          },
+          data: {
+              values: {
+                  uid: ygtuserinfo.id,
+                  key:api.pageParam.key
+              }
+          }
+      },function(ret, err) {
+          console.log(JSON.stringify(ret))
+         $('.Datatoday .singleclass').css('display','block');
+         $('.Datatoday .user').css('display','block');
+         $('.Datatoday .group').css('display','block');
+         $('.group .list').html('');
+         $('.user .list').html('');
+         $('.singleclass .list').html('');
+         $('.loading').hide();
+         if (ret.data.classroomlist == '' && ret.data.speciallist == '' && ret.data.listlist == '') {
+             $('.Datatoday .user').css('display','none');
+             $('.Datatoday .group').css('display','none')
+             var html3 ='';
+             $('.Datatoday .singleclass').css('display','block');
+             $('.Datatoday .singleclass .Title').css('display','none');
+             html3 += "<div class='lasttitle'>暂无数据</div>";
+             $('.singleclass .list').append(html3);
+             loading = true;
+         }else{
+             var classroomlist = ''
+              if (ret.data.classroomlist == '') {
+                $('.Datatoday .singleclass').css('display','none');
+              }else{
+                  for (var i = 0;  i < ret.data.classroomlist.length; i++) {
+                      classroomlist += '<div class="livelist" tapmode onclick="openguide(' + ret.data.classroomlist[i]['id'] + ');" >';
+                      classroomlist += '<img src="' + ret.data.classroomlist[i]['thumb'] + '" />' +
+                          '<div>' + '<h5 >' + ret.data.classroomlist[i]['name'] + '</h5><p>'+ret.data.classroomlist[i]['title']+'</p><p>'
+                      if (ret.data.classroomlist[i]['style'] == 1) {
+                          classroomlist += '<span class="charge">免费</span></p>';
+                      } else if (ret.data.classroomlist[i]['style'] == 2) {
+                          classroomlist += '<span class="charge">密码</span></p>';
+                      } else {
+                          if (ret.data.classroomlist[i]['limitpaying'] == 1) {
+                              classroomlist += '<span style="float:right;"><b  class="charge">￥' + ret.data.classroomlist[i]['price'] + '</b><b class="freebth">限免</b></span></p>';
+                          } else {
+                              if (viplist.includes(ret.data.classroomlist[i]['listid']) && $api.getStorage('isitamember') !=undefined || $api.getStorage('isitsevenamember') !=undefined) {
+                                  classroomlist += '<span class="charge">会员免费</span><span class="pricecancel">￥' + ret.data.classroomlist[i]['price'] + '</span></p>';
+                              } else {
+                                  classroomlist += '<p><span class="charge">￥' + ret.data.classroomlist[i]['price'] + '</span></p>';
+                              }
+                          }
+                        }
+
+                      classroomlist += '</div>' +
+                          '</div>';
+                  }
+                    console.log('直播间信息')
+                  //console.log(classroomlist);
+                $('.singleclass .list').append(classroomlist);
+              }
+              if (ret.data.speciallist == '') {
+                $('.Datatoday .user').css('display','none');
+              }else{
+                var len = ret.data.speciallist.length;
+                var speciallist = '';
+                for (var i = 0; i < len; i++) {
+                    speciallist += '<div class="livelist"  onclick="Specialguide(' + ret.data.speciallist[i]['id'] + ');" >';
+                    speciallist += '<img class="Specialcolumnimg"  src="' + ret.data.speciallist[i]['pic'] + '" />' +
+                        '<div class="right">' +'<h5 class="title">' + ret.data.speciallist[i]['name'] + '</h5>' +
+                        '<p><span class="listtitle">' + ret.data.speciallist[i]['title'] +'</span></p><p>'
+                        if (ret.data.speciallist[i]['style'] == 1) {
+                            speciallist += '<span class="charge">免费</span></p>';
+                        } else if (ret.data.speciallist[i]['style'] == 2) {
+                            speciallist += '<span class="charge">密码</span></p>';
+                        } else {
+                            if (ret.data.speciallist[i]['limitpaying'] == 1) {
+                                speciallist += '<span style="float:right;"><b  class="charge">￥' + ret.data.speciallist[i]['price'] + '</b><b class="freebth">限免</b></span></p>';
+                            } else {
+                                if (viplist.includes(ret.data.speciallist[i]['list_id']) && $api.getStorage('isitamember') !=undefined || $api.getStorage('isitsevenamember') !=undefined) {
+                                    speciallist += '<span class="charge">会员免费</span><span class="pricecancel">￥' + ret.data.speciallist[i]['price'] + '</span></p>';
+                                } else {
+                                    speciallist += '<p><span class="charge">￥' + ret.data.speciallist[i]['price'] + '</span></p>';
+                                }
+                            }
+                          }
+                    speciallist += '</div>' +
+                        '</div>';
+                }
+                console.log('系列直播间信息')
+             // console.log(speciallist);
+                $('.user .list').append(speciallist);
+            }
+            if (ret.data.listlist == '') {
+                $('.Datatoday .group').css('display','none');
+            }else{
+                //alert($('.Datatoday .group h5').css('display'))
+                var listlist = '';
+                for (var i = 0; i < ret.data.listlist.length; i++) {
+                    listlist +='<div class="livelist" onclick="livedetail('+ret.data.listlist[i].id+')">'+'<img src="'+ret.data.listlist[i].pic+'">'+'<div><h5>'+ret.data.listlist[i].title+'</h5>'
+                        if (ret.data.listlist[i].intro != null) {
+                            listlist +=  '<p>'+ret.data.listlist[i].intro+'</p>'
+                          }
+                    listlist +='</div></div>'
+                }
+                $('.group .list').append(listlist);
+            }
+         }
+
+      });
+    }
+
+    function listdata() {
+            api.ajax({
+                url: wtkurl +'classroomlist/search',
+                method: 'post',
+                headers: {
+                    'TOKEN':ygtuserinfo.token
+                },
+                data: {
+                    values: {
+                        uid: ygtuserinfo.id,
+                        key:api.pageParam.key,
+                        type:$('.tab .select').attr('data-vla'),
+                        page:page,
+                        pagesize:pagesize
+                    }
+                }
+            },function(ret, err) {
+             console.log(JSON.stringify(ret.data))
+            //    alert(JSON.stringify(ret))
+               //alert(JSON.stringify(err))
+               $('.Datatoday .singleclass').css('display','none');
+               $('.Datatoday .user').css('display','none');
+               $('.Datatoday .group').css('display','none');
+
+               $('.loading').hide();
+                if ($('.tab .select').attr('data-vla') == 1 ) {
+                    $('.Datatoday .singleclass').css('display','block');
+                    if (ret.data.classroomlist !='') {
+                        $('.Datatoday .singleclass .Title').css('display','none')
+                        var classroomlist = ''
+                        for (var i = 0;  i < ret.data.classroomlist.length; i++) {
+                            classroomlist += '<div class="livelist" tapmode onclick="openguide(' + ret.data.classroomlist[i]['id'] + ');" >'
+                            classroomlist += '<img src="' + ret.data.classroomlist[i]['thumb'] + '" />' +
+                                '<div>' + '<h5 >' + ret.data.classroomlist[i]['name'] + '</h5><p>'+ret.data.classroomlist[i]['title']+'</p><p>'
+                          if (ret.data.classroomlist[i]['style'] == 1) {
+                              classroomlist += '<span class="charge">免费</span></p>';
+                          } else if (ret.data.classroomlist[i]['style'] == 2) {
+                              classroomlist += '<span class="charge">密码</span></p>';
+                          } else {
+                              if (ret.data.classroomlist[i]['limitpaying'] == 1) {
+                                  classroomlist += '<span style="float:right;"><b  class="charge">￥' + ret.data.classroomlist[i]['price'] + '</b><b class="freebth">限免</b></span></p>';
+                              } else {
+                                  if (viplist.includes(ret.data.classroomlist[i]['listid']) && $api.getStorage('isitamember') !=undefined || $api.getStorage('isitsevenamember') !=undefined) {
+                                      classroomlist += '<span class="charge">会员免费</span><span class="pricecancel">￥' + ret.data.classroomlist[i]['price'] + '</span></p>';
+                                  } else {
+                                      classroomlist += '<p><span class="charge">￥' + ret.data.classroomlist[i]['price'] + '</span></p>';
+                                  }
+                              }
+                            }
+                            classroomlist += '</div>' +
+                                '</div>';
+                        }
+                      $('.singleclass .list').append(classroomlist);
+                      loading = false;
+                      console.log(ret.data.classroomlist.length)
+                      if (ret.data.classroomlist.length < 10) {
+                          var html2 = ' ';
+                          html2 += "<div class='lasttitle'>已无更多数据</div>";
+                          $('.singleclass .list').append(html2);
+                          loading = true;
+                      }
+                  }else{
+                      var html3 = ' ';
+                      if (page == 1) {
+                        html3 += "<div class='lasttitle'>暂无数据</div>";
+                      }else{
+                        html3 += "<div class='lasttitle'>已无更多数据</div>";
+                      }
+                      $('.singleclass .list').append(html3);
+                      loading = true;
+                  }
+              }else if ($('.tab .select').attr('data-vla') == 2 ) {
+                  $('.Datatoday .user').css('display','block');
+                    if (ret.data.speciallist !='') {
+                        $('.Datatoday .user .Title').css('display','none')
+                        var len = ret.data.speciallist.length;
+                        var html = '';
+                        for (var i = 0; i < len; i++) {
+                            html += '<div class="livelist"  onclick="Specialguide(' + ret.data.speciallist[i]['id'] + ');" >';
+                            html += '<img class="Specialcolumnimg"  src="' + ret.data.speciallist[i]['pic'] + '" />' +
+                                '<div class="right">' +'<h5 class="title">' + ret.data.speciallist[i]['name'] + '</h5>' +
+                                '<p >' + ret.data.speciallist[i]['title'] +'</p><p>'
+                              if (ret.data.speciallist[i]['style'] == 1) {
+                                  html += '<span class="charge">免费</span></p>';
+                              } else if (ret.data.speciallist[i]['style'] == 2) {
+                                  html += '<span class="charge">密码</span></p>';
+                              } else {
+                                  if (ret.data.speciallist[i]['limitpaying'] == 1) {
+                                      html += '<span style="float:right;"><b  class="charge">￥' + ret.data.speciallist[i]['price'] + '</b><b class="freebth">限免</b></span></p>';
+                                  } else {
+                                      if (viplist.includes(ret.data.speciallist[i]['list_id']) && $api.getStorage('isitamember') !=undefined || $api.getStorage('isitsevenamember') !=undefined) {
+                                          html += '<span class="charge">会员免费</span><span class="pricecancel">￥' + ret.data.speciallist[i]['price'] + '</span></p>';
+                                      } else {
+                                          html += '<p><span class="charge">￥' + ret.data.speciallist[i]['price'] + '</span></p>';
+                                      }
+                                  }
+                                }
+                            html += '</div>' +
+                                '</div>';
+                        }
+                        $('.user .list').append(html);
+                        loading = false;
+                        if (ret.data.speciallist.length < 10) {
+                            var html2 = ' ';
+                            html2 += "<div class='lasttitle'>已无更多数据</div>";
+                            $('.user .list').append(html2);
+                            loading = true;
+                        }
+                    }else{
+                        $('.Datatoday .user .Title').css('display','none')
+                        var html3= '';
+                        if (page == 1) {
+                          html3 += "<div class='lasttitle'>暂无数据</div>";
+                        }else{
+                          html3 += "<div class='lasttitle'>已无更多数据</div>";
+                        }
+
+                        $('.user .list').append(html3);
+                        loading = true;
+                    }
+                }else if ($('.tab .select').attr('data-vla') == 3  ) {
+                    $('.Datatoday .group').css('display','block');
+                    if (ret.data.listlist !='') {
+                        $('.Datatoday .group .Title').css('display','none')
+                        var listlist = '';
+                        for (var i = 0; i < ret.data.listlist.length; i++) {
+                            listlist +='<div class="livelist" onclick="livedetail('+ret.data.listlist[i].id+')">'+'<img src="'+ret.data.listlist[i].pic+'">'+'<div><h5>'+ret.data.listlist[i].title+'</h5>'
+                            if (ret.data.listlist[i].intro != null) {
+                                listlist +=  '<p>'+ret.data.listlist[i].intro+'</p>'
+                              }
+                          listlist +='</div></div>'
+                        }
+                        $('.group .list').append(listlist);
+                        loading = false;
+                        if (ret.data.listlist.length < 10) {
+                            var html2 = ' ';
+                            html2 += "<div class='lasttitle'>已无更多数据</div>";
+                            $('.group .list').append(html2);
+                            loading = true;
+                        }
+                    }else{
+                        $('.Datatoday .group .Title').css('display','none')
+                        var html3= ' ';
+                        if (page == 1) {
+                          html3 += "<div class='lasttitle'>暂无数据</div>";
+                        }else{
+                          html3 += "<div class='lasttitle'>已无更多数据</div>";
+                        }
+                        $('.group .list').append(html3);
+                        loading = true;
+                    }
+                }
+            });
+    }
+
+    function openList( obj) {
+        // $api.removeCls($api.dom('.select'), 'select');
+        $(".tab span").removeClass('select')
+        $api.addCls(obj, 'select');
+        $('.loading').show();
+        $('.group .list').html('');
+        $('.user .list').html('');
+        $('.singleclass .list').html('');
+        if ($('.tab .select').attr('data-vla') == '') {
+            $('.Datatoday .singleclass .Title').css('display','block');
+            $('.Datatoday .user .Title').css('display','block');
+            $('.Datatoday .group .Title').css('display','block');
+            loadData();
+        }else{
+            loading = false;
+            page = 1;
+            listdata();
+        }
+    }
+
+    //群更多
+    function groupmore() {
+        $(".tab span").removeClass('select');
+        $('.tab .gro').addClass('select');
+        $('.group .list').html('');
+        $('.user .list').html('');
+        $('.singleclass .list').html('');
+        $('.Datatoday .singleclass').css('display','none');
+        $('.Datatoday .user').css('display','none');
+        $('.Datatoday .group').css('display','none');
+        page = 1;
+        loading = true;
+        listdata();
+    }
+
+    //系列课更多
+    function usermore() {
+        $(".tab span").removeClass('select');
+        $('.tab .use').addClass('select');
+        $('.group .list').html('');
+        $('.user .list').html('');
+        $('.singleclass .list').html('');
+        $('.Datatoday .singleclass').css('display','none');
+        $('.Datatoday .user').css('display','none');
+        $('.Datatoday .group').css('display','none');
+        page = 1;
+        loading = true;
+        listdata();
+    }
+
+    //单课更多
+    function singleclass() {
+        $(".tab span").removeClass('select');
+        $('.tab .single').addClass('select');
+        $('.group .list').html('');
+        $('.user .list').html('');
+        $('.singleclass .list').html('');
+        $('.Datatoday .singleclass').css('display','none');
+        $('.Datatoday .user').css('display','none');
+        $('.Datatoday .group').css('display','none');
+        page = 1;
+        loading = true;
+        listdata();
+    }
+    //直播间跳转
+    function livedetail(id) {
+        api.openWin({
+            name: 'livedetail',
+            url: './channel/livedetail.html',
+            pageParam: {
+                id: id
+            },
+            animation:{
+              type:'none'
+            }
+        });
+
+    }
+    //系列课跳转
+    function Specialguide(id) {
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+        var url1 = $('section').attr('data-url')
+        $api.setStorage('url1', url1);
+        if (ygtuserinfo.id == -1 || ygtuserinfo == undefined) {
+            api.openWin({
+                name: 'loginframe',
+                url: './loginframe.html',
+                animation: {
+                    type: 'none'
+                }
+            });
+
+        } else {
+            api.openWin({
+                name: 'specialguide',
+                url: './special/specialguide.html',
+                pageParam: {
+                    id: id
+                },
+                reload: true
+            });
+        }
+
+    }
+    //单课购买跳转
+    function openguide(id) {
+        api.openWin({
+            name: 'guide',
+            url: './guide.html',
+            pageParam: {
+                name: 'test',
+                id: id
+            },
+            reload: true,
+            animation: {
+                type: 'none'
+            }
+        });
+    }
+
+    //单课音频跳转
+    function openaudioclass(id) {
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+        var url1 = $('section').attr('data-url')
+        $api.setStorage('url', url1);
+        $api.setStorage('url1', url1);
+        if (ygtuserinfo.id == -1 || ygtuserinfo == undefined) {
+            api.openWin({
+                name: 'loginframe',
+                url: './loginframe.html',
+                animation: {
+                    type: 'none'
+                }
+            });
+
+        } else {
+            api.openWin({
+                name: 'sigleaudio',
+                url: './sigleaudio.html',
+                pageParam: {
+                    id: id
+                },
+                animation: {
+                    type: 'none'
+                },
+                reload: true
+            });
+        }
+
+    }
+    //视频回顾课程跳转
+    function openvideohistory(id) {
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+        if (ygtuserinfo.id == -1 || ygtuserinfo == undefined) {
+            api.openWin({
+                name: 'loginframe',
+                url: './loginframe.html',
+                animation: {
+                    type: 'none'
+                }
+            });
+
+        } else {
+            api.openWin({
+                name: 'clsromvdohistory',
+                url: './clsromvdohistory.html',
+                pageParam: {
+                    id: id
+                }
+            });
+        }
+
+    }
+    // 直播视频课程跳转
+    function openvideo(id) {
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+        if (ygtuserinfo.id == -1 || ygtuserinfo == undefined) {
+            api.openWin({
+                name: 'loginframe',
+                url: './loginframe.html',
+                animation: {
+                    type: 'none'
+                }
+            });
+
+        } else {
+            api.openWin({
+                name: 'classroomvide',
+                url: './classroomvide.html',
+                pageParam: {
+                    id: id
+                }
+            });
+        }
+
+    }
+    //回顾语音ppt
+    function classroomhistory(id) {
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+        if (ygtuserinfo.id == -1 || ygtuserinfo == undefined) {
+            api.openWin({
+                name: 'loginframe',
+                url: './loginframe.html',
+                animation: {
+                    type: 'none'
+                }
+            });
+
+        } else {
+            api.openWin({
+                name: 'classroomhistory',
+                url: './classroomhistory.html',
+                pageParam: {
+                    name: 'test',
+                    id: id
+                }
+            });
+        }
+    }
+    //直播详情
+    function classroom(id) {
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+        if (ygtuserinfo.id == -1 || ygtuserinfo == undefined) {
+            api.openWin({
+                name: 'loginframe',
+                url: './loginframe.html',
+                animation: {
+                    type: 'none'
+                }
+            });
+
+        } else {
+            api.openWin({
+                name: 'classroom',
+                url: './classroom.html',
+                pageParam: {
+                    id: id
+                }
+            });
+        }
+
+    }
+</script>
+
+</html>

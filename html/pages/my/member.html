@@ -1,0 +1,164 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>医管通APP</title>
+    <link rel="stylesheet" type="text/css" href="./css/api.css" />
+    <link rel="stylesheet" href="../../css/base.css">
+    <link rel="stylesheet" href="../../css/ygtcommon.css">
+    <script src="../../js/lib/jquery2.js"></script>
+    <link rel="stylesheet" href="../../css/my/member.css">
+
+
+<body >
+    <header class="top" id="header">
+        <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span class="title">个人资料</span>
+        </h1>
+    </header>
+  <div class="middle">
+      <ul>
+        <li>
+            头像
+            <span class="right"><img class='head' src="../../img/noavatar.png" /></span>
+        </li>
+        <li>
+            <span class="name">昵称</span>
+            <b class="right" id="nicknamep"></b>
+        </li>
+        <li>
+            <span class="name">手机号码</span>
+            <b class="right" id="phone"></b>
+        </li>
+      </ul>
+      <ul class="mt10">
+        <li onclick="person(this);">
+            <span class="name">姓名</span>
+            <span class="right"><b class="truename"></b><img  src="../../img/back_right.png" /></span>
+        </li>
+        <li onclick="person(this);">
+            <span class="name">任职单位</span>
+            <span class="right"><b class="Company"></b><img  src="../../img/back_right.png" /></span>
+        </li>
+        <li onclick="person(this);">
+            <span class="name">科室/部门</span>
+            <span class="right"><b class="department"></b><img  src="../../img/back_right.png" /></span>
+        </li>
+        <li onclick="person(this);">
+            <span class="name">职位</span>
+            <span class="right"><b class="position"></b><img  src="../../img/back_right.png" /></span>
+        </li>
+        <li onclick="person(this);">
+            <span class="name">邮箱</span>
+            <span class="right"><b class="email"></b><img  src="../../img/back_right.png" /></span>
+        </li>
+      </ul>
+  </div>
+</body>
+<script src="../../js/jquery-weui.min.js"></script><script src="../../js/common.js"></script>
+<script type="application/javascript" src="../../js/lib/fastclick.js"></script>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = '';
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        var header = $api.byId('header');
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+        //  禁止左右滑动
+        $api.fixStatusBar(header);
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+        console.log(JSON.stringify(ygtuserinfo))
+        if (ygtuserinfo.avatar != '') {
+            $('.head').attr('src', ygtuserinfo.avatar);
+        }else {
+            $('.head').attr('src', '../../img/noavatar.png');
+        }
+        if (ygtuserinfo.nickname !='') {
+            $("#nicknamep").html(ygtuserinfo.nickname)
+        }
+        $("#phone").html(ygtuserinfo.mobile)
+        api.addEventListener({name: 'viewappear'}, function(ret, err){
+               loaddata();
+         })
+    };
+    function loaddata() {
+        api.ajax({
+            url: wtkurl +'classroomlist/getteacher',
+            method: 'post',
+            headers: {
+                'TOKEN': ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    uid: ygtuserinfo.id
+                }
+            }
+        }, function(data, err) {
+            //alert(JSON.stringify(data));
+            if (data.code == 0) {
+                api.ajax({
+                    url: wtkurl +'myhome/getUserinfo',
+                    method: 'post',
+                    headers: {
+                        'TOKEN': ygtuserinfo.token
+                    },
+                    data: {
+                        values: {
+                            uid: ygtuserinfo.id
+                        }
+                    }
+                }, function(ret, err) {
+                    console.log(JSON.stringify(ret));
+                    console.log(JSON.stringify(err))
+                    if (ret.code == 1 && ret.data != null) {
+                        $('.truename').html(ret.data.realname);
+                        $('.Company').html(ret.data.hospital);
+                        $('.department').html(ret.data.department);
+                        $('.position').html(ret.data.position);
+                        $('.email').html(ret.data.email);
+                    }
+
+                });
+            }else{
+                $('.truename').html(data.data.truename);
+                $('.Company').html(data.data.hospital);
+                $('.department').html(data.data.department);
+                $('.position').html(data.data.position);
+                $('.email').html(data.data.email);
+            }
+            console.log(JSON.stringify(err))
+
+        });
+    }
+    function person(obj) {
+        var name = $api.dom(obj, 'span');
+        var title = $api.html(name);
+        api.openWin({
+          name: 'person',
+          url: './person.html',
+          pageParam: {'title':title},
+          bgColor: 'rgba(0,0,0,0)',
+          animation:{
+            type:'none'
+          }
+        })
+    }
+
+    //城市列表
+
+</script>
+
+</html>

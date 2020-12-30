@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>医管通APP</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" href="../../css/base.css">
+    <link rel="stylesheet" href="../../css/ygtcommon.css">
+    <style type="text/css">
+      html,body { width: 100%; height: 100%; background-color: rgba(0,0,0,.2); position: relative;font-family: "微软雅黑";color: #333;padding: 0;margin: 0;}
+      .middle{background: #fff;border-radius: 5px;border: 1px solid #ddd;width: 60%;padding: 0 3% ;text-align: left;margin-left: 16%;position: relative;top: 160px;}
+      .middle p{line-height: 25px;font-size: 13px;}
+      .middle p span{color: #ff9913;font-weight: 600;}
+      .middle .bthfoot{display: flex;width: 100%;border-top: 1px solid #ddd;padding-top: 10px;}
+      .middle .bthfoot .bth{display: inline-block;width: 49%;text-align: center;color: #333;font-weight: normal;line-height: 25px;}
+      .middle .bthfoot .ff9913{color: #ff9913}
+    </style>
+<body >
+    <div class="middle">
+      <h5>亲爱的医管通用户</h5>
+      <p>感谢您使用医管通！我们非常重视您的个人信息及隐私安全。为了使您更清楚并充分理解医管通APP如何收集和使用您的个人信息，我们更新了<span onclick="privacy()">《隐私政策》</span>
+        以及<span onclick="resAgreement()">《用户使用协议》</span>。为更好的保障您的个人权益，请您在继续使用医管通APP及相关产品前仔细阅读全文，并在您充分理解并同意全部内容后继续使用。
+      </p>
+      <p class="bthfoot">
+        <span class="bth" onclick="api.closeWidget();">不同意</span>|
+        <span class="bth ff9913" onclick="aggree()">同意</span>
+    </p>
+    </div>
+</body>
+<script src="../../js/lib/jquery-2.1.4.js"></script><script src="./js/common.js"></script>
+<script type="application/javascript" src="./script/api.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+        //  禁止左右滑动
+    };
+
+    //注册协议
+    function resAgreement() {
+        api.openWin({
+            name: 'resAgreement',
+            url: './pages/my/resAgreement.html',
+            pageParam: {
+                name: 'test'
+            },
+            animation: {
+                type: 'none'
+            }
+        });
+    }
+    //隐私政策
+    function privacy() {
+        api.openWin({
+            name: 'privacy',
+            url: './pages/my/privacy.html',
+            pageParam: {
+                name: 'test'
+            },
+            animation: {
+                type: 'none'
+            }
+        });
+    }
+
+    // 同意
+    function aggree() {
+      $api.setStorage('agreerules',1)
+      api.closeFrame()
+    }
+
+</script>
+
+</html>

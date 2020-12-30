@@ -1,0 +1,37 @@
+body{position: relative;}
+#header{display: block;}
+#header img{width: 10px; float: left;position: relative;top: 10px;left: 10px;}
+#header .bthright{float: right;font-size: 14px;color: #ff9913;margin-right: 10px;;}
+/*主体内容样式*/
+.detail{margin-top: 70px;}
+.detail textarea{width:98%;border: 0;background:#fff;padding: 20px 1%;font-size:16px;word-break: break-all;min-height: 60px;line-height: 25px;font-weight: normal;}
+.questiontab {background:#fff;border-top: 1px solid #eee;padding: 10px 0;}
+.questiontab span img{width:18px;position:relative;kleft:3px;margin-right:5px;}
+.questiontab ul{margin-left:10px;margin-top:10px;display:none;}
+.questiontab .actshow{display: block}
+.questiontab li{display:inline-block;padding: 3px 8px;border-radius: 30px;border:1px solid #ddd;margin-bottom:10px;}
+.questiontab .active{color:#fff;background:#ff9913;border: 1px solid #ff9913}
+/*问题描述*/
+.questioncontent{background:#fff;border-top: 1px solid #eee;padding: 10px 0;}
+.questioncontent span img{width:18px;position:relative;left:3px;margin-right:5px;}
+.questioncontent textarea{display: none;width:93%;margin-left:1%;padding: 2%;min-height: 400px;margin-top:20px;border: 0;}
+.questioncontent .textshow{display:block;}
+@media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+  .detail {
+      margin-top: 90px;
+  }
+
+}
+/* xr */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) {
+  .detail{
+      margin-top: 90px;
+  }
+
+}
+/* xs max */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) {
+  .detail{
+      margin-top: 90px;
+  }
+}

@@ -1,0 +1,232 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Hello APP</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/base.css" />
+
+    <link rel="stylesheet" type="text/css" href="../css/ygtcommon.css" />
+    <link rel="stylesheet" type="text/css" href="../css/swder.css" />
+    <link rel="stylesheet" href="../css/index/search.css">
+    <script src="./js/lib/jquery2.js"></script>
+
+
+
+    <body>
+        <header class="top" id="header">
+            <h1>
+                <span class="title"></span>
+            </h1>
+        </header>
+        <div class="middletab" id="middletab">
+            <img class='search' src="../img/search.png">
+            <span class="bgserach"></span>
+            <span class="calce" onclick="api.closeWin()">取消</span>
+        </div>
+        <div class="history">
+            <h5>搜索历史 <img  src="../img/delete.png" onclick="delect();"></h5>
+            <ul class="historylist">
+
+            </ul>
+        </div>
+        <!-- <div class="history mt20">
+            <h5>热门搜索</h5>
+            <ul>
+                <li>管理</li>
+                <li>管理</li>
+                <li>管理</li>
+                <li>管理</li>
+                <li>管理</li>
+            </ul>
+        </div> -->
+    </body>
+    <script src="../js/lib/jquery-2.1.4.js"></script><script src="../js/common.js"></script>
+    <script src="../js/jquery-weui.js"></script>
+    <script src="../js/swiper.min.js" charset='utf-8'></script>
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var serachistory =[];
+    var ygtuserinfo = '';
+    var iswxpay = $api.getStorage('iswxpay');
+    var serackname =  '';
+    var num = '';
+    apiready = function() {
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        api.setWinAttr({
+            slidBackEnabled: false
+        });
+        //  禁止左右滑动
+        if ($api.getStorage('num') == '') {
+            num = 9
+        }else{
+            num = $api.getStorage('num');
+        }
+        //搜索历史
+        load();
+        loaddata();
+    };
+
+    function load() {
+        if ($api.getStorage('serachistory') == undefined  || $api.getStorage('serachistory') == '') {
+            $('.history').css('display','none');
+        }else{
+            $('.history').css('display','block');
+            var history = $api.getStorage('serachistory');
+            var listhtml = ''
+            for (var i = 0; i < history.length; i++) {
+                listhtml += '<li onclick="frame('+i+')">'+history[i]+'</li>'
+            }
+            $('.historylist').append(listhtml);
+            serachistory = $api.getStorage('serachistory');
+        }
+    }
+    function loaddata() {
+        var UIInput = api.require('UIInput');
+        winh = $(window).height();
+        if (winh > 666) {
+          toph = $api.offset($api.byId('header')).h+7;
+          x = 44
+        }else{
+          toph = $api.offset($api.byId('header')).h+2;
+          x = 40
+        }
+
+
+        wh = $('.middletab .bgserach').width()-25;
+        UIInput.open({
+            rect: {
+                x: x,
+                y: toph,
+                w: wh,
+                h: 25
+            },
+            styles: {
+                bgColor: '#eee',
+                size: 12,
+                color: '#666',
+                placeholder: {
+                    color: '#666'
+                }
+            },
+            autoFocus: true,
+            maxRows: 1,
+            placeholder: '请输入搜索关键词',
+            keyboardType: 'search'
+        }, function(ret) {
+            if (ret.eventType == 'search') {
+                //alert(JSON.stringify(ret));
+                api.closeFrame({
+                    name: 'serachframe'
+                });
+
+                UIInput.value(function(rete) {
+                    if (rete) {
+                        if (rete.msg !='') {
+                            var historylen = $api.getStorage('serachistory');
+                            if (historylen == undefined || historylen == '') {
+                                serachistory.push(rete.msg);
+                            }else{
+                                if (historylen.length >9) {
+                                    num = serachistory.length;
+                                    serachistory[num] = rete.msg;
+                                    serachistory.unshift(serachistory[num]);
+                                    //alert(JSON.stringify(serachistory));
+                                    //alert(num)
+                                    serachistory.splice(parseFloat(num) + parseFloat(1),1);
+                                    serachistory.splice(num,1);
+                                    // num = parseFloat(num) - parseFloat(1);
+                                    $api.setStorage('num',num)
+                                }else{
+                                    //alert(2222)
+                                    num = parseFloat(num) - parseFloat(1);
+                                    serachistory.unshift(rete.msg);
+                                    $api.setStorage('num',num)
+                                }
+                            }
+                            $api.setStorage('serachistory', serachistory);
+                            var UIInput = api.require('UIInput');
+                            UIInput.closeKeyboard({
+                                id:1
+                            });
+                            $('.history').css('display','none');
+                            toph = $api.offset($api.byId('header')).h+$api.offset($api.byId('middletab')).h+10;
+                            api.openFrame({
+                                name: 'serachframe',
+                                url: 'serachframe.html',
+                                rect: {
+                                    marginLeft:0,    //相对父 window 左外边距的距离
+                                    marginTop:toph,    //相对父 window 上外边距的距离
+                                    marginBottom:0,    //相对父 window 下外边距的距离
+                                    marginRight:0
+                                },
+                                pageParam: {
+                                    key:rete.msg
+                                },
+                                bounces: true,
+                                vScrollBarEnabled: false,
+                                hScrollBarEnabled: false
+                            });
+                        }else{
+                            api.alert({
+                                title: '',
+                                msg: '关键词不能为空',
+                            }, function(ret, err){
+                            });
+
+                        }
+                    }
+                });
+            }
+        });
+    }
+    function frame(keyintro) {
+        $('.history').css('display','none');
+        var UIInput = api.require('UIInput');
+        UIInput.value({
+            msg: serachistory[keyintro]
+        });
+
+        UIInput.value(function(ret) {
+            if (ret) {
+                //alert(JSON.stringify(ret));
+            }
+        });
+        toph = $api.offset($api.byId('header')).h+$api.offset($api.byId('middletab')).h+10;
+        api.openFrame({
+            name: 'serachframe',
+            url: 'serachframe.html',
+            rect: {
+                marginLeft:0,    //相对父 window 左外边距的距离
+                marginTop:toph,    //相对父 window 上外边距的距离
+                marginBottom:0,    //相对父 window 下外边距的距离
+                marginRight:0
+            },
+            pageParam: {
+                key:serachistory[keyintro]
+            },
+            bounces: true,
+            vScrollBarEnabled: false,
+            hScrollBarEnabled: false
+        })
+    }
+    function delect() {
+        $('.historylist').html('');
+        serachistory =[];
+        num = '';
+        $api.setStorage('serachistory', serachistory);
+        $api.setStorage('num', num);
+    }
+
+    </script>
+
+</html>

@@ -1,0 +1,24 @@
+body{width: auto;}
+.middle{margin-top: 80px;}
+.middle div{background: #fff;margin-top: 10px;padding: 10px;}
+.middle div h5{font-size:16px;font-weight: normal;margin-bottom: 10px;}
+.middle div h5 img{width: 20px;position: relative;top: -2px;}
+.middle div li{display:inline-block;padding: 3px 10px;border-radius: 30px;border: 1px solid #ddd;margin-bottom: 10px;font-size: 13px;}
+.middle div .active{border-color: #ff9913;color:#fff;background:#ff9913;}
+.middle  .name p{display:flex;width: 100%;line-height: 30px}
+.middle  .name p span{display:inline-block;width: 50%;}
+.middle  .name p input{border:0;border-bottom:1px solid #ddd;width:calc(100% - 80px);outline: none; }
+.middle .bth{line-height: 30px;background:#ff9913;color:#fff;font-size: 14px;text-align: center;width: 90%;display:inline-block;margin-left: 5%;
+  border-radius:10px;margin-top:10px;margin-bottom: 10px;}
+  /* x xs */
+  @media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+     .middle{margin-top: 90px;}
+  }
+  /* xr */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) {
+  .middle{margin-top: 90px;}
+}
+/* xs max */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) {
+    .middle{margin-top: 90px;}
+}

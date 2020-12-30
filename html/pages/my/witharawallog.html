@@ -1,0 +1,108 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>医管通APP</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" href="../../css/base.css">
+    <link rel="stylesheet" href="../../css/ygtcommon.css">
+    <link rel="stylesheet" href="../../css/my/witharawallog.css">
+<body >
+    <header class="top" id="header">
+        <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span class="title">提现明细</span>
+        </h1>
+    </header>
+    <div class="middle">
+        <h5 class="title">您还没有提现过哦~</h5>
+        <ul class="list">
+            <!-- <li>
+                <div class="left">
+                    <h5>提现</h5>
+                    <p>2016.09.01 17:01</p>
+                </div>
+                <span><em>2</em>元</span>
+            </li>
+             <li>
+                <div class="left">
+                    <h5>提现</h5>
+                    <p>2016.09.01 17:01</p>
+                </div>
+                <span><em>2</em>元</span>
+            </li> -->
+        </ul>
+    <div>
+    <div class="loading">
+        <span>
+            <img src="../../img/loading.gif" />
+        </span>
+    </div>
+</body>
+<script src="../../js/lib/jquery-2.1.4.js"></script><script src="../../js/common.js"></script>
+<script type="application/javascript" src="../../script/api.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+        //  禁止左右滑动
+        $api.fixStatusBar(header);
+        $('.loading').show();
+        loaddata();
+    };
+
+
+    function loaddata() {
+        api.ajax({
+            url: wtkurl +'myhome/cashlog',
+            method: 'post',
+            headers: {
+                'TOKEN': ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    uid: ygtuserinfo.id
+                }
+            }
+        }, function(data, err) {
+            $('.loading').hide();
+            var list = data.data;
+                var html = '';
+                if (list == 0) {
+                    $('.title').css('display','block')
+                }else{
+                    for (var i = 0; i < list.length; i++) {
+                        html +='<li><div class="left"><h5>提现</h5>'+'<p>'+list[i].create_time+'</p>'
+                        if (list[i].status == 0) {
+                          html += '<p>审核中</p>'
+                        }else if (list[i].status == 1) {
+                          html += '<p>已返款</p>'
+                        }else if (list[i].status == -1) {
+                          html += '<p>被驳回原因：'+list[i].remark+'</p>'
+                        }
+
+                       html += '</div>'+'<span><em>'+list[i].amount+'</em>元</span>'
+                    }
+                    $('.list').append(html);
+                }
+        });
+    }
+
+</script>
+
+</html>

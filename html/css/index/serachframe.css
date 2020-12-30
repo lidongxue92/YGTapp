@@ -1,0 +1,47 @@
+.tab{display: flex;text-align: center;width: 100%;font-size: 16px;color: #666;font-weight: normal;padding: 10px 0;border-bottom: 1px solid #eee;background: #fff;}
+.tab span{display: inline-block;width: 25%;}
+.tab .select{color: #ffca80;position: relative;}
+.tab .select:after{content: '';position: absolute;width: 50%;background: #ffca80;height: 3px;bottom: -10px;left: 25%;}
+/*公共样式*/
+.Datatoday .livelist{display: flex!important;padding: 10px  15px 15px 15px;color: #999;border-bottom: 1px solid #eee;}
+.Datatoday .livelist div{margin-left: 15px;position: relative;width:calc( 100% - 145px)}
+.Datatoday .livelist div h5{font-size: 14px;color: #333;font-weight: normal;margin-bottom: 5px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;padding: 0;margin-top: 0;}
+.Datatoday .livelist div p{overflow: hidden;text-overflow: ellipsis;white-space: nowrap;line-height: 25px;}
+.Datatoday .livelist img{width: 40px;border-radius: 50%;height: 40px;}
+.Datatoday .livelist div .right{position: absolute;top: 10px;right: 0px;}
+.Datatoday .livelist div .right img{width: 10px;height: auto;border-radius: 0;}
+.Datatoday .livelist div .listtitle{display: inline-block;width: 50%;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+.lasttitle{text-align: center;color: #999;margin-top: 10px;padding-bottom: 20px;background: #fff;padding-top: 20px;}
+.mt10{margin-top: 10px;}
+/*群样式*/
+.Datatoday .group{background: #fff;}
+.Datatoday .group .livelist div{width: 80%}
+.Datatoday .group h5{font-size: 16px;color: #666;padding: 10px 15px;margin-top: 10px;}
+.Datatoday .group h5 img{width: 20px;position: relative;}
+.Datatoday .group h5 span{float: right;font-size: 13px;font-weight: normal;}
+.Datatoday .group .livelist div p{width: 90%;}
+/*系列样式*/
+.Datatoday .user{background: #fff;}
+.Datatoday .user h5{font-size: 16px;color: #666;padding: 10px 15px;margin-top: 10px;}
+.Datatoday .user h5 img{width: 20px;position: relative;top:3px;height: auto;}
+.Datatoday .user h5 span{float: right;font-size: 13px;font-weight: normal;}
+.Datatoday .user img{width: 130px;height: 70px;border-radius: 10px;}
+.Datatoday .user .charge{float: right;color: #ff9913}
+.Datatoday .user .charge b{font-weight: normal;}
+.Datatoday .user .charge .freetime { position: relative; font-weight: normal; color: #999; font-size: 13px; font-weight: normal;margin-right: 5px;}
+.Datatoday .user .charge .freetime:after { content: ''; display: inline-block; position: absolute; width: 100%; height: 1px; background: #999; left: 0; top: 48%; }
+.Datatoday .user .pricecancel{position: relative;float: right;margin-right: 5px;}
+.Datatoday .user .pricecancel:after{content: ''; display: inline-block; position: absolute; width: 100%; height: 1px; background: #999; left: 0; top: 48%;}
+/*单课*/
+
+.Datatoday .singleclass{background: #fff;}
+.Datatoday .singleclass h5{font-size: 16px;color: #666;padding: 10px 15px;margin-top: 10px;}
+.Datatoday .singleclass h5 img{width: 20px;position: relative;top:3px;height: auto;}
+.Datatoday .singleclass img{width: 130px;height: 70px;border-radius: 10px;}
+.Datatoday .singleclass h5 span{float: right;font-size: 13px;font-weight: normal;}
+.Datatoday .singleclass .charge{float: right;color: #ff9913}
+.Datatoday .singleclass .charge b{font-weight: normal;color: #ff9913}
+.Datatoday .singleclass .charge .freetime { position: relative; font-weight: normal; color: #999; font-size: 13px; font-weight: normal; }
+.Datatoday .singleclass .charge .freetime:after { content: ''; display: inline-block; position: absolute; width: 100%; height: 1px; background: #999; left: 0; top: 48%; }
+.Datatoday .singleclass .pricecancel{position: relative;float: right;margin-right: 5px;}
+.Datatoday .singleclass .pricecancel:after{content: ''; display: inline-block; position: absolute; width: 100%; height: 1px; background: #999; left: 0; top: 48%;}

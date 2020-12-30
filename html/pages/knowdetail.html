@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>问答详情</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/ygtcommon.css" />
+    <link rel="stylesheet" href="../css/index/knowdetail.css">
+</head>
+
+<body>
+  <header id='header' class="top">
+      <h1>
+          <img onclick="api.closeWin()"  src="../img/back_light.png">
+          <span  class="title">问答详情</span>
+      </h1>
+  </header>
+  <div class="detail">
+      <div class="detailmsg">
+          <p class="questiontitle"></p>
+          <img class="img" src="../img/askwen.png"><textarea class="questiontitle" disabled="true"></textarea>
+          <div class="user">
+              <img class="imgpic" src=""><span class="askusername"></span>&emsp;
+              分类：<span class="questionid"></span>
+               <p class="qusetiontime"></p>
+          </div>
+          <div>
+              <h5>问题描述：</h5>
+              <p class="questiondetail"></p>
+              <textarea class="questiondetail" disabled="true"></textarea>
+
+              <span class="tab bth">提交</span><span class="tab bthedit">编辑</span>
+          </div>
+      </div>
+      <div class="detailmsg askdec">
+          <h5>
+              <!-- 解惑：<span class="askuser"></span> -->
+              <img class="img" src="../img/da.png">专家解惑：
+          </h5>
+           <p class="askdetail"></p>
+          <textarea class=" askdetail" disabled="true"></textarea>
+         <div class="user">
+              <span class="asktime"></span>
+          </div>
+      </div>
+  </div>
+  <p class="foottab">
+      <span class="Collection"><img src="../img/Collectionn.png">&ensp;收藏&ensp;<b></b></span>
+      <span class="recomm"><img src="../img/recomm.png">&ensp;推荐&ensp;<b></b></span>
+  </p>
+</body>
+<script src="../js/lib/jquery-2.1.4.js"></script><script src="../js/common.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    //var knowtablist = $api.getStorage('knowtablist');
+    var qusetiontitle = '';
+    var topcount = '';
+    var followcount = '';
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+        loadData();
+    };
+
+
+    function  loadData(){
+      $('.tab').hide();
+      loading = true;
+      api.ajax({
+              url: askurl +'Question/questiondetail',
+              method: 'post',
+              headers: {
+                  'TOKEN':ygtuserinfo.token
+              },
+              data: {
+                  values: {
+                      uid: ygtuserinfo.uid,
+                      id: api.pageParam.id
+                  }
+              }
+          },function(ret, err) {
+              if (ret) {
+                console.log(JSON.stringify(ret));
+                // 我是否推荐
+                if (ret.data.istopself == 1) {
+                   	$('.foottab .recomm').addClass('active');
+                   	$('.foottab .recomm').children('img').attr('src','../img/recommfull.png')
+
+                  }
+                  // 我是否收藏
+                if (ret.data.isfollow == 1) {
+                   	$('.foottab .Collection').addClass('active');
+                   	$('.foottab .Collection').children('img').attr('src','../img/Collectionnend.png')
+
+                  }
+                  // 推荐人数
+                  if (ret.data.topcount != 0) {
+                    $('.foottab .recomm b').html(ret.data.topcount)
+                  }
+                  // 关注人数
+                  if (ret.data.followcount != 0) {
+                    $('.foottab .Collection b').html(ret.data.followcount)
+                  }
+                  topcount = ret.data.topcount;
+                  followcount = ret.data.followcount;
+                // 提问者
+                $('.askusername').html(ret.data.username)
+                $('.user .imgpic').attr('src',ret.data.avatar)
+                // 问题分类
+                $('.questionid').html(knowtablist[ret.data.typeid -1]);
+                // 提问时间
+                $('.qusetiontime').append(format(ret.data.create_time*1000));
+                $('.questiontitle').append(ret.data.title);
+                // 提问内容
+                $('.questiondetail').append(ret.data.content);
+                $('.tab').show();
+                // 回答
+                if (ret.data.answers.length >0) {
+                 // 回答
+                  $('.tab').hide();
+                  // $('.askdec .askuser').html(ret.data.answers[0].username)
+                  $('.asktime').html(ret.data.answers[0].update_time)
+                  $('.askdetail').append(ret.data.answers[0].answer)
+              }else{
+                  $('.askdec').hide();
+              }
+              h =  $('.detail .qusetiontitle').siblings('p').height();
+              $('.detail .qusetiontitle').css('height',h)
+            }
+          });
+    }
+
+    // 点击收藏
+$('.foottab .Collection').click(function(){
+  api.ajax({
+        url: askurl +'Question/followquestion',
+        method: 'post',
+        headers: {
+            'TOKEN':ygtuserinfo.token
+        },
+        data: {
+            values: {
+                uid: ygtuserinfo.uid,
+                id: api.pageParam.id
+            }
+        }
+    },function(ret, err) {
+      console.log(JSON.stringify(ret));
+      if (ret.msg == '关注成功') {
+        $('.foottab .Collection').addClass('active')
+        $('.foottab .Collection img').attr('src','../img/Collectionnend.png')
+        $('.foottab .Collection b').html(followcount +1)
+      }
+    });
+})
+// 点击推荐
+$('.foottab .recomm').click(function(){
+  api.ajax({
+        url: askurl +'Question/topquestion',
+        method: 'post',
+        headers: {
+            'TOKEN':ygtuserinfo.token
+        },
+        data: {
+            values: {
+                uid: ygtuserinfo.uid,
+                id: api.pageParam.id
+            }
+        }
+    },function(ret, err) {
+      console.log(JSON.stringify(ret));
+      console.log(JSON.stringify(err));
+      if (ret.msg == '推荐成功') {
+        $('.foottab .recomm').addClass('active')
+        $('.foottab .recomm img').attr('src','../img/recommfull.png')
+        $('.foottab .recomm b').html(topcount +1)
+      }
+    });
+})
+// 点击编辑
+$('.bthedit').click(function(){
+    $('.questiontitle').attr("disabled",false);
+    $('.questiondetail').attr("disabled",false);
+    $('.questiontitle').focus()
+})
+// 修改问题
+$('.bth').click(function () {
+  api.ajax({
+        url: askurl +'Question/editQuestion',
+        method: 'post',
+        headers: {
+            'TOKEN':ygtuserinfo.token
+        },
+        data: {
+            values: {
+                uid: ygtuserinfo.uid,
+                id: api.pageParam.id,
+                title:$('textarea.questiontitle').val(),
+                content:$('textarea.questiondetail').val()
+            }
+        }
+    },function(ret, err) {
+        if (ret) {
+          api.alert({
+              title: '温馨提示',
+              msg:ret.msg,
+              onOK: function () {
+                  //点击确认
+
+              },
+              onCancel: function () {
+              }
+          });
+      }
+    });
+})
+
+// 时间戳转日期
+  function add0(m){return m<10?'0'+m:m };
+  function format(shijianchuo){
+      //shijianchuo是整数，否则要parseInt转换
+      var time = new Date(shijianchuo);
+      var y = time.getFullYear();
+      var m = time.getMonth()+1;
+      var d = time.getDate();
+      var h = time.getHours();
+      var mm = time.getMinutes();
+      var s = time.getSeconds();
+      return y+'-'+add0(m)+'-'+add0(d)+' '+add0(h)+':'+add0(mm)+':'+add0(s);
+  }
+</script>
+
+</html>

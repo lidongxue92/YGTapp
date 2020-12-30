@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="apple-mobile-web-app-status-bar-style"  content="black"/>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>医管通APP</title>
+    <link rel="stylesheet" href="../../css/base.css">
+    <link rel="stylesheet" href="../../css/ygtcommon.css">
+    <link rel="stylesheet" href="../../css/my/person.css">
+</head>
+<body>
+    <header class="top" id="header">
+        <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span class="title"  id="name">个人资料修改</span>
+        </h1>
+    </header>
+    <section id="pagecontent">
+        <div class="change">
+            <label>
+                <input class="input" id="input" maxlength="20"/>
+            </label>
+        </div>
+        <span class="bth" onclick="next()">完成</span>
+    </section>
+
+<script src="../../js/lib/jquery-2.1.4.js"></script><script src="../../js/common.js"></script>
+<script type="application/javascript" src="../../js/lib/fastclick.js"></script>
+
+<script src="../../script/api.js"></script>
+
+<script type="text/javascript">
+    var ststem = '';
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = '';
+    var title = '';
+    var user = '';
+    apiready=function(){
+        title = api.pageParam.title;
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        $('.input').attr('placeholder',title)
+        $("#name").html(title+'修改')
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+    }
+
+    function next() {
+        api.ajax({
+            url: wtkurl +'classroomlist/getteacher',
+            method: 'post',
+            headers: {
+                'TOKEN': ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    uid: ygtuserinfo.id
+                }
+            }
+        }, function(ret, err) {
+            console.log(JSON.stringify(ret));
+            if (title == '姓名') {
+                if (ret.code != 0) {
+                    api.ajax({
+                        url: wtkurl +'classroomlist/editteacher',
+                        method: 'post',
+                        headers: {
+                            'TOKEN': ygtuserinfo.token
+                        },
+                        data: {
+                            values: {
+                                uid: ygtuserinfo.id,
+                                id:ret.data.id,
+                                truename:$('.input').val()
+                            }
+                        }
+                    }, function(data, err) {
+                        //alert(JSON.stringify(data));
+                        if (data) {
+                            api.alert({
+                                title: '提示',
+                                msg: data.msg,
+                            }, function(ret, err){
+                                if( ret ){
+                                    api.closeWin();
+
+                                }else{
+                                     alert( JSON.stringify( err ) );
+                                }
+                            });
+
+                        }
+                        console.log(JSON.stringify(err))
+                    });
+                }else{
+                    api.ajax({
+                        url: wtkurl +'myhome/editUser',
+                        method: 'post',
+                        headers: {
+                            'TOKEN': ygtuserinfo.token
+                        },
+                        data: {
+                            values: {
+                                uid: ygtuserinfo.id,
+                                realname:$('.input').val()
+                            }
+                        }
+                    }, function(data, err) {
+                        //alert(JSON.stringify(data));
+                        if (data) {
+                            api.alert({
+                                title: '提示',
+                                msg: data.msg,
+                            }, function(ret, err){
+                                if( ret ){
+                                    api.closeWin();
+
+                                }else{
+                                     alert( JSON.stringify( err ) );
+                                }
+                            });
+
+                        }
+                        console.log(JSON.stringify(err))
+                    });
+                }
+
+            }else if (title == '任职单位') {
+                if (ret.code != 0) {
+                    api.ajax({
+                        url: wtkurl +'classroomlist/editteacher',
+                        method: 'post',
+                        headers: {
+                            'TOKEN': ygtuserinfo.token
+                        },
+                        data: {
+                            values: {
+                                uid: ygtuserinfo.id,
+                                id:ret.data.id,
+                                hospital:$('.input').val()
+                            }
+                        }
+                    }, function(data, err) {
+                        //alert(JSON.stringify(data));
+                        if (data) {
+                            api.alert({
+                                title: '提示',
+                                msg: data.msg,
+                            }, function(ret, err){
+                                if( ret ){
+                                    api.closeWin();
+
+                                }else{
+                                     alert( JSON.stringify( err ) );
+                                }
+                            });
+
+                        }
+                        console.log(JSON.stringify(err))
+                    });
+                }else{
+                    api.ajax({
+                        url: wtkurl +'myhome/editUser',
+                        method: 'post',
+                        headers: {
+                            'TOKEN': ygtuserinfo.token
+                        },
+                        data: {
+                            values: {
+                                uid: ygtuserinfo.id,
+                                hospital:$('.input').val()
+                            }
+                        }
+                    }, function(data, err) {
+                        //alert(JSON.stringify(data));
+                        if (data) {
+                            api.alert({
+                                title: '提示',
+                                msg: data.msg,
+                            }, function(ret, err){
+                                if( ret ){
+                                    api.closeWin();
+
+                                }else{
+                                     alert( JSON.stringify( err ) );
+                                }
+                            });
+
+                        }
+                        console.log(JSON.stringify(err))
+                    });
+                }
+
+            }else if (title == '科室/部门') {
+                if (ret.code != 0) {
+                    api.ajax({
+                        url: wtkurl +'classroomlist/editteacher',
+                        method: 'post',
+                        headers: {
+                            'TOKEN': ygtuserinfo.token
+                        },
+                        data: {
+                            values: {
+                                uid: ygtuserinfo.id,
+                                id:ret.data.id,
+                                department:$('.input').val()
+                            }
+                        }
+                    }, function(data, err) {
+                        //alert(JSON.stringify(data));
+                        if (data) {
+                            api.alert({
+                                title: '提示',
+                                msg: data.msg,
+                            }, function(ret, err){
+                                if( ret ){
+                                    api.closeWin();
+                                }else{
+                                     alert( JSON.stringify( err ) );
+                                }
+                            });
+
+                        }
+                        console.log(JSON.stringify(err))
+                    });
+                }else{
+                    api.ajax({
+                        url: wtkurl +'myhome/editUser',
+                        method: 'post',
+                        headers: {
+                            'TOKEN': ygtuserinfo.token
+                        },
+                        data: {
+                            values: {
+                                uid: ygtuserinfo.id,
+                                department:$('.input').val()
+                            }
+                        }
+                    }, function(data, err) {
+                        //alert(JSON.stringify(data));
+                        if (data) {
+                            api.alert({
+                                title: '提示',
+                                msg: data.msg,
+                            }, function(ret, err){
+                                if( ret ){
+                                    api.closeWin();
+                                }else{
+                                     alert( JSON.stringify( err ) );
+                                }
+                            });
+
+                        }
+                        console.log(JSON.stringify(err))
+                    });
+                }
+
+            }else if (title == '职位') {
+                if (ret.code != 0) {
+                    api.ajax({
+                        url: wtkurl +'classroomlist/editteacher',
+                        method: 'post',
+                        headers: {
+                            'TOKEN': ygtuserinfo.token
+                        },
+                        data: {
+                            values: {
+                                uid: ygtuserinfo.id,
+                                id:ret.data.id,
+                                position:$('.input').val()
+                            }
+                        }
+                    }, function(data, err) {
+                        //alert(JSON.stringify(data));
+                        if (data) {
+                            api.alert({
+                                title: '提示',
+                                msg: data.msg,
+                            }, function(ret, err){
+                                if( ret ){
+                                    api.closeWin();
+
+                                }else{
+                                     alert( JSON.stringify( err ) );
+                                }
+                            });
+
+                        }
+                        console.log(JSON.stringify(err))
+                    });
+                }else{
+                    api.ajax({
+                        url: wtkurl +'myhome/editUser',
+                        method: 'post',
+                        headers: {
+                            'TOKEN': ygtuserinfo.token
+                        },
+                        data: {
+                            values: {
+                                uid: ygtuserinfo.id,
+                                position:$('.input').val()
+                            }
+                        }
+                    }, function(data, err) {
+                        //alert(JSON.stringify(data));
+                        if (data) {
+                            api.alert({
+                                title: '提示',
+                                msg: data.msg,
+                            }, function(ret, err){
+                                if( ret ){
+                                    api.closeWin();
+
+                                }else{
+                                     alert( JSON.stringify( err ) );
+                                }
+                            });
+
+                        }
+                        console.log(JSON.stringify(err))
+                    });
+                }
+
+            }else{
+                if (ret.code != 0) {
+                    var reg = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/;
+                    if(!reg.test($('.input').val())){
+                        api.alert({
+                            title: '提示',
+                            msg:'邮箱格式不正确',
+                        }, function(ret, err){
+                        });
+                    }else{
+                        api.ajax({
+                            url: wtkurl +'classroomlist/editteacher',
+                            method: 'post',
+                            headers: {
+                                'TOKEN': ygtuserinfo.token
+                            },
+                            data: {
+                                values: {
+                                    uid: ygtuserinfo.id,
+                                    id:ret.data.id,
+                                    email:$('.input').val()
+                                }
+                            }
+                        }, function(data, err) {
+                            //alert(JSON.stringify(data));
+                            if (data) {
+                                api.alert({
+                                    title: '提示',
+                                    msg: data.msg,
+                                }, function(ret, err){
+                                    if( ret ){
+                                        api.closeWin();
+
+                                    }else{
+                                         alert( JSON.stringify( err ) );
+                                    }
+                                });
+
+                            }
+                            console.log(JSON.stringify(err))
+                        });
+                    }
+                }else{
+                    var reg = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/;
+                    if(!reg.test($('.input').val())){
+                        api.alert({
+                            title: '提示',
+                            msg:'邮箱格式不正确',
+                        }, function(ret, err){
+                        });
+                    }else{
+                        api.ajax({
+                            url: wtkurl +'myhome/editUser',
+                            method: 'post',
+                            headers: {
+                                'TOKEN': ygtuserinfo.token
+                            },
+                            data: {
+                                values: {
+                                    uid: ygtuserinfo.id,
+                                    email:$('.input').val()
+                                }
+                            }
+                        }, function(data, err) {
+                            //alert(JSON.stringify(data));
+                            if (data) {
+                                api.alert({
+                                    title: '提示',
+                                    msg: data.msg,
+                                }, function(ret, err){
+                                    if( ret ){
+                                        api.closeWin();
+
+                                    }else{
+                                         alert( JSON.stringify( err ) );
+                                    }
+                                });
+
+                            }
+                            console.log(JSON.stringify(err))
+                        });
+                    }
+                }
+
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

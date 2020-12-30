@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1,IE=edge">
+  <title>个人中心</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <!--此页面不会被浏览器缓存-->
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Cache-Control" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <!--此页面不会被浏览器缓存END-->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="../../res/css/light7.min.css">
+    <link rel="stylesheet" type="text/css" href="../../res/icon/iconfont.css">
+    <link rel="stylesheet" href="../../res/swiper.min.css" type="text/css">
+	<link rel="stylesheet" href="../../res/css/light7-swiper.css" type="text/css">
+    <link rel="stylesheet" href="../../css/ypynewapp.css" type="text/css">
+    <link rel="stylesheet" type="text/css" href="../../res/styleApp.css">
+</head>
+<body>
+
+<div class="page-group">
+<!-- page 容器 -->
+<div class="page geren" id="stuInfo" style=" background-color:#f7f7f8">
+
+    <div class="content" >
+
+  <div style="margin: 0; background-color: #f7f7f8; color: #333;
+          padding: 20px 0; overflow: hidden; padding-top: 35px;
+          overflow: hidden;">
+          <div style="position: absolute; right: 10px; top: 10px; " id="exitLogin" onclick="exitLogin()" >
+              <i class="icon iconfont icon-guanbi" style="font-size: 1.2rem;color: #999"></i>
+          </div>
+          <div style="position: relative;    float: left;" onclick="api.openWin({name:'touxiang',url:'geren/touxiang.html'})" >
+          <img src="../../res/img/avatar.png" onerror="javascript:this.src='../res/img/avatar.png';" style='width: 3.2rem;height:3.2rem; background-color:#ddd; margin-left: 1rem;
+              border-radius: 50%;' id="userimg" >
+              <span style="margin-left: -23px;    background-color: #1AAD19; display:inline-block;
+              border-radius: 50%;    color: #fff;    width: 15px;height: 15px;line-height: 12px;
+                text-align: center;"><i class="iconfont icon-bi-copy" style="font-size: 10px;"></i></span>
+          </div>
+
+          <div class="item-title-row" style=" margin-left: 20px;float: left;margin-left:10px;">
+              <div class="item-title">
+                  <span id="uname">未登录</span><span id="usersex"></span>
+                  <div id="Div1">
+                      <!--拼接-->
+                  </div>
+                  <div id="userno" style="font-size: 12px;color:#999">编号：100010010401</div>
+              </div>
+              <div class="item-subtitle"  style="">
+                    <a href="#"  style="font-size:10px; background-color: #39f;color:#fff;padding:3px 5px;     border-radius: 3px;" id="orgname" >某某单位</a>
+              </div>
+
+          </div>
+</div>
+
+<div class="row text-center" style="background: #f7f7f8;border-left: 0;border-right: 0; margin-left:0; color: #39f;margin-right:0">
+        <div  style="width: 25%; float: left; margin-left:1%" id="userzxsc">
+          <h3 style="margin: 0;margin-top: 0.3rem; font-size: 1.2rem" id="totleStudyTime">0</h3>
+          <div class="color-gray" style="font-size: 0.5rem">总学时长<span id="totleStudyTime_danwei">分钟</span></div>
+        </div>
+        <div  style="width: 25%;float: left;" id="userxxkcs">
+          <h3 style="margin: 0;margin-top: 0.3rem;font-size: 1.2rem"  id="totleStudyCourse">0</h3>
+          <div class="color-gray" style="font-size: 0.5rem">学习课程数</div>
+        </div>
+        <div style="width: 25%;float: left;" id="userkscs">
+          <h3 style="margin: 0;margin-top: 0.3rem;font-size: 1.2rem" id="totleExam">0</h3>
+          <div class="color-gray" style="font-size: 0.5rem">考试次数</div>
+        </div>
+        <div style="width: 24%;float: left;" id="userkjifen">
+          <h3 style="margin: 0;margin-top: 0.3rem;font-size: 1.2rem" id="jifencount">0</h3>
+          <div class="color-gray" style="font-size: 0.5rem">积分<!--/排名第<span id="paimingweizhi" style="color:red">8</span>--></div>
+        </div>
+
+ </div>
+
+<div class="list-block list navul" style="margin: 1rem auto;">
+        <ul>
+
+
+         <li><a class="item-content item-link" href="studyhistory.html">
+            <div class="item-media"><i class="icon iconfont icon-lesson"></i></div>
+            <div class="item-inner">
+              <div class="item-title">近期学习</div>
+            </div>
+          </a></li>
+          <li><a class="item-content item-link"  onclick="openDownManager()">
+            <div class="item-media"><i class="icon iconfont icon-xiazai"></i></div>
+            <div class="item-inner">
+              <div class="item-title">离线缓存</div>
+            </div>
+          </a></li>
+        <li><a class="item-content item-link" href="kaoshi.html">
+            <div class="item-media"><i class="icon iconfont icon-jilu"></i></div>
+            <div class="item-inner">
+              <div class="item-title">历史考试</div>
+            </div>
+          </a></li>
+         <li><a class="item-content item-link" href="shoucang.html">
+            <div class="item-media"><i class="icon iconfont icon-huijijiayuanshoucangicon01"></i></div>
+            <div class="item-inner">
+              <div class="item-title">收藏课程</div>
+              <div class="item-after" id="shoucangliang" style="color:#39f">0</div>
+            </div>
+          </a></li>
+          <li><a class="item-content item-link" href="wenda.html">
+             <div class="item-media"><i class="icon iconfont icon-25"></i></div>
+             <div class="item-inner">
+               <div class="item-title">我的问答</div>
+             </div>
+           </a></li>
+          <li><a class="item-content item-link" href="jifen2.html">
+             <div class="item-media"><i class="icon iconfont icon-jifen1"></i></div>
+             <div class="item-inner">
+               <div class="item-title">积分明细</div>
+             </div>
+           </a></li>
+           <li><a class="item-content item-link" href="paiming.html">
+              <div class="item-media"><i class="icon iconfont icon-diyiming"></i></div>
+              <div class="item-inner">
+                <div class="item-title">积分排名</div>
+              </div>
+            </a></li>
+
+          <!-- <li class="yejianmoshi">
+                <div class="item-content">
+                   <div class="item-media"><i class="icon iconfont icon-banyuanxuankuang"></i></div>
+                  <div class="item-inner">
+                    <div class="item-title label" >夜间模式</div>
+                    <div class="item-input" style="float: right;width: initial;">
+                      <label class="label-switch">
+                        <input type="checkbox" id="dark-switch">
+                        <div class="checkbox"></div>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </li>-->
+        </ul>
+      </div>
+<!--
+      <div class="list-block list navul" style="margin: 1rem auto;">
+        <ul>
+          <li><a class="item-content item-link" href="../wenjian/index.html">
+             <div class="item-media"><i class="icon iconfont icon-wenjianjiashouqi"></i></div>
+             <div class="item-inner">
+               <div class="item-title">资料</div>
+             </div>
+           </a></li>
+          <li><a class="item-content item-link" href="../interlocution/spectailcolnum.html">
+              <div class="item-media"><i class="icon iconfont icon-25"></i></div>
+              <div class="item-inner">
+                <div class="item-title">问答交流</div>
+              </div>
+            </a></li>
+          <li><a class="item-content item-link" href="../honor/honorlist.html">
+             <div class="item-media"><i class="icon iconfont icon-diyiming"></i></div>
+             <div class="item-inner">
+               <div class="item-title">荣誉</div>
+             </div>
+           </a></li>
+        </ul>
+      </div>
+-->
+      <div class="list-block list navul" style="margin: 1rem auto;">
+        <ul>
+         <li><a class="item-content item-link" href="info.html">
+            <div class="item-media"><i class="icon iconfont icon-iconyuangong"></i></div>
+            <div class="item-inner">
+              <div class="item-title">补充信息</div>
+            </div>
+          </a></li>
+          <li><a class="item-content item-link" href="updatepwd.html">
+            <div class="item-media"><i class="icon iconfont icon-denglumima"></i></div>
+            <div class="item-inner">
+              <div class="item-title">修改密码</div>
+            </div>
+          </a></li>
+          <!--<li><a class="item-content item-link" href="duxue.html">
+            <div class="item-media"><i class="icon iconfont icon-rizhi"></i></div>
+            <div class="item-inner">
+              <div class="item-title">督学日志</div>
+            </div>
+          </a></li>-->
+        </ul>
+      </div>
+
+
+      <div class="list-block list navul" style="margin: 1rem auto;">
+        <ul>
+         <li><a class="item-content item-link" href="#" onclick="disanfang('喜马拉雅','http://m.ximalaya.com/')">
+            <div class="item-media"><img src="https://s1.xmcdn.com/wap/css/img/common/ting.png?v=201808081755300" style=" width:20px;" /></div>
+            <div class="item-inner">
+              <div class="item-title">喜马拉雅</div>
+            </div>
+          </a></li>
+          <li><a class="item-content item-link" href="#" onclick="disanfang('百度读书','https://yd.baidu.com/?pcf=2')">
+             <div class="item-media"><img src="https://bj.bcebos.com/v1/issue-luigi/%E9%98%85%E8%AF%BB%E5%9B%BE%E6%A0%87-20180802111842-tYS0E3.png" style=" width:20px;" /></div>
+             <div class="item-inner">
+               <div class="item-title">百度读书</div>
+             </div>
+           </a></li>
+           <li><a class="item-content item-link" href="#" onclick="disanfang('财政法规库','http://fgk.mof.gov.cn/law/jsp/firstPage/main.jsp')">
+              <div class="item-media"><i class="icon iconfont icon-zhishiku"></i></div>
+              <div class="item-inner">
+                <div class="item-title">财政法规库</div>
+              </div>
+            </a></li>
+            <li><a class="item-content item-link" href="#" onclick="disanfang('财政干部知识服务平台','http://czyw.cnki.net/')">
+               <div class="item-media"><i class="icon iconfont icon-zhishiku1"></i></div>
+               <div class="item-inner">
+                 <div class="item-title">财政干部知识服务平台</div>
+               </div>
+             </a></li>
+        </ul>
+      </div>
+
+
+      <div class="list-block list navul" style="margin: 1rem auto;">
+        <ul>
+          <li><a class="item-content" href="#" onclick="qingchuhuancun()">
+            <div class="item-media"><i class="icon iconfont icon-shanchu"></i></div>
+            <div class="item-inner">
+              <div class="item-title">清除缓存</div>
+              <div class="item-after" id="huancung" style="color:#39f">0</div>
+            </div>
+          </a></li>
+          <li><a class="item-content item-link" href="../../ypyabout.html">
+            <div class="item-media"><i class="icon iconfont icon-miaoshu1"></i></div>
+            <div class="item-inner">
+              <div class="item-title">软件版本</div>
+            </div>
+          </a></li>
+
+        </ul>
+      </div>
+
+
+  </div>
+
+</div>
+</div>
+<!-- popup, panel 等放在这里 -->
+<div class="panel-overlay"></div>
+
+<script src="../../res/zepto.min.js" type="text/javascript"></script>
+<script type='text/javascript' src='../../res/js/light7.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='../../res/js/i18n/cn.min.js'></script>
+<script type='text/javascript' src='../../res/swiper.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='../../res/js/light7-swiper.js' charset='utf-8'></script>
+<script src="../../res/js/jquery-1.10.2.min.js" type="text/javascript"></script>
+<script type='text/javascript' src="../../res/config.js" ></script>
+
+<script type="text/javascript" src='../../res/pdf2/Base64.js' charset='urf-8'></script>
+<script type="text/javascript" src='../../res/common.js' charset='urf-8'></script>
+<script>
+  $.config = {
+    autoInit: true //no recommend
+  }
+  $.init();
+</script>
+
+</body>
+</html>

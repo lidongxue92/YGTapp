@@ -1,0 +1,115 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>作业详情</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" href="../../css/base.css">
+    <link rel="stylesheet" href="../../css/ygtcommon.css">
+    <link rel="stylesheet" href="../../css/my/taskdetailbefore.css">
+<body >
+    <header class="top" id="header">
+        <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span class="title"></span>
+        </h1>
+    </header>
+    <div class="middle">
+        <div class="Datatoday">
+            <!-- <div class="livelist">
+                <div>
+                    <h5>医管通护理频道</h5>
+                    <p>课程你附加费看结果放客服发看看是方法</p>
+                    <p class="clearfix">
+                        <span class="left">之恋管理</span>
+                        <span class="right">100人回答</span>
+                    </p>
+                </div>
+            </div>
+            <div class="livelist">
+                <div>
+                    <h5>医管通护理频道</h5>
+                    <p>课程你附加费看结果放客服发看看是方法</p>
+                </div>
+            </div> -->
+        </div>
+    </div>
+</body>
+<script src="../../js/lib/jquery-2.1.4.js"></script><script src="../../js/common.js"></script>
+<script type="application/javascript" src="../../script/api.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+        //  禁止左右滑动
+        $api.fixStatusBar(header);
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+        loaddata();
+    };
+
+
+    function loaddata() {
+        api.ajax({
+            url: wtkurl +'classroomlist/getClassroomTasks',
+            method: 'post',
+            headers: {
+                'TOKEN': ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    uid: ygtuserinfo.id,
+                    listid:api.pageParam.id
+                }
+            }
+        }, function(data, err) {
+          console.log(JSON.stringify(ygtuserinfo)+'{shuju}'+api.pageParam.id)
+            //alert(JSON.stringify(data));
+          console.log(JSON.stringify(data))
+
+            if (data.data.length > 0) {
+              var listhtml = '';
+              $('.title').html(data.data[0].list_title)
+              for (var i = 0; i < data.data.length; i++) {
+                  listhtml +='<div class="livelist">'+'<div><h5>'+data.data[i].question+'</h5>'+
+                              '<p>'+data.data[i].note+'</p>'+'<p class="clearfix">'+data.data[i].classroom_name+'</p>'+
+                              '<p><span class="left">'+data.data[i].create_time+'</span><span class="right">'+data.data[i].answernum+'人回答</span></p>'+
+                              '</div></div>'
+              }
+              $('.Datatoday').append(listhtml);
+              if (data.data.length < 10){
+                var html2 = '';
+                html2 += "<div class='lasttitle'>暂无更多课程</div>";
+                $api.append($api.byId('Tolist'), html2);
+                loading = true;
+              }
+            }else {
+                var html2 = '';
+                html2 += "<div class='lasttitle'>暂无更多课程</div>";
+                $api.append($api.byId('Tolist'), html2);
+                loading = true;
+            }
+            console.log(JSON.stringify(err))
+
+        });
+    }
+
+
+
+</script>
+
+</html>

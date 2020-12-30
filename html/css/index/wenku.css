@@ -1,0 +1,52 @@
+body{position: relative;}
+#header img{width: 10px; float: left;position: relative;top: 10px;left: 10px;}
+/*顶部*/
+#allive{position: fixed;top: 70px;width: 100%;padding-top: 5px}
+.tabtop{background:#f8f8f8;position: relative;z-index: 1;font-size: 14px;color:#333;}
+.tabtop h5{line-height: 40px;padding:0 15px;font-size: 16px;font-weight: normal;}
+.tabtop h5 img{width: 18px;margin-right: 10px;position: relative;top: 2px;}
+.tabtop h5 .toindex{float: right;font-size:13px;color: #ff9913}
+.tabtop .selectab{background: #fff;white-space: nowrap;z-index: 11;top: 0;overflow-y: hidden;border-bottom: 5px solid #f8f8f8;line-height: 40px;height: 46px;padding: 2px 15px;}
+.tabtop .selectab li{display:inline-block;padding:3px 5px;font-weight:800;}
+.tabtop .seleclist {background:#fff;border-bottom: 5px solid #f8f8f8;}
+.tabtop .seleclist span{display:inline-block;padding:3px 15px;color:#fff;background:#999;border-radius: 30px;font-size:13px;margin: 5px 10px;}
+.tabtop .selectab .active{color: #ff9913;}
+.tabtop .seleclist .active{color:#fff;background:#ff9913;}
+/*搜索*/
+.serach{position: relative;border: 1px solid #ddd;margin-top: 10px;padding: 5px;line-height: 20px;background:#fff;z-index: 2;height: 20px}
+.serach input {position: absolute;width: calc(100% - 30px);border: 0;outline: 0;top: 5px;}
+.serach .toserach{position:absolute;right:10px;z-index: 1;font-size: 14px;}
+
+/*主体内容样式*/
+#Tolist{overflow-y: scroll;position: relative;top: 175px}
+.list{padding: 15px 15px 0 15px;color: #333;background: #fff;display: flex;position: relative;width: calc(100% - 30px)}
+.list .left{width: 20%;margin-right: 10px;position: relative;max-height: 120px;}
+.list .left img{width: 100%;height: auto;max-height: 120px;}
+.list .left .icon{position:absolute;left:-1px;top: 0px;width:14px!important;height: 15px;}
+.list:after{position: absolute;content: '';width: calc(100% - 70px);height: 1px;background: #f8f8f8;bottom: 0;right: 0;}
+.list .right{width: 79%}
+.list .right .title{font-weight: normal;font-size: 1.1rem;width: auto;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;
+    word-wrap: normal;word-wrap: break-word;word-break: break-all;max-height: 40px;line-height: 20px;white-space: normal;display:
+    -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;padding: 0;margin: 0;position: relative;border-bottom:0;color: #333;}
+.list .right p{padding: 0;margin: 0;line-height: 25px;color: #666}
+.list .right .mt{margin-top: 15px}
+.lasttitle{text-align: center;color: #999;margin-top: 10px;margin-bottom: 20px;margin-bottom:66px}
+@media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+  #allive {
+      top: 90px;
+  }
+
+}
+/* xr */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) {
+  #allive{
+      top: 90px;
+  }
+
+}
+/* xs max */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) {
+  #allive{
+      top: 90px;
+  }
+}

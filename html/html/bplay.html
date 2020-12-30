@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>title</title>
+      <link rel="stylesheet" type="text/css" href="../css/api.css"/>
+      <link rel="stylesheet" type="text/css" href="../res/icon/iconfont.css">
+      <style type="text/css">
+        body {
+         padding: 0px;
+         margin: 0px;
+        }
+  </style>
+  </head>
+  <body scroll="no">
+
+  <div style=" position: absolute; top:30%; width:100%; text-align:center;" id="loading">
+    <center><img src="../images/loading_more.gif" /><br />正在载入</center>
+  </div>
+
+  <script type="text/javascript" src="../script/api.js"></script>
+  <script type="text/javascript">
+    var bPlayer,jytime=0;
+      apiready = function(){
+           bPlayer = api.require('bPlayer');
+
+           bPlayer.close();
+        if(api.pageParam.id != "")
+        {
+            jytime = localStorage.getItem('JY_'+api.pageParam.id);
+
+        }
+
+        api.openFrame({
+              name: 'iframepage',
+            //  url: api.pageParam.url,
+             rect: {
+                  x: 0,
+                  y: api.pageParam.top,
+                  w: api.winWidth,
+                 h: api.frameHeight
+             }
+          });
+
+          api.addEventListener({
+                  name: 'bstop'
+          }, function(ret, err) {
+               bPlayer.close();
+          });
+
+
+       bPlayer.open({
+                      rect:{
+                         x: 0,
+                         y: 0,
+                         w: api.winWidth,
+                         h: api.frameHeight-40,
+                         },
+                         initialPlaybackTime:jytime,
+                         path : api.pageParam.url,
+                      autoPlay : true,
+                     fixedOn:'iframepage'
+             },function(ret) {
+                 if (ret) {
+                    // alert(JSON.stringify(ret));
+                    //播放进度监控
+                    bPlayer.addProgressListener(function(ret) {
+                       console.log(JSON.stringify(ret));
+                                       if (ret) {
+                                            api.sendEvent({
+                                                name: 'playing',
+                                                extra: ret.playing
+                                            });
+                                            localStorage.setItem('JY_'+api.pageParam.id, ret.playing)
+                                       }
+                      });
+                    setTimeout(function(){
+                        BDPlayerLoader();
+                    },800);
+
+                 }
+           });
+
+      api.setKeepScreenOn({//禁止休眠
+               keepOn: true
+      });
+      var yuanlaiheight =api.frameHeight;
+       window.addEventListener('orientationchange',function(){
+         //alert(window.orientation); //这里可以根据orientation做相应的处理
+          if(window.orientation == 90 || window.orientation == -90)
+          {
+            setTimeout(function(){
+              api.setFrameAttr({
+                name: 'iframepage',
+                rect: {
+                     x: 0,
+                     y: 0,
+                     w: api.winWidth,
+                    h: api.winHeight
+                }
+              });
+              bPlayer.setRect({
+                rect: {
+                     x: 0,
+                     y: 0,
+                     w: api.winWidth,
+                    h: api.winHeight
+                }
+             });
+              api.setFrameAttr({
+                name: 'iframeui',
+                rect: {
+                     x: 0,
+                     y: api.winHeight-40,
+                     w: api.winWidth,
+                     h: 40
+                }
+              });
+            },500);
+
+          }
+          else {
+            setTimeout(function(){
+              api.setFrameAttr({
+                name: 'iframepage',
+                rect: {
+                     x: 0,
+                     y: api.pageParam.top,
+                     w: api.winWidth,
+                    h: yuanlaiheight
+                }
+              });
+              bPlayer.setRect({
+                rect: {
+                     x: 0,
+                     y: 0,
+                     w: api.winWidth,
+                    h: yuanlaiheight
+                }
+             });
+              api.setFrameAttr({
+                name: 'iframeui',
+                rect: {
+                     x: 0,
+                     y: yuanlaiheight-40+api.pageParam.top,
+                     w: api.winWidth,
+                     h: 40
+                }
+              });
+            },500);
+
+          }
+        },false);
+
+        api.openFrame({
+            name: 'iframeui',
+            url: 'bplayui.html',
+           rect: {
+                x: 0,
+                y: api.frameHeight-40,
+                w: 'auto',
+               h: 40
+           }
+        });
+
+
+
+        api.addEventListener({
+                name: 'sulv'
+        }, function(ret, err) {
+                //alert(JSON.stringify());
+                bPlayer.playbackRate({
+                        playbackRate : ret.value
+                });
+        });
+
+        api.addEventListener({
+            name: 'tongzhi'
+        }, function(ret, err) {
+                //alert(JSON.stringify());
+                if(ret.value.type == 'quanping') //全屏
+                {
+
+                    bPlayer.setRect({
+                          rect:{
+                          x: 0,
+                          y: 0,
+                          w: api.winWidth,
+                          h: api.winHeight
+                      },
+                    });
+                    bPlayer.full();
+                }
+                else  if(ret.value.type == 'quanpingqx'){//取消全屏
+                    bPlayer.cancelFull();
+                }
+                else if(ret.value.type == 'zanting'){
+                  bPlayer.pause();
+                  Tstate = 0;
+                }
+                else if(ret.value.type == 'bofang'){
+                  bPlayer.play();
+                  Tstate = 1;
+                }
+        });
+
+      };
+      /*****添加播放器的监听事件********/
+      var Tstate = 1;
+      function BDPlayerLoader(){
+        try {
+          bPlayer.info(function(ret) {
+                if (ret) {
+                        api.sendEvent({
+                            name: 'videoinfo',
+                            extra: ret
+                        });
+                }
+          });
+        //  setInterval(function(){
+        //      bPlayer.removeProgressListener({name : 'playing'});
+
+        //  },5000);
+
+          //点击操作监控
+          bPlayer.addEventListener({name : ['all','click','playbackState']}, function(ret) {
+            var EventType = eval(ret);
+            console.log(JSON.stringify(ret));
+            if(EventType.eventType == "click"){
+              if(Tstate == 1){ //当前正在播放
+                 bPlayer.pause();
+                 Tstate = 0;
+
+               }else {
+                 bPlayer.play();
+                 Tstate = 1;
+               }
+             }
+
+             if(EventType.eventType ==  "paused"){
+                 Tstate = 0;
+                 api.openFrame({
+                     name: 'bplaybtn',
+                     url: 'bplaybtn.html',
+                    rect: {
+                         x: 0,
+                         y: 0,
+                         w: api.winWidth,
+                        h: api.frameHeight
+                    }
+                 });
+             }
+             if(EventType.eventType ==  "playing"){
+                 Tstate = 1;
+                 api.closeFrame({
+                      name: 'bplaybtn'
+                  });
+             }
+             //快进
+             if(EventType.eventType ==  "swipeRight"){
+              bPlayer.forward({
+                 seconds : 6.0
+              });
+             }
+             //快退
+             if(EventType.eventType ==  "swipeLeft"){
+                bPlayer.rewind({
+                   seconds : 6.0
+                });
+             }
+             //减小音量
+             if(EventType.eventType ==  "rightDown"){
+
+             }
+             // 增加音量
+             if(EventType.eventType ==  "rightUp"){
+
+             }
+             // 增加亮度
+             if(EventType.eventType ==  "leftUp"){
+               var brightness = api.require('brightness2016');
+               brightness.getBrightness(function(ret) {
+                 brightness.setBrightness({ brightness: eval(ret).brightness + 20 });
+              });
+
+             }
+             // 降低亮度
+             if(EventType.eventType ==  "leftDown"){
+               var brightness = api.require('brightness2016');
+               brightness.getBrightness(function(ret) {
+                  brightness.setBrightness({ brightness: eval(ret).brightness - 20 });
+              });
+             }
+             //播放完成
+             if(EventType.eventType == "complete"){
+               console.log(EventType.eventType);
+                //BaiDuPlayer.BDPlayEnded();
+                //mainplayerStop();
+             }
+            });
+
+            api.sendEvent({
+                name: 'myEvent',
+                extra: ret
+            });
+        } catch (e) {
+
+        } finally {
+
+        }
+
+
+
+
+
+      }
+  </script>
+  </html>

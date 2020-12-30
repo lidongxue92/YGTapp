@@ -1,0 +1,51 @@
+.usercenter { position: relative; background: #29292d; min-height: 200px; }
+.usercenter .back { position: absolute; width: 50px; height: 30px; background: url(../img/back.png); right: 0px; top: 30px; background-size: auto 100%; background-repeat: no-repeat; }
+.usercenter .headimg { display: inline-block; border: 4px solid #535256; border-radius: 50%; margin-top: 70px; margin-left: 50px; }
+.usercenter .headimg img { width: 60px; border-radius: 50%; height: 60px; border: 3px solid #fefefe; }
+.loginout img { width: 25px; height: auto; position: absolute; top: 90px; }
+.foot { z-index: 1111; }
+.left { display: inline-block; text-align: left; margin-left: 10px; color: #fefefe; width: 60%; }
+.left a { color: #fefefe; width: 100%; }
+.left a .goset { width: 15px; transform: rotate(180deg); float: right; }
+.charttitle{line-height: 40px;padding: 0 10px;font-size: 14px;}
+.middle { background: #fff; padding-bottom: 65px; /*margin-top: 200px;*/ }
+.middle h4 { margin: 0; padding: 0; font-size: 18px; line-height: 32px; margin-left: 10px; margin-top: 10px; }
+.middle h4 .titleimg{ display: block; width: auto; float: right; line-height: 25px; text-align: right; background: url(../img/tranbg.png); padding: 2.5px; border-radius: 35px 0 0 35px; }
+.middle h4 .titleimg img{width: 25px;border-radius: 50%;}
+.middle ul { padding: 0; margin: 0; border-bottom: 1px solid #ddd; margin-top: 10px; padding-left: 10px; }
+.middle ul li { display: inline-block; height: 35px; line-height: 35px; position: relative; font-size: 14px; color: #999; margin-right: 15px; }
+.middle ul .active {border-bottom: 1px solid #666;line-height: 35px;display: inline-block;color: #666}
+#nicknamep { line-height: 25px; height: 25px; font-size: 15px; font-weight: 600; color: #fefefe; }
+    /*主体内容样式*/
+    .list { padding: 15px; color: #333; background: #fff; border-bottom: 1px solid #f1f1f1; }
+    .list img { width: 38%; vertical-align: top; border-radius: 5px; overflow: hidden; height: 70px; }
+    .list .right { display: inline-block; margin-left: 2%; width: 58%; position: relative; top: 0; }
+    .list .right .title { color: #424242; font-weight: normal; font-size: 1rem; width: auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; word-wrap: normal; word-wrap: break-word; word-break: break-all; max-height: 36px; line-height: 18px;
+white-space: normal; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; padding: 0; margin-top: 5px; font-weight: 900; }
+    .list .right p { padding: 0; margin: 0; margin-top: 2px; color: #999; }
+    .list .right p span { display: inline-block; text-align: left; font-size: .8rem; }
+    .list .right p .Browsing { font-weight: 500; color: #b8b8b8; }
+    .list .right p .time { margin-right: 10px; }
+    .list .right p .Browsing img { height: 13px; width: auto; position: relative; top: 0px; }
+    .list .right p .free { color: #ff9913; font-size: 13px; font-weight: 900; float: right; }
+    .list .right p span b { font-weight: normal; }
+    .list .right p .freetime { position: relative; font-weight: normal; color: #999; font-size: 13px; font-weight: normal; }
+    .list .right p .freetime:after { content: ''; display: inline-block; position: absolute; width: 100%; height: 1px; background: #999; left: 0; top: 50%; }
+    .list .right p .freebth { background: #ff9913; color: #fff; padding: 3px 8px; border-radius: 5px; margin-left: 10px; color: #fff; }
+    .lasttitle { text-align: center; color: #999; margin-top: 10px; margin-bottom: 20px; }
+    @media screen and (min-width: 768px) {
+        .list img { height: 100px; }
+    }
+    .nodata{text-align: center;margin-top: 2rem;display: none;}
+    .nodata img{width: 4rem}
+    .nodata p{margin-top: 10px;}
+    #audioclick{position: fixed;left: 5%;bottom: 10px;width: 80%;background: rgba(0,0,0,.7);padding: 10px 5%;border-radius: 10px;display: none}
+    #audioclick span{display: inline-block;width: 65%;}
+    #audioclick .hed{position: relative;width: 60px;vertical-align: top;margin-right: 10px;}
+    #audioclick .pic{ width: 60px;height: 36px;border: 1px solid #eee;border-radius: 5px;}
+    #audioclick .close{width: 20px;float: right;position: relative;top:8px;}
+    #audioclick .pause{position: absolute;left:20px;width:20px;top: 10px;}
+    #audioclick b{display: inline-block;width: 100%;overflow: hidden; text-overflow: ellipsis; white-space: nowrap;color: #e4e4e4;}
+    @media screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+        /*.middle{margin-top: 90px;}*/
+    }

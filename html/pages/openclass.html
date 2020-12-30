@@ -1,0 +1,198 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>医管通</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/base.css" />
+    <link rel="stylesheet" type="text/css" href="../css/ygtcommon.css" />
+    <link rel="stylesheet" href="../css/index/openclass.css">
+</head>
+<body>
+    <!-- 头部 -->
+    <header class="top" id="header">
+        <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span class="title" >线下训练营</span>
+        </h1>
+    </header>
+    <!-- 中间切换tab -->
+    <div class="middletab" id="headernav">
+        <div style="background:#f8f8f8;">
+            <span class="tab tabbegin active" data-type='0'>
+                未开始
+            </span>
+            <span class="tab tabend" data-type='1'>
+                已结束
+            </span>
+        </div>
+    </div>
+    <!--主要内容  -->
+    <section>
+
+    </section>
+    <!-- 底部导航栏 -->
+    <!-- <footer class="foot" id="footer">
+        <span class="tab" tapmode onclick="index()">
+            <img src='../img/home.png'/>
+            <p>首页</p>
+        </span>
+        <span class="tab" tapmode onclick="Livebroadcast()">
+            <img src='../img/record_light.png'/>
+            <p>线上课</p>
+        </span>
+        <span class="tab" tapmode>
+            <img src='../img/fire-fill.png'/>
+            <p class='c-2577e3'>公开课</p>
+        </span>
+        <span class="tab" tapmode onclick="my()">
+            <img src='../img/people.png'/>
+            <p>我的</p>
+        </span>
+    </footer> -->
+</body>
+<script src="../js/lib/jquery-2.1.4.js"></script><script src="../js/common.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = '';
+    apiready = function() {
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        //判断是否登录
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+        // console.log(JSON.stringify(ygtuserinfo));
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled: false
+        });
+        // 上拉刷新 滚动加载
+        var top = $api.offset($api.byId('header')).h + $api.offset($api.byId('headernav')).h;
+        // var bottom = $api.offset($api.byId('footer')).h;
+        api.openFrame({
+            name: 'openclassFrame',
+            url: 'openclassFrame.html',
+            rect: {
+                marginLeft: 0, //相对父 window 左外边距的距离
+                marginTop: top, //相对父 window 上外边距的距离
+                marginBottom: 0, //相对父 window 下外边距的距离
+                marginRight: 0
+            },
+            pageParam: {
+                name: 'test'
+            },
+            bounces: true,
+            vScrollBarEnabled: false,
+            hScrollBarEnabled: false
+        });
+
+        // 上拉刷新 滚动加载
+
+        //判断是否登录
+        if (!ygtuserinfo || !ygtuserinfo.id) {
+            api.openWin({
+                name: 'login',
+                url: 'login.html',
+                animation: {
+                    type: 'none'
+                }
+            });
+        }
+        //判断是否登录
+    };
+
+    //顶部状态栏切换
+    $(".tabbegin").click(function() {
+        $('.tabbegin').addClass('active');
+        $('.tabend').removeClass('active');
+        api.closeFrame({
+            name: 'openclassFrame'
+        });
+        api.closeFrame({
+            name: 'openclassendFrame'
+        });
+        var top = $api.offset($api.byId('header')).h + $api.offset($api.byId('headernav')).h;
+        // var bottom = $api.offset($api.byId('footer')).h;
+        api.openFrame({
+            name: 'openclassFrame',
+            url: 'openclassFrame.html',
+            rect: {
+                marginLeft: 0, //相对父 window 左外边距的距离
+                marginTop: top, //相对父 window 上外边距的距离
+                marginBottom: 0, //相对父 window 下外边距的距离
+                marginRight: 0
+            },
+            pageParam: {
+                name: 'test'
+            },
+            bounces: true,
+            vScrollBarEnabled: false,
+            hScrollBarEnabled: false
+        });
+    })
+
+    $(".tabend").click(function() {
+        $('.tabend').addClass('active');
+        $('.tabbegin').removeClass('active');
+        api.closeFrame({
+            name: 'openclassFrame'
+        });
+        api.closeFrame({
+            name: 'openclassendFrame'
+        });
+        var top = $api.offset($api.byId('header')).h + $api.offset($api.byId('headernav')).h;
+        // var bottom = $api.offset($api.byId('footer')).h;
+        api.openFrame({
+            name: 'openclassendFrame',
+            url: 'openclassendFrame.html',
+            rect: {
+                marginLeft: 0, //相对父 window 左外边距的距离
+                marginTop: top, //相对父 window 上外边距的距离
+                marginBottom: 0, //相对父 window 下外边距的距离
+                marginRight: 0
+            },
+            pageParam: {
+                name: 'test'
+            },
+            bounces: true,
+            vScrollBarEnabled: false,
+            hScrollBarEnabled: false
+        });
+    })
+    function goback() {
+        tourl = $api.getStorage('tourl')
+        if (tourl == 'audioclass') {
+            api.addEventListener({
+                name:'viewdisappear'
+            }, function(ret, err){
+               api.closeWin();
+            });
+            index();
+        }else{
+            api.closeWin();
+        }
+    }
+
+    //首页
+    function index() {
+        api.openWin({
+            name: 'root',
+            url: '../index.html',
+            pageParam: {
+                name: 'test'
+            },
+            bgColor: 'rgba(0,0,0,0)',
+            animation: {
+                type: 'none'
+            }
+        })
+        setTimeout('api.closeWin();', '200');
+    }
+</script>

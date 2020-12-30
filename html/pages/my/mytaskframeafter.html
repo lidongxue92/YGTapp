@@ -1,0 +1,154 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>我的作业列表</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" href="../../css/base.css">
+    <link rel="stylesheet" href="../../css/ygtcommon.css">
+    <link rel="stylesheet" href="../../css/my/mytaskframeafter.css">
+<body >
+    <div class="middle">
+        <div class="nodata">
+            <img src="../../img/homework.png" />
+            <p>还没有回答作业哦~</p>
+        </div>
+        <div class="Datatoday">
+            <!-- <div class="work">
+                <h5>怎么能正确的学习</h5>
+                <p class="classname">课程你附加费看结果放客服发看看是方d法课程你附加费看结果放客服发看看是方d法课程你附加费看结果放客服发看看是方d法</p>
+                <p>2019-10-12 16:45</p>
+                <img src="../../img/back_right.png">
+            </div> -->
+        </div>
+    </div>
+    <div class="loading">
+        <span>
+            <img src="../../img/loading.gif" />
+        </span>
+    </div>
+</body>
+<script src="../../js/lib/jquery-2.1.4.js"></script><script src="../../js/common.js"></script>
+<script type="application/javascript" src="../../script/api.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    var page = 1;
+    var pagesize = 10;
+    var loading = false;
+    var isover = false;
+    var creattime = '';
+    var isloading = false;
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+        //  禁止左右滑动
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+        api.setRefreshHeaderInfo({
+             bgColor: '#fefefe',
+             textColor: '#999',
+             textDown: '下拉刷新...',
+             textUp: '松开刷新...',
+            //  textLoading:'<img src="widget://img/loading.gif" />',
+             showTime:false
+         }, function(ret, err) {
+             //在这里从服务器加载数据，加载完成后调用api.refreshHeaderLoadDone()方法恢复组件到默认状态
+             if (!loading) {
+                 isover = false;
+                 page = 1;
+               $('.Datatoday').html('');
+               api.refreshHeaderLoading();
+               loaddata();
+             }
+         });
+
+         api.addEventListener({
+             name:'scrolltobottom',
+             extra:{
+                 threshold:0            //设置距离底部多少距离时触发，默认值为0，数字类型
+             }
+         }, function(ret, err){
+             if (loading || isover) {
+                 return;
+             }
+             page++; //页数
+             loaddata();
+         });
+         $('.loading').show();
+         loaddata();
+    };
+    function loaddata() {
+        loading = true;
+        api.ajax({
+            url: wtkurl +'task/getMyTask',
+            method: 'post',
+            headers: {
+                'TOKEN': ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    uid: ygtuserinfo.id,
+                    page:page,
+                    pagesize:pagesize
+                }
+            }
+        }, function(data, err) {
+            console.log(JSON.stringify(data));
+            $('.loading').hide();
+            var listhtml = '';
+            var html2 = ' ';
+            if (data.data != '') {
+                var incomelist = data.data;
+                $('.nodata').css('display','none');
+                $('.Datatoday').css('display','block')
+                for (var i = 0; i < incomelist.length; i++) {
+                  listhtml +='<div class="work" onclick="mytaskdetail('+incomelist[i].taskid+',2)">'+'<h5>'+incomelist[i].title+'</h5>'+'<p class="classname">'+incomelist[i].update_time
+                           +'</p><p class="c-ff9913">'+incomelist[i].score+'分</p><img src="../../img/back_right.png"></div>'
+                }
+                $('.Datatoday').append(listhtml)
+                if (incomelist.length < 10) {
+
+                    html2 += "<div class='lasttitle'>已无更多数据</div>";
+                    $('.Datatoday').append(html2)
+                    isover = true;
+                }
+                loading = false;
+                api.refreshHeaderLoadDone()
+          }else{
+              html2 += "<div class='lasttitle'>已无更多数据</div>";
+              isover = true;
+              $('.Datatoday').append(html2)
+              loading = false;
+              $('.loading').hide();
+              api.refreshHeaderLoadDone()
+          }
+            console.log(JSON.stringify(err))
+        });
+    }
+
+
+    function mytaskdetail(id,dtatid) {
+      api.openWin({
+        name: 'mytaskdetail',
+        url: 'mytaskdetail.html',
+        pageParam: {id:id,dataid:dtatid},
+        bgColor: 'rgba(0,0,0,0)',
+        animation:{
+          type:'none'
+        }
+      })
+    }
+</script>
+
+</html>

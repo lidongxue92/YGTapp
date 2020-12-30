@@ -1,0 +1,31 @@
+.loading span{margin-top: 20rem;}
+#countdownparentsli{position: fixed;top:71px;height: 205px;background: rgba(0,0,0,.8);left:0;width: 100%;z-index: 1111;text-align: center;font-size: 18px;}
+#countdownparentsli .countdown{background: transparent;margin-top: 50px;}
+#countdownparentsli .countdown p{color:#fff;margin-bottom: 10px;}
+#countdownparentsli .countdown i{border:1px solid #fff;width: 35px;height: 35px;border-radius: 50%;background: transparent;line-height: 35px;display: inline-block;margin-right: 5px;margin-left: 5px;color:#fff;}
+#countdownparentsli .countdown span{color:#fff;}
+.redwrap .redcont{width: 80%;height: 43%;left: 10%;top: 48%}
+.redwrap .redcont .redcont-head{height: 80px;background-size: 100% 60px;}
+.redwrap .redcont .redcont-head img{width:60px;height: 60px;}
+.redwrap .redcont .redcont-name{font-size: 20px;margin-top: 5px}
+.redwrap .redcont .redcont-tip{font-size: 14px;padding-bottom:5px;margin-top: 5px;}
+.redwrap .redcont .redcont-num{margin: 10px auto;}
+.redwrap .redcont .redcont-num li button{margin: 5px auto;}
+.redwrap .redcont .redcont-num li button em{font-size: 24px}
+/*视频播放按钮*/
+.videobth{display:inline-block;width:60px;height:60px;border-radius: 50%;background: #fff;position: absolute;left: calc(50% - 30px);top: calc(50% - 30px);z-index: 1112;}
+.videobth img{width:100%;}
+@media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+  #countdownparentsli{top: 95px;}
+
+}
+/* xr */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) {
+  #countdownparentsli{top: 95px;}
+
+}
+/* xs max */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) {
+  #countdownparentsli{top: 95px;}
+
+}

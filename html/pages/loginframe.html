@@ -1,0 +1,230 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Hello APP</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/ygtcommon.css" />
+    <link rel="stylesheet" href="../css/index/loginframe.css">
+    <body>
+        <header class="top" id="header">
+            <h1>
+                <span class="back" onclick="api.closeWin();"></span>
+
+            </h1>
+        </header>
+        <div><img id="img" src="../img/logo2.png" / style=""></div>
+        <div id="wxloginbtn" class="btn-third-party" tapmode onclick="loginWithWX();"><img class='smallimg' src="../image/share_friend.png" />&ensp;微信登录</div>
+        <div class="btn" tapmode onclick="lginWithPhoneNumber();">手机快捷登录</div>
+        <div class="btn-visitor" tapmode onclick="logintoast()">游客模式</div>
+        <p class="agree">登录则视为同意<span onclick="resAgreement();">医管通服务协议</span></p>
+    </body>
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script src="../js/common.js"></script>
+    <script type="text/javascript">
+        var apihost = $api.getStorage('apihost');
+        if (apihost == undefined || apihost == '') {
+            apihost = 'http://member.ygt.cm';
+            $api.setStorage('apihost', apihost);
+        }
+        apiready = function() {
+            //输出Log，Log将显示在APICloud Studio控制台
+            console.log("Hello World! Hello APICloud!");
+            var wx = api.require('wx');
+            wx.isInstalled(function(ret, err) {
+                if (!ret.installed) {
+                    $api.css($api.byId('wxloginbtn'), 'display:none;');
+                }
+            });
+
+            //  禁止左右滑动
+            api.setWinAttr({
+                slidBackEnabled: false
+            });
+
+            //   var self = this;
+            //   document.addEventListener('touchstart', function(e) {
+            //       self.moveY = e.targetTouches[0].pageY;
+            //   })
+            //   document.addEventListener('touchmove', function(e) {
+            //       e.preventDefault();
+            //       var moveWidth = self.moveY - e.targetTouches[0].pageY;
+            //       if (moveWidth !== 0) {
+            //           document.body.scrollTop += moveWidth;
+            //       }
+            //   })
+            //   document.addEventListener('touchmove', function(e) {
+            //       e.preventDefault();
+            //   })
+            //  禁止左右滑动
+        };
+        //微信登录跳转
+        function loginWithWX() {
+
+            var wx = api.require('wx');
+            wx.isInstalled(function(ret, err) {
+                if (ret.installed) {
+                    wx.auth({
+                        apiKey: ''
+                    }, function(aret, aerr) {
+                        if (aret.status) {
+                            // 获取用户信息
+                            wx.getToken({
+                                apiKey: '',
+                                apiSecret: '',
+                                code: aret.code
+                            }, function(tret, terr) {
+                                if (tret.status) {
+                                    wx.getUserInfo({
+                                        accessToken: tret.accessToken,
+                                        openId: tret.openId
+                                    }, function(uret, uerr) {
+
+                                        if (uret.status) {
+                                            // 获取用户信息成功
+                                            api.ajax({
+                                                url: memberurl +'user/wxlogin',
+                                                method: 'post',
+                                                headers: {},
+                                                data: {
+                                                    values: {
+                                                        status: uret.status,
+                                                        openid: uret.openid,
+                                                        nickname: uret.nickname,
+                                                        sex: uret.sex,
+                                                        headimgurl: uret.headimgurl,
+                                                        unionid: uret.unionid
+                                                    }
+                                                }
+                                            }, function(lret, lerr) {
+                                                console.log(JSON.stringify(lret) + 'wexxx');
+                                                console.log(JSON.stringify(lerr) + 'weix');
+                                                if (lret && lret.code == 1) {
+                                                    var userinfo = lret.data.userinfo;
+                                                    $api.setStorage('ygtuserinfo', userinfo);
+                                                    api.closeToWin({
+                                                        name: 'root',
+                                                        animation: {
+                                                            type: 'none'
+                                                        }
+                                                    });
+
+                                                } else if (lerr.statusCode == 401) {
+                                                    // 登录没绑定手机，需要去绑定手机页面
+                                                    api.openWin({
+                                                        name: 'BindingCellPhone',
+                                                        url: 'login0.html',
+                                                        pageParam: {
+                                                            status: uret.status,
+                                                            openid: uret.openid,
+                                                            nickname: uret.nickname,
+                                                            sex: uret.sex,
+                                                            headimgurl: uret.headimgurl,
+                                                            unionid: uret.unionid
+                                                        }
+                                                    });
+
+                                                }
+
+                                            });
+                                        } else {
+                                            console.log(JSON.stringify(uerr));
+                                        }
+                                    });
+                                } else {
+                                    console.log(JSON.stringify());
+                                }
+                            });
+                        } else {
+                            console.log('auth error');
+                            console.log(JSON.stringify(aerr));
+                        }
+                        if (aerr.code == -1) {
+                            alert('未知错误');
+                        }
+                    });
+                    // auth end
+                } else {
+                    alert('当前设备没有安装微信客户端');
+                }
+            });
+
+
+        }
+        // 手机号登录
+        function lginWithPhoneNumber() {
+            api.openWin({
+                name: 'loginPhone',
+                url: '../loginphone.html',
+                pageParam: {
+                    name: 'test'
+                },
+                animation: {
+                    type: 'none'
+                }
+            });
+
+        }
+        //游客登录 弹窗
+        function logintoast() {
+            api.confirm({
+                title: '温馨提示',
+                msg: '尊敬的用户，您将使用游客方式登录，此模式的数据（购买的课程、充值记录、账户余额）只限于本设备使用，请优先选择手机或者微信登录。',
+                buttons: ['继续游客身份登录', '取消']
+            }, function(ret, err) {
+                if (ret.buttonIndex == 1) {
+                    nologin()
+                }
+            });
+        }
+        // 游客登录
+        function nologin() {
+            var ygtuserinfo = {
+                'id':'-1',
+                'nickname':'游客',
+                'avatar':'http://avatar.ygt.cm/noavatar-app.png'
+            };
+            $api.setStorage('ygtuserinfo', ygtuserinfo);
+            api.closeToWin({
+                name: 'root',
+                animation: {
+                    type: 'none'
+                }
+            });
+
+        }
+
+        function openindex() {
+            //alert('tiaozhuan')
+            api.openWin({
+                name: 'index',
+                url: 'index.html',
+                pageParam: {
+                    name: 'test'
+                },
+                animation: {
+                    type: 'none'
+                }
+            });
+
+        }
+
+        //注册协议
+        function resAgreement() {
+            api.openWin({
+                name: 'resAgreement',
+                url: './resAgreement.html',
+                pageParam: {
+                    name: 'test'
+                },
+                animation: {
+                    type: 'none'
+                }
+            });
+        }
+    </script>
+
+</html>

@@ -1,0 +1,117 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>医管通APP</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" href="../../css/base.css">
+    <link rel="stylesheet" href="../../css/ygtcommon.css">
+    <link rel="stylesheet" href="../../css/my/classlog.css">
+<body >
+    <header class="top" id="header">
+        <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span class="title">收益明细</span>
+        </h1>
+    </header>
+    <div class="middle">
+        <h5>
+            <span class="tab">入场券清单</span>
+        </h5>
+        <div class="datalist">
+            <ul class="list"></ul>
+            <!-- <li>
+                <img src="../../img/noavatar1.png" />
+                <div class="left">
+                    <h5>一只莽子</h5>
+                    <p>2018.10.09 12.26</p>
+                    <p>老年服务机构的风险管理</p>
+                </div>
+                <span class="money"><em>39</em>元</span>
+            </li> -->
+        </div>
+    </div>
+    <div class="loading">
+        <span>
+            <img src="../../img/loading.gif" />
+        </span>
+    </div>
+</body>
+<script src="../../js/lib/jquery-2.1.4.js"></script><script src="../../js/common.js"></script>
+<script type="application/javascript" src="../../script/api.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    var loading = false;
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        var header = $api.byId('header');
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+        //  禁止左右滑动
+        $api.fixStatusBar(header);
+        $('.loading').show();
+        loaddata();
+    };
+
+    function loaddata() {
+      console.log(api.pageParam.id+'id&&&&&&object_type'+api.pageParam.object_type)
+        type = $('.active').attr('datatype');
+        if (api.pageParam.object_type == 2) {
+            type = 2;
+            $('.middle h5').hide();
+        }
+        api.ajax({
+            url: wtkurl +'myhome/incomedetail',
+            method: 'post',
+            headers: {
+                'TOKEN': ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    uid: ygtuserinfo.id,
+                    'classroomid':api.pageParam.id,
+                    'type':'2',
+                    'object_type':api.pageParam.object_type
+                }
+            }
+        }, function(ret, err) {
+            console.log(JSON.stringify(ret)+'正确');
+            $('.loading').hide();
+            if(ret){
+                var list = ret.data;
+                var html = '';
+                if (list == 0) {
+                    $('.middle .datalist .title').css('display','block')
+                }else{
+                    $('.middle .datalist .title').css('display','none')
+                    if (list.length > 0) {
+                        for (var i = 0; i < list.length; i++) {
+                            html += '<li><img src="'+list[i].pic+'" />'+'<div class="left"><h5>'+list[i].username+'</h5><p>'+list[i].create_time+'</p></div>'
+                            html +='<span class="money"><em>'+list[i].amount+'</em>元</span>';
+                            if(list[i].out_trade_no == 'out_trade_no'){
+                              html +='<p>此笔为奖学金购买，不计入收入</p></li>'
+                            }
+                        }
+                        $('.list').append(html)
+                    }
+                }
+            }else{
+                console.log(JSON.stringify(err)+'错误');
+            }
+
+        });
+    }
+</script>
+
+</html>

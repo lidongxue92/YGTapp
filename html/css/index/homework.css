@@ -1,0 +1,32 @@
+.top .add{float: right;margin-right: 15px;width: 25px;position: relative;top: 10px;}
+.middle{margin-top: 80px;}
+
+.middle .nodata{text-align: center;top: 50px;position: relative;}
+.middle .nodata img{width: 60px;}
+.middle .nodata p{color: #999;line-height: 30px;font-size: 12px;}
+.middle .nodata .Establish{display: inline-block;width: 80px;height: 25px;background: #ff9913;border-radius: 30px;color: #fff;line-height: 25px;}
+.middle .Datatoday{display: none;}
+.middle .Datatoday .list{padding: 10px;color: #333}
+.middle .Datatoday img{width: 40px;border-radius: 50%;height: 40px;margin-top: 10px;}
+.middle  .Datatoday{margin-top: 15px;background: #fff;}
+.middle  .Datatoday .livelist{display: flex;}
+.middle  .Datatoday .livelist .user{margin-left: 15px;width: 85%;color: #666;position: relative;}
+.middle  .Datatoday .livelist .user h5{margin-top: 15px;font-weight: normal;display: block;}
+.middle  .Datatoday .livelist .user p{margin-top: 5px;color: #999;display: inline-block;width: 80%;}
+.middle  .Datatoday .livelist .user img{width: 25px;height: auto;position: absolute;top: 5px;right: 5px;}
+.middle  .Datatoday .work{border: 1px solid #eee;margin-top: 20px;padding: 10px }
+.middle  .Datatoday .work h5{color: #666;font-size: 16px;margin-bottom: 5px;}
+.middle  .Datatoday .work p{color: #666;font-size: 12px;line-height: 20px;}
+@media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+  .middle{margin-top: 90px;}
+
+}
+/* xr */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) {
+  .middle{margin-top: 90px;}
+
+}
+/* xs max */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) {
+  .middle{margin-top: 90px;}
+}

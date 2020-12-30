@@ -1,0 +1,168 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>奖学金明细</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" href="../../css/base.css">
+    <link rel="stylesheet" href="../../css/ygtcommon.css">
+    <link rel="stylesheet" href="../../css/my/bonuslog.css">
+<body >
+    <header class="top" id="header">
+        <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span class="title">奖学金明细</span>
+        </h1>
+    </header>
+    <div class="middle">
+        <h5 class="tablist">
+            <span class="tab active" datatype='1'>收入清单</span>
+            <em>|</em>
+            <span class="tab" datatype='2'>支出清单</span>
+        </h5>
+        <div class="datalist">
+            <ul class="list" id="list">
+                <!-- <li>
+                    <div class="left">
+                        <h5>收入</h5>
+                        <p>2018.10.09 12.26</p>
+                        <p>老年服务机构的风险管理</p>
+                    </div>
+                    <span class="money"><em>39</em>元</span>
+                </li> -->
+            </ul>
+
+        </div>
+    </div>
+    <div class="loading">
+        <span>
+            <img src="../../img/loading.gif" />
+        </span>
+    </div>
+</body>
+<script src="../../js/lib/jquery-2.1.4.js"></script><script src="../../js/common.js"></script>
+<script type="application/javascript" src="../../script/api.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    var pagepage = 1;
+    var pagesize = 10;
+
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        var header = $api.byId('header');
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+        //  禁止左右滑动
+        $api.fixStatusBar(header);
+        $('.loading').show();
+        loaddata();
+        api.addEventListener({
+            name: 'scrolltobottom',
+            extra: {
+                threshold: 0 //设置距离底部多少距离时触发，默认值为0，数字类型
+            }
+        }, function(ret, err) {
+            if (loading == true) {
+                pagepage++; //页数
+                loaddata();
+            }
+        });
+    };
+
+
+    //时间戳转日期
+
+    function formatDateTime(timeStamp) {
+        var date = new Date();
+        date.setTime(timeStamp * 1000);
+        var y = date.getFullYear();
+        var m = date.getMonth() + 1;
+        m = m < 10 ? ('0' + m) : m;
+        var d = date.getDate();
+        d = d < 10 ? ('0' + d) : d;
+        var h = date.getHours();
+        h = h < 10 ? ('0' + h) : h;
+        var minute = date.getMinutes();
+        var second = date.getSeconds();
+        minute = minute < 10 ? ('0' + minute) : minute;
+        second = second < 10 ? ('0' + second) : second;
+        return y + '-' + m + '-' + d+' '+h+':'+minute+':'+second;
+    };
+    function loaddata() {
+        type = $('.active').attr('datatype');
+        api.ajax({
+            url: wtkurl +'myhome/commissiondetail',
+            method: 'post',
+            headers: {
+                'TOKEN': ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    uid: ygtuserinfo.id,
+                    'pagepage':pagepage,
+                    'pagesize':pagesize,
+                    'type':type
+                }
+            }
+        }, function(ret, err) {
+            $('.loading').hide();
+            console.log(JSON.stringify(ret));
+            console.log(JSON.stringify(err));
+            if (ret.data != null) {
+                var list = ret.data.result;
+                var html = '';
+                var len = list.length;
+                for (var i = 0; i < list.length; i++) {
+                    html += '<li><div class="left">'
+                    if (type == 1) {
+                        html +='<h5>收入</h5>'+formatDateTime(list[i].create_time)+'</p>'
+                        +'<p>'+list[i].classroom_name+'</p>'+
+                        '<p>购买人：'+list[i].buyer_name+'</p>'+
+                        '</div>'+'<span class="money"><em>'+list[i].share_amount/100+'</em>元</span></li>'
+                    }else{
+                        html +='<h5>支出</h5>'+'<p>'+formatDateTime(list[i].create_time)+'</p>'+'<p>'+list[i].name+'</p>'+'</div>'+'<span class="money"><em>'+list[i].amount/100+'</em>元</span></li>'
+                    }
+                }
+                $('#list').append(html);
+                loading = true;
+                if (len == 10) {
+                    //  遍历直播间数据
+
+                } else {
+                    var html2 = ' ';
+                    html2 += "<div class='lasttitle'>暂无更多数据</div>";
+                    $('#list').append(html2);
+                    loading = false;
+                };
+            }else{
+                var html2 = '';
+                html2 += "<div class='lasttitle'>暂无数据</div>";
+                $('#list').html(html2);
+                loading = false;
+            }
+
+        });
+    }
+
+    $('.tab').click(function () {
+        $('.tab').removeClass('active');
+        $(this).addClass('active');
+        $('#list').html(' ')
+        pagepage = 1;
+        loading = false;
+        loaddata();
+    })
+</script>
+
+</html>

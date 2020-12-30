@@ -1,0 +1,24 @@
+.usercenter { position: relative; background: #29292d; min-height: 200px; }
+.usercenter .back { position: absolute; width: 50px; height: 30px; background: url(../../img/back.png); right: 0px; top: 30px; background-size: auto 100%; background-repeat: no-repeat;}
+.usercenter .info{position: relative;top: 60px;}
+.usercenter .headimg { display: inline-block; border: 4px solid #535256; border-radius: 50%; margin-left: 50px; }
+.usercenter .headimg img { width: 60px; border-radius: 50%; height: 60px; border: 3px solid #fefefe;}
+.usercenter .info .left{position: relative;top:20px}
+.loginout img { width: 25px; height: auto; position: absolute; top: 90px; }
+.foot { z-index: 1111; }
+.left { display: inline-block; text-align: left; margin-left: 10px; color: #fefefe; width: 60%;position: relative;top: 10px;}
+.left a { color: #fefefe; width: 100%; }
+.left a .goset { width: 9px; transform: rotate(180deg); float: right; right: 5px; }
+.middle { background: #f5f5f5; padding-bottom: 75px; }
+.middle .mt10 { margin-top: 10px; }
+.middle ul { padding: 0; margin: 0; }
+.middle ul li { padding: 0 15px; background: #fff; height: 60px; line-height: 60px; position: relative; font-size: 14px; border-bottom: 1px solid #ebebeb; letter-spacing: 1px; }
+.middle ul li img { width: 25px; margin-right: 15px; }
+.middle ul li .right{right:0; position: absolute; top: 22px; color: #b8b8b8; line-height: 18px; }
+.middle ul li .right img { width: 8px; position: relative; top: -2px; }
+#nicknamep { line-height: 25px; height: 25px; font-size: 15px; font-weight: 600; color: #fefefe; display: inline-block; }
+.vipstatus,.viptime{color: #d3bfa7}
+.vipstatus img{width:20px;position:relative;top: 0;margin-right:10px;}
+@media screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+    .middle { padding-bottom: 85px; }
+}

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>bplayui</title>
+      <link rel="stylesheet" type="text/css" href="../res/icon/iconfont.css">
+      <style type="text/css">
+        body {
+         padding: 0px;
+         margin: 0px;
+
+        }
+        .tool{color: #fff;
+        line-height: 40px;
+        background-color: rgba(0,0,0,0.6);
+        padding: 0 5px;font-size: 12px;
+      }
+      .jindu{width: 100%; background-color: #333; border-radius:3px; height: 3px; }
+      .jindu #jindutiao{height: 3px; width: 0%; background: #3399ff;}
+      td{text-align: center;}
+  </style>
+  </head>
+  <body>
+
+    <div class="tool">
+      <table style="width:100%">
+          <tr>
+            <td width="20" id="bofangbtn"><i class="iconfont icon-zanting" onclick="zanting()"></i></td>
+            <td width="20" style="display:none" id="bofangtime">00:00</td>
+            <td style="display:none"><div class="jindu"><div id="jindutiao"></div></div></td>
+            <td style="display:none" width="20" id="zongtime">40:00</td>
+            <td width="20" onclick="playsulu()" id="sulv">x1</td>
+            <td width="20" id="quanping"><i class="iconfont icon-zhankai4" onclick="quanping(0)"></i></td>
+          </tr>
+      <table>
+
+      <div>
+    </div>
+  <script type="text/javascript" src="../res/js/jquery-1.10.2.min.js"></script>
+  <script type="text/javascript">
+  var zongshichang = 0;
+    apiready = function(){
+      api.addEventListener({
+              name: 'myEvent'
+      }, function(ret, err) {
+              //alert(JSON.stringify(ret.value));
+              if(ret.eventType ==  "paused"){
+                    $("#bofangbtn").html("<i class=\"iconfont icon-fanye\" onclick=\"bofang()\"></i>");
+              }
+              if(ret.eventType ==  "playing"){
+                  $("#bofangbtn").html("<i class=\"iconfont icon-zanting\" onclick=\"zanting()\"></i>");
+              }
+              
+
+      });
+
+
+          api.addEventListener({
+                  name: 'videoinfo'
+          }, function(ret, err) {
+            //  alert(JSON.stringify(ret.value)+','+JSON.stringify(err));
+                  //alert(JSON.stringify(ret.value));
+                  var canshu = ret.value;
+                  if(canshu.duration != 0)
+                  {
+                      $("#bofangtime").text(secondToDate(canshu.currentPlaybackTime/1000));
+                      zongshichang = canshu.duration/1000;
+
+                      $("#zongtime").text(secondToDate(canshu.duration/1000));
+                      $('#jindutiao').css("width",canshu.currentPlaybackTime/canshu.duration *100+"%");
+                  }
+                  else {
+                    //直播样式
+                  }
+
+          });
+          api.addEventListener({
+                  name: 'playing'
+          }, function(ret, err) {
+              $("#bofangtime").text(secondToDate(ret.value/1000));
+
+            //  console.log((ret.value/1000)/zongshichang)
+              $('#jindutiao').css("width",(ret.value/1000)/zongshichang *100+"%");
+          });
+          window.addEventListener('orientationchange',function(){
+            //alert(window.orientation); //这里可以根据orientation做相应的处理
+             if(window.orientation == 90 || window.orientation == -90)
+             {
+                  $("#quanping").html("<i class=\"iconfont icon-shouqi1\" onclick=\"quanping(1)\"></i>");
+             }
+             else {
+                 $("#quanping").html("<i class=\"iconfont icon-zhankai4\" onclick=\"quanping(0)\"></i>");
+             }
+           });
+    }
+    function playsulu(){
+      api.confirm({
+         title: '播放设置',
+         msg: '请选择视频播放速率,播放速度',
+          buttons: ['播放速率x1', '播放速率x2', '播放速率x3']
+      }, function(ret, err) {
+          var index = ret.buttonIndex;
+          if(index != 0){
+            api.sendEvent({
+                name: 'sulv',
+                extra: index
+            });
+            document.getElementById('sulv').innerHTML = "x"+index;
+          }
+      });
+    }
+    function quanping(type){
+        if(type == 0)
+        {
+          api.sendEvent({
+              name: 'tongzhi',
+              extra: {
+                  type:'quanping'
+              }
+          });
+        }
+        else {
+          api.sendEvent({
+              name: 'tongzhi',
+              extra: {
+                  type:'quanpingqx'
+              }
+          });
+        }
+    }
+    function bofang(){
+        $("#bofangbtn").html("<i class=\"iconfont icon-zanting\" onclick=\"zanting()\"></i>");
+        api.sendEvent({
+            name: 'tongzhi',
+            extra: {
+                type:'bofang'
+            }
+        });
+    }
+    function zanting(){
+        $("#bofangbtn").html("<i class=\"iconfont icon-fanye\" onclick=\"bofang()\"></i>");
+        api.sendEvent({
+            name: 'tongzhi',
+            extra: {
+                type:'zanting'
+            }
+        });
+    }
+    function secondToDate(result) {
+    var h = Math.floor(result / 3600) < 10 ? '0'+Math.floor(result / 3600) : Math.floor(result / 3600);
+    var m = Math.floor((result / 60 % 60)) < 10 ? '0' + Math.floor((result / 60 % 60)) : Math.floor((result / 60 % 60));
+    var s = Math.floor((result % 60)) < 10 ? '0' + Math.floor((result % 60)) : Math.floor((result % 60));
+    return result =  m + ":" + s;
+}
+  </script>
+</body>
+  </html>

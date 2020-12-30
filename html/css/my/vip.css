@@ -1,0 +1,94 @@
+body { width: 100%; overflow: hidden; }
+input, button, textarea:focus { outline: none !important; border: 0; }
+.wkshow { margin: 0 auto; overflow: visible; }
+/*banner*/
+.wkshow .banner { overflow: hidden; position: relative; margin-top: 75px; }
+.wkshow .banner img { width: 100%; }
+/*中间*/
+.wkshow .attributes { background: #fff; padding: 10px }
+.wkshow .attributes li { list-style: none; width: 100%; font-size: 16px; padding: 0px 5px; box-sizing: border-box; overflow: hidden; letter-spacing: 1.5px; }
+.wkshow .attributes li h1 { font-weight: 600; color: #000; font-size: 1.2rem; line-height: 25px; padding: 0; margin: 0; }
+.wkshow .attributes .price { font-size: 1.5rem; color: #ff9913; font-weight: 600; margin-top: 5px; }
+.wkshow .attributes .people { font-size: .8rem; color: #999; margin-top: 5px; }
+.wkshow .attributes .people span { font-weight: 600; color: #777; }
+.pwdtext { display: block; background: #efefef; color: #999; overflow: hidden; padding: 10px; }
+.pwdtext input { border: 1px dashed #ccc; background: #f4f7fc; padding: 10px 10px; width: 100%; box-sizing: border-box; font-size: 16px; }
+/*底部*/
+.wkshow .footer { color: #fff; text-align: center; border: none; bottom: 0; height: 60px; width: 100%; background: #ff9913; box-sizing: border-box; display: block; position: fixed; left: 0; right: 0; margin: 0 auto; line-height: 60px; }
+.wkshow .footer p b { font-weight: normal; }
+.wkshow .footer .big { width: 100%; font-size: 1.1rem; font-weight: 500; }
+.wkshow .footer .bigios { width: 60%; font-size: 1.1rem; font-weight: 500; float: right; }
+.wkshow .footer .hospital { background: #3e3d3d; display: inline-block; width: 40%; font-size: 1.1rem; height: 60px; }
+.wkshow .footer .small { font-size: .7rem; display: block; line-height: 12px; font-weight: 500; }
+.wkshow .footer .enter { display: block; padding: 11px 0; width: 100%; text-align: center; background: #ff9913; color: #fff; font-size: 18px; overflow: hidden; }
+/*分享*/
+.sharetoast { position: fixed; width: 100%; left: 0; background: #f4f4f4; z-index: 113; bottom: 0; padding-top: 20px; display: none; min-height: 180px; }
+.sh { display: block; }
+.sharetoast h5 { color: #666; text-align: center; font-weight: normal; padding: 0; margin: 0; font-size: 1rem; }
+.sharetoast li { display: inline-block; padding: 0 20px; text-align: center; padding-bottom: 10px; margin-top: 20px; }
+.sharetoast li p { margin-top: 10px; color: #999; }
+.sharetoast li img { width: 3rem; }
+.sharetoast #opentool { background: #fff; text-align: center; line-height: 50px; position: absolute; bottom: 0; width: 100%; }
+.bg { position: absolute; width: 100%; height: 155%; top: -125px; left: 0; background: rgba(0, 0, 0, .3); z-index: 111; display: none; }
+/*提交表单*/ form { position: fixed; top: 20px; background: #fff; width: 100%; font-size: 12px; line-height: 30px; z-index: 111111; display: block; text-align: center; display: none; color: #fff; }
+form .from { padding: 30px 15px; padding-bottom: 65px; }
+form .from .title { padding: 0; margin: 0; background: #ff9913; height: 50px; line-height: 50px; border-radius: 50px; font-weight: normal; font-size: 1.1rem; color: #fff!important; display: block; }
+form .from .title img { width: 2rem; margin-right: 10px; }
+form .from .title .img { width: auto; height: .8rem; }
+form .from p { margin: 0; padding: 0; color: #999; font-size: 13px; }
+form .from li { line-height: 50px; border-bottom: 1px solid #eee; text-align: left; font-size: 1rem; }
+form .from li span { color: #ff9913; }
+form .from li input { border: 0; width: 93%; padding-left: 5px; color: #999; font-size: 1rem; }
+form .from li .input_name { width: 60%; }
+form .from li .yzm { width: 30%; padding: 5px 0; background: #ff9913; border-radius: 3px; color: #fff; }
+form .from li textarea { color: #999; width: 100%; height: 60px; border-radius: 5px; margin-top: 10px; padding: 10px; border: 1px solid #eee; }
+form .foot { height: 50px; line-height: 50px; background: #ff9913; color: #fff; font-size: 1.1rem; padding: 0; margin: 0; position: absolute; }
+form .foot button { display: inline-block; line-height: 50px; color: #fff; font-size: 1.1rem; height: 51px }
+form .foot .close { background: #3e3d3d; width: 40%; }
+form .foot .sub { float: right; width: 60%; background: #ff9913; }
+/*主体样式*/
+.joinvip{background: #1a1a1a;padding:10px;text-align: left;}
+.joinvip .img{width: 2rem;float: right;position: relative;top: 10px;right: 10px;}
+.joinvip .left{display: inline-block;60%;}
+.joinvip .left img{width: 1.8rem;border-radius: 50%;border: 2px solid #fefefe;position: relative;top: 5px;}
+.joinvip .left p{display: block;float: right;margin-left: 10px;}
+.joinvip .left p span{display: block;line-height: 25px;color: #c5c5c5;}
+.joinvip .left .c-ff9913{color: #e0cc9e;font-size: 16px;}
+/*中间tab*/
+.middletab { padding: 15px 10px; width: 200%; text-align: left; /*white-space: nowrap;*/ margin-top: 145px; }
+.middletab .tab { display: inline-block; font-size: 12px; margin-right: 10px; font-weight: 400; color: #000; text-align: center; background: #eee; color: #666; padding: 5px 15px; border-radius: 50px; margin-bottom: 15px; }
+.middletab .active { background: #ff9913; color: #fff; }
+/*列表样式*/
+#pagecontent{margin-top: 0px;}
+.hdflow{overflow: hidden;}
+#pagecontent .list { padding: 15px; color: #333; background: #fff; border-bottom: 1px solid #f1f1f1; }
+#pagecontent .list img { width: 38%; vertical-align: top; border-radius: 5px; overflow: hidden; height: 70px; }
+#pagecontent .list .right { display: inline-block; margin-left: 2%; width: 58%; position: relative; top: 0; }
+#pagecontent .list .right .title { color: #424242; font-weight: normal; font-size: 1rem; width: auto; overflow: hidden; text-overflow: ellipsis;
+  white-space: nowrap; word-wrap: normal; word-wrap: break-word; word-break: break-all; max-height: 36px; line-height:18px; white-space: normal;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; padding: 0; margin-top: 5px; font-weight: 900; }
+#pagecontent .list .right p { padding: 0; margin: 0; margin-top: 2px; color: #999; }
+#pagecontent .list .right p span { display: inline-block; text-align: left; font-size: .8rem; }
+#pagecontent .list .right p .Browsing { font-weight: 500; color: #b8b8b8; }
+#pagecontent .list .right p .time { margin-right: 10px; }
+#pagecontent .list .right p .Browsing img { height: 13px; width: auto; position: relative; top: 0px; }
+#pagecontent .list .right p .free { color: #999; font-size: 13px; font-weight: 900; float: right; }
+#pagecontent .list .right p .freetime { position: relative; font-weight: normal; color: #999; font-size: 13px; font-weight: normal; }
+#pagecontent .list .right p .freetime:after { content: ''; display: inline-block; position: absolute; width: 100%; height: 1px; background: #999; left: 0; top: 50%; }
+#pagecontent .list .right p .freebth { background: #ff9913; color: #fff; padding: 3px 8px; border-radius: 5px; margin-left: 10px; color: #fff; }
+#pagecontent .lasttitle { text-align: center; color: #999; margin-top: 10px; }
+@media screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+    .wkshow .banner { margin-top: 95px; }
+    .wkshow .footer { padding-bottom: 10px; }
+    .sharetoast { padding-bottom: 10px; min-height: 220px; }
+    .sharetoast li { margin-top: 30px; }
+    .sharetoast #opentool { bottom: 20px; line-height: 50px; }
+    .dev { margin-bottom: 70px; }
+    form { top: 30px }
+    .bg { height: 135% }
+    .middletab{margin-top: 175px;width: 190%;}
+}
+@media screen and (max-width: 320px) {
+    .dev { margin-bottom: 80px; }
+    .footer { padding-bottom: 20px; }
+}

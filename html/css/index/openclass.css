@@ -1,0 +1,17 @@
+/*中间tab切换*/
+.middletab { width: 100%; text-align: center; margin-top: 75px; background: #fff; padding-bottom: 5px; }
+.middletab .tab { width: 49%; display: inline-block; font-size: 1.1rem; color: #999; height: 30px; line-height: 30px; padding: 10px 0; background: #f8f8f8; }
+.middletab .active { color: #ff9913; position: relative; font-weight: 600; }
+.middletab .active:after { content: ''; position: absolute; display: inline-block; width: 100%; height: 2px; background: #ff9913; bottom: 3px; left: 0; }
+/*适配iphonex*/
+@media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+  .middletab{margin-top: 90px;}
+}
+/* xr */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) {
+  .middletab{margin-top: 90px;}
+}
+/* xs max */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) {
+  .middletab{margin-top: 90px;}
+}

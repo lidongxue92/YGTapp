@@ -1,0 +1,223 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>医管通APP</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" href="../../css/base.css">
+    <link rel="stylesheet" href="../../css/ygtcommon.css">
+    <link rel="stylesheet" href="../../css/my/other.css">
+<body >
+    <header class="top" id="header">
+        <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span class="title">其他</span>
+        </h1>
+    </header>
+    <div class="middle">
+        <div class="status">
+            <span class="circle"></span>
+            <span class="line "></span>
+            <span class="circle "></span>
+            <span class="line "></span>
+            <span class="circle "></span>
+        </div>
+        <div class="dec">
+            <h5>手机号码&emsp;+<span class="mobile"></span></h5>
+            <h5>邮箱</h5>
+            <input placeholder="请输入正确格式的邮箱" class="email"  name="email" onblur="email()"/>
+            <span class="tost">请输入正确的邮箱</span>
+            <!-- <h5>邀请码</h5>
+            <p>如您是由平台邀请入驻。请务必填写邀请码以开通相应功能</p>
+            <input placeholder="请输入邀请码"   /> -->
+        </div>
+        <span class="gonext" onclick="next()">提交</span>
+    </div>
+
+</body>
+<script src="../../js/lib/jquery-2.1.4.js"></script><script src="../../js/common.js"></script>
+<script type="application/javascript" src="../../script/api.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+        //  禁止左右滑动
+        $api.fixStatusBar(header);
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+        $('.mobile').html(ygtuserinfo.mobile);
+    };
+
+    function email() {
+        var email = $('.email').val();
+        var reg = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/;
+        if (email == '' ) {
+           $(".tost").css('display','block')
+           $(".tost").html('邮箱不能为空')
+           return false;
+       }else if(!reg.test($('.email').val())){
+           $(".tost").css('display','block')
+           $(".tost").html('邮箱格式不正确')
+           return false;
+       }else {
+           $(".tost").css('display','none')
+       }
+    }
+    //提交
+    function next() {
+        var email = $('.email').val();
+        var reg = /^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/;
+        if (email == '' ) {
+           $(".tost").css('display','block')
+           $(".tost").html('邮箱不能为空')
+           return false;
+       }else if(!reg.test($('.email').val())){
+           $(".tost").css('display','block')
+           $(".tost").html('邮箱格式不正确')
+           return false;
+       }else {
+           $(".tost").css('display','none')
+           api.confirm({
+               title: '确认提交个人网师入驻，提交后不可变更入驻类型。',
+               msg: '',
+               buttons: ['确认提交', '稍后再说']
+           }, function(ret, err){
+               var index = ret.buttonIndex;
+               if( index == 1 ){
+
+                   if ($api.getStorage('introduce') == '') {
+                       intro = '';
+                   }else{
+                      intro = $api.getStorage('introduce');
+                   }
+                   var teacheris = $api.getStorage('teacheris');
+                   if (teacheris == 1) {
+                       api.ajax({
+                           url: wtkurl +'classroomlist/createteacher',
+                           method: 'post',
+                           headers: {
+                               'TOKEN': ygtuserinfo.token
+                           },
+                           data: {
+                               values: {
+                                    uid: ygtuserinfo.id,
+                                    truename:$api.getStorage('truename'),
+                                    frontcardimg:$api.getStorage('frontcardimg1'),
+                                    position:$api.getStorage('position'),
+                                    hospital:$api.getStorage('hospital'),
+                                    typeid:$api.getStorage('flied'),
+                                    department:$api.getStorage('department'),
+                                    email:$('.email').val(),
+                                    intro:intro,
+                                    mobile:ygtuserinfo.mobile
+                               }
+                           }
+                       }, function(data, err) {
+                          console.log(JSON.stringify(data));
+                           if (data.code == 1) {
+                               api.openWin({
+                                   name: 'audit',
+                                   url: './audit.html',
+                                   pageParam: {
+                                       name: 'test'
+                                   },
+                                   bgColor: 'rgba(0,0,0,0)',
+                                   animation: {
+                                       type: 'none'
+                                   }
+                               })
+                               api.addEventListener({
+                                   name:'viewdisappear'
+                               }, function(ret, err){
+                                  api.closeWin();
+                               });
+                           }else{
+                               api.alert({
+                                   title: '',
+                                   msg: data.msg,
+                               }, function(ret, err){
+
+                               });
+
+                           }
+                           console.log(JSON.stringify(err))
+                       });
+                   }else{
+                       api.ajax({
+                           url: wtkurl +'classroomlist/editteacher',
+                           method: 'post',
+                           headers: {
+                               'TOKEN': ygtuserinfo.token
+                           },
+                           data: {
+                               values: {
+                                    uid: ygtuserinfo.id,
+                                    id:$api.getStorage('teacherid'),
+                                    truename:$api.getStorage('truename'),
+                                    frontcardimg:$api.getStorage('frontcardimg1'),
+                                    position:$api.getStorage('position'),
+                                    hospital:$api.getStorage('hospital'),
+                                    typeid:$api.getStorage('flied'),
+                                    department:$api.getStorage('department'),
+                                    email:$('.email').val(),
+                                    intro:intro,
+                                    mobile:ygtuserinfo.mobile
+                               }
+                           }
+                       }, function(data, err) {
+                          console.log(JSON.stringify(data));
+                           if (data.code == 1) {
+                               api.openWin({
+                                   name: 'audit',
+                                   url: './audit.html',
+                                   pageParam: {
+                                       name: 'test'
+                                   },
+                                   bgColor: 'rgba(0,0,0,0)',
+                                   animation: {
+                                       type: 'none'
+                                   }
+                               })
+                               api.addEventListener({
+                                   name:'viewdisappear'
+                               }, function(ret, err){
+                                  api.closeWin();
+                               });
+                           }else{
+                               api.alert({
+                                   title: '',
+                                   msg: data.msg,
+                               }, function(ret, err){
+
+                               });
+
+                           }
+                           console.log(JSON.stringify(err))
+                       });
+                   }
+
+
+
+               }
+           });
+       }
+    }
+
+
+</script>
+
+</html>

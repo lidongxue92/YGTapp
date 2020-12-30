@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>直播间</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/base.css" />
+    <link rel="stylesheet" type="text/css" href="../css/ygtcommon.css" />
+    <link rel="stylesheet" type="text/css" href="../css/swder.css" />
+    <link rel="stylesheet" href="../css/index/know.css">
+</head>
+<style type ="text/css">
+
+</style>
+
+<body ontouchstart>
+    <header id='header' class="top">
+        <h1>
+            <img onclick="api.closeWin()"  src="../img/back_light.png">
+            <span  class="title">知道</span>
+            <span class='right' onclick="myquestion()">我的问题</span>
+        </h1>
+    </header>
+    <div class="tabtop" id="top">
+          <p class="serach"><input type="search" placeholder="请输入搜索关键字" /></p>
+          <div class="select">
+            <p class="all" onclick="selectlist()">全部</p>
+            <ul class="selecttablist">
+            </ul>
+            <img src="../img/lessdown.png">
+          </div>
+          <p class="right">
+
+              <span data-type='0' class="active" onclick="openList('0',this)">最新</span>
+              <span data-type='1' onclick="openList('1',this)">推荐</span>
+              <span data-type='2' onclick="openList('2',this)">热门</span>
+          </p>
+      </div>
+      <div id="Tolist" >
+        <!-- '<div class="list" onclick="knowdetail(ret.data.result[i]['id']);" >
+            <div class="left"><img src="ret.data.result[i]['avatar']">
+                <div class="right"><p>ret.data.result[i]['username']</p><p>ret.data.result[i].update_time.split(' ')[0]</p></div>
+              </div>'
+        <div><h5 class="title">'+ret.data.result[i]['title']+'</h5>'+'<p>
+        <span>'+knowtablist[ret.data.result[i].typeid -1]+'</span><span class="icon"></span>'+'<span>'+ret.data.result[i].followcount+'人收藏</span>
+            <span class="icon"></span><span>'+ret.data.result[i].topcount+'人推荐</span>
+            </div></div> -->
+      </div>
+        <span  class="ask">提问</span>
+    <div class="loading">
+        <span>
+            <img src="../img/loading.gif" />
+        </span>
+    </div>
+    <script src="../js/lib/jquery-2.1.4.js"></script><script src="../js/common.js"></script>
+    <script type="application/javascript" src="../js/lib/fastclick.js"></script>
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript">
+        var apihost = $api.getStorage('apihost');
+        if (apihost == undefined || apihost == '') {
+            apihost = 'http://member.ygt.cm';
+            $api.setStorage('apihost', apihost);
+        }
+        var toph = '';
+        var  bottomh ='';
+        var ygtuserinfo = $api.getStorage('ygtuserinfo');
+        var page = 1;
+        var pagesize = 10;
+        var loading = false;
+        var isover = false;
+        var knowhtml ='';
+        //var knowtablist = $api.getStorage('knowtablist');
+        var isvip = '';
+        console.log(knowtablist)
+        apiready = function() {
+            var header = $api.byId('header');
+            $api.fixStatusBar(header);
+            //  禁止左右滑动
+            api.setWinAttr({
+                slidBackEnabled : false
+            });
+            //  禁止左右滑动
+            $('.active').attr('data-type')
+            api.addEventListener({
+                name:'scrolltobottom',
+                extra:{
+                    threshold:0            //设置距离底部多少距离时触发，默认值为0，数字类型
+                }
+            }, function(ret, err){
+                if (loading || isover) {return;}
+                page++; //页数
+                loadData($('.active').attr('data-type'));
+                console.log('2222')
+            });
+            $('.loading').show();
+            loadData(0);
+            checkvip();
+
+        }
+        function checkvip() {
+          api.ajax({
+              url: wtkurl +'classroom/checkvip',
+              method: 'post',
+              headers: {
+                  'TOKEN': ygtuserinfo.token
+              },
+              data: {
+                  values: {
+                      'uid': ygtuserinfo.id
+                  }
+              }
+          }, function(ret, err) {
+            console.log(JSON.stringify(ret))
+            isvip = ret.data.isvip;
+          });
+        }
+        // tab切换
+        function openList(id, obj) {
+          $(".select .all").html('全部');
+          $('.selecttablist').html(' ')
+          page = 1;
+          loading = false;
+          isover = false;
+          $(".tabtop .right span").removeClass('active')
+          $api.addCls(obj, 'active');
+          $api.html($api.byId('Tolist'), '');
+          $('.loading').show();
+          loadData(id)
+          $('html,body').animate({scrollTop: 0});
+        }
+        // 提问
+      function  loadData(orderby,title,typeid){
+        loading = true;
+        api.ajax({
+                url: askurl +'Question/getList',
+                method: 'post',
+                headers: {
+                    'TOKEN':ygtuserinfo.token
+                },
+                data: {
+                    values: {
+                        page: page,
+                        pagesize: pagesize,
+                        orderby: orderby,
+                        title:title,
+                        typeid:typeid
+                    }
+                }
+            },function(ret, err) {
+              $('.loading').hide();
+                if (ret) {
+                    console.log(JSON.stringify(ret));
+                    if (ret.data.result.length > 0) {
+                        var len = ret.data.result.length;
+                        var html = '';
+                        console.log(knowtablist);
+                        for (var i = 0; i < len; i++) {
+                          html += '<div class="list" onclick="knowdetail('+ ret.data.result[i]['id'] + ');" >'
+                               +'<div class="topleft"><img src="' + ret.data.result[i]['avatar'] + '">'+
+                                  '<div class="right"><p> '+ret.data.result[i]['username']+'</p><p>'+format(ret.data.result[i].create_time*1000).split(' ')[0]+'</p></div>'+
+                                '</div>'
+                          html +='<div><h5 class="title">'+ret.data.result[i]['title']+'</h5>'+'<p>'
+                          html +='<span>'+knowtablist[ret.data.result[i].typeid -1]+'</span><span class="icon"></span>'+'<span>'+ret.data.result[i].followcount+'人收藏</span>'
+                                +'<span class="icon"></span><span>'+ret.data.result[i].topcount+'人推荐</span>'
+                                +'</div></div>'
+                        }
+                        $api.append($api.byId('Tolist'), html);
+                        if (len > 10 || ret.data.pagecount  == 1) {
+                            var html2 = ' ';
+                            html2 += "<div class='lasttitle'>已无更多数据</div>";
+                            $api.append($api.byId('Tolist'), html2);
+                            isover = true;
+                        }
+                  }else{
+                    var html2 = ' ';
+                    html2 += "<div class='lasttitle'>已无更多数据</div>";
+                    $api.append($api.byId('Tolist'), html2);
+                    isover = true;
+                  }
+                  api.refreshHeaderLoadDone();
+                  loading = false;
+              }
+            });
+      }
+      //打开单课音频
+      function knowdetail(id) {
+        api.openWin({
+            name: 'knowdetail',
+            url: './knowdetail.html',
+            pageParam: {
+                id: id
+            },
+            animation: {
+                type: 'none'
+            },
+            reload: true
+        });
+
+      }
+
+      $('.ask').click(function () {
+        if (isvip == 0) {
+          api.alert({
+                 title: '温馨提示',
+                 msg:'只有会员才可以提问，请购买会员',
+                 buttons:['确认']
+            },function(ret,err,message){
+              if (ret.buttonIndex == 1) {
+                api.openWin({
+                    name: 'vipsure',
+                    url: './vipsure.html',
+                    pageParam: {
+                        name: 'test'
+                    },
+                    animation: {
+                        type: 'none'
+                    }
+                });
+              }
+            })
+
+        }else {
+          api.openWin({
+              name: 'askques',
+              url: './askques.html',
+              animation: {
+                  type: 'none'
+              },
+              reload: true
+          });
+        }
+
+      })
+      // 键盘
+      $(document).keyup(function(event){
+        if(event.keyCode ==13){
+          $(".select .all").html('全部');
+          $('.selecttablist').html(' ')
+          page = 1;
+          loading = false;
+          isover = false;
+          $api.html($api.byId('Tolist'), '');
+          loadData($('.top .right .active').attr('data-type'),$('.serach input').val());
+          $('html,body').animate({scrollTop: 0});
+        }
+      });
+      // 时间戳转日期
+        function add0(m){return m<10?'0'+m:m };
+        function format(shijianchuo){
+            //shijianchuo是整数，否则要parseInt转换
+            var time = new Date(shijianchuo);
+            var y = time.getFullYear();
+            var m = time.getMonth()+1;
+            var d = time.getDate();
+            var h = time.getHours();
+            var mm = time.getMinutes();
+            var s = time.getSeconds();
+            return y+'-'+add0(m)+'-'+add0(d)+' '+add0(h)+':'+add0(mm)+':'+add0(s);
+        }
+
+        //我的问题
+        function myquestion() {
+          api.openWin({
+              name: 'myquestion',
+              url: './my/myquestion.html',
+              animation: {
+                  type: 'none'
+              },
+              reload: true
+          });
+
+        }
+      function selectlist() {
+
+        // 分类数据
+        for (var i = 0; i < knowtablist.length; i++) {
+          knowhtml+='<li onclick="serachlist('+(i+1)+')" >'+knowtablist[i]+'</li>'
+        }
+        $('.selecttablist').append(knowhtml);
+      }
+      function serachlist(valueid) {
+        page = 1;
+        loading = false;
+        isover = false;
+        if (valueid == 0) {
+          knowhtml = ' ';
+          $(".select .all").html('全部');
+          $('.selecttablist').html(' ')
+          $api.html($api.byId('Tolist'), '');
+          loadData()
+        }else{
+          knowhtml = '<li onclick="serachlist(0)" >全部</li>';
+          $(".select .all").html(knowtablist[(valueid -1)]);
+          $('.selecttablist').html(' ')
+          $api.html($api.byId('Tolist'), '');
+          loadData('','',valueid)
+        }
+      }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,142 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>打赏管理</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" href="../../css/base.css">
+    <link rel="stylesheet" href="../../css/ygtcommon.css">
+
+    <link rel="stylesheet" href="../../css/my/reward.css">
+
+
+<body >
+    <header class="top" id="header">
+        <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span class="title">打赏管理</span>
+        </h1>
+    </header>
+    <div class="middle" id="middle">
+        <div class="bgimg">
+            <p class="money todaymoney">0</p>
+            <p class="title">今日打赏收益(元)</p>
+            <div class="profit">
+                <div class="left">
+                    <p>0</p>
+                    <span>最近30日已结算金额(元)</span>
+                </div>
+                <div class="right">
+                    <p>0</p>
+                    <span>累积打赏收益(元)</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</body>
+<script src="../../js/lib/jquery-2.1.4.js"></script><script src="../../js/common.js"></script>
+<script type="application/javascript" src="../../script/api.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+        //  禁止左右滑动
+
+        toph = $api.offset($api.byId('header')).h + $api.offset($api.byId('middle')).h;
+       api.openFrame({
+           name: 'rewardetail',
+           url: 'rewardetail.html',
+           rect: {
+               marginLeft:0,    //相对父 window 左外边距的距离
+               marginTop:toph,    //相对父 window 上外边距的距离
+               marginBottom:0,    //相对父 window 下外边距的距离
+               marginRight:0
+           },
+           pageParam: {
+           },
+           bounces: true,
+           vScrollBarEnabled: false,
+           hScrollBarEnabled: false
+       });
+        $api.fixStatusBar(header);
+        api.addEventListener({name: 'viewappear'}, function(ret, err){
+               loaddata();
+         })
+    };
+
+
+    function loaddata() {
+        api.ajax({
+            url: wtkurl +'classroomlist/getReward',
+            method: 'post',
+            headers: {
+                'TOKEN': ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    uid: ygtuserinfo.id,
+                    days:1
+                }
+            }
+        }, function(data, err) {
+            //alert(JSON.stringify(data)+'今天');
+            console.log(JSON.stringify(err))
+                $('.todaymoney').html(data.data.teacherreward+data.data.listreward);
+        });
+        api.ajax({
+            url: wtkurl +'classroomlist/getReward',
+            method: 'post',
+            headers: {
+                'TOKEN': ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    uid: ygtuserinfo.id,
+                    days:30
+                }
+            }
+        }, function(data, err) {
+             //alert(JSON.stringify(data.data)+'30天');
+            console.log(JSON.stringify(err))
+            $('.profit .left p').html(data.data.teacherreward+data.data.listreward);
+        });
+        api.ajax({
+            url: wtkurl +'classroomlist/getReward',
+            method: 'post',
+            headers: {
+                'TOKEN': ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    uid: ygtuserinfo.id,
+                    days:0
+                }
+            }
+        }, function(ret, err) {
+             //alert(JSON.stringify(ret.data)+'全部');
+            console.log(JSON.stringify(err))
+            var allmoney = (parseFloat(ret.data.teacherreward) + parseFloat(ret.data.listreward))
+            $('.profit .right p').html(allmoney.toFixed(2));
+        });
+    }
+
+
+</script>
+
+</html>

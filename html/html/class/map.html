@@ -1,0 +1,27 @@
+<html>
+<head>
+  <title>地图位置展示</title>
+</head>
+<body style="margin:0;padding:0">
+<div id="allmap" style="width:100%; height:100%;position: absolute;"></div>
+  <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=83f0062b970c05a64e80e0a93a5cbb21"></script>
+  <script type="text/javascript">
+  window.onload= function(){
+    var dizhi = unescape(getQueryString("dizhi"));
+    //alert(dizhi);
+    var map = new BMap.Map("allmap");
+    map.centerAndZoom(new BMap.Point(116.404, 39.915), 11);
+    var local = new BMap.LocalSearch(map, {
+      renderOptions:{map: map}
+    });
+    local.search(dizhi);
+  }
+  //获取参数
+  function getQueryString(name) {
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+    var r = window.location.search.substr(1).match(reg);
+    if (r != null) return unescape(r[2]); return null;
+  }
+  </script>
+</body>
+</html>

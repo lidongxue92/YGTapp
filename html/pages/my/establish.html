@@ -1,0 +1,404 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>医管通APP</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" href="../../css/base.css">
+    <link rel="stylesheet" href="../../css/ygtcommon.css">
+    <link rel="stylesheet" href="../../css/my/establish.css">
+<body >
+    <header class="top" id="header">
+        <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span class="title">公开群</span>
+            <span class="righttitle" onclick="modify();">保存</span>
+        </h1>
+    </header>
+    <div class="middle">
+        <ul class="list">
+            <li class="clearfix">
+                <span class="left">群头像</span>
+                <span class="right">
+                    <img class="bgimg" src="../../img/carme.png">
+                    <input type="file" name="" id="file" value="" />
+                    <img src="../../img/back_right.png" />
+                </span>
+            </li>
+            <li class="clearfix">
+                <span>群名称</span>
+                <span class="right">
+                    <input placeholder="最多可输入20个汉字" maxlength="20" id="name"/>
+                </span>
+            </li>
+            <li class="clearfix">
+                <span>群分类</span>
+                <span class="right">
+                    <select id="study">
+                        <option value="">
+                            请选择群分类
+                        </option>
+                    </select>
+                    <img class="icon" src="../../img/back_right.png" />
+                </span>
+            </li>
+        </ul>
+
+        <!-- <div class="Bright ">
+            <h5>课程亮点（选填）</h5>
+            <p>
+                <span>直接授课</span>
+                <span>作业批改</span>
+                <span>课后督学</span>
+            </p>
+        </div>
+        <div class="headpic ">
+            <h5>宣传头图</h5>
+            <div class="left">
+                <p>展示在页面头部</p>
+                <p>图片比例为16：9，大小不超过20M，支持jpg png等常见格式</p>
+            </div>
+            <div class="right" onclick="getPicture1()">
+                <img class="img" src="../../img/add3.png">
+            </div>
+        </div> -->
+
+        <ul class="list">
+            <li class="clearfix">
+                <span>群简介（重要）</span>
+                <p class="intro">
+                    <textarea placeholder="请仔细填写,同学会根据介绍选择课程" id="introduce" maxlength="100"/></textarea>
+                </p>
+            </li>
+        </ul>
+        <!-- <ul class="list">
+            <li class="clearfix">
+                <span>群会员价格</span>
+                <span class="right">
+                    <input placeholder="金额（元）" id="money" maxlength="4"/>
+                </span>
+            </li>
+        </ul> -->
+    </div>
+    <button class="gonext" onclick="next()">确认建群</button>
+    <div class="loading">
+        <span>
+            <img src="../../img/loading.gif" />
+        </span>
+    </div>
+</body>
+<script src="../../js/lib/jquery-2.1.4.js"></script><script src="../../js/common.js"></script>
+<script type="application/javascript" src="../../script/api.js"></script>
+<script src="http://gosspublic.alicdn.com/aliyun-oss-sdk-4.4.4.min.js"></script>
+<script type="text/javascript" src="../../js/moxie.js"></script>
+<script type="text/javascript" src="../../js\plupload.dev.js"></script>
+<script type="text/javascript" src="../../js/upload.js?{:time()}"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    var name ='';
+    var uploadurl = '';
+    var uploadimg = '';
+    var frontcardimg = ''
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+        //  禁止左右滑动
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+        $('.loading').show();
+        loaddata();
+        api.ajax({
+            url:wtkurl +'classroomlist/getOssToken',
+            method: 'post',
+            headers: {
+                'TOKEN': ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    uid: ygtuserinfo.id
+                }
+            }
+        }, function(data, err) {
+            console.log(JSON.stringify(data.data));
+            client = new OSS.Wrapper({
+               region:'oss-cn-hangzhou',
+               accessKeyId:data.data.accessid,
+               accessKeySecret:data.data.accesskeysecret,
+               signature:data.data.signature,
+               bucket:data.data.putbucket
+             });
+            uploadimg ='ygt_app/'+data.data.expire;
+            uploadurl = data.data.bucketosshost;
+              //$api.setStorage('img', );
+
+        });
+        $api.fixStatusBar(header);
+
+    };
+
+
+    function loaddata() {
+        api.ajax({
+            url: wtkurl +'classroomlist/getTeachtype',
+            method: 'post',
+            headers: {
+                'TOKEN': ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    uid: ygtuserinfo.id
+                }
+            }
+        }, function(data, err) {
+            // alert(JSON.stringify(data));
+             if (data) {
+                 $('.loading').hide();
+                 var optionhtml = ''
+
+                 for (var i = 0; i < data.data.length; i++) {
+                     optionhtml +='<option value="'+data.data[i].id+'">'+data.data[i].name+'</option>'
+                 }
+                 $('#study').append(optionhtml)
+                 //alert(optionhtml);
+                 name = api.pageParam.name
+                 if (name == 'Establish') {
+                     $('.righttitle').css('display','inline-block');
+                     $('.gonext').css('display','none');
+                     listinfo();
+                 }
+             }
+
+            console.log(JSON.stringify(err))
+        });
+    }
+    function sj() {
+        //x上限，y下限
+         x = 100;
+         y = 0;
+         rand = parseInt(Math.random() * (x - y + 1) + y);
+    }
+    //头像
+
+    $("#file").change(function(){
+        console.log("change");
+        $api.getStorage('img');
+        var img = $api.getStorage('img');
+        uploadimg = uploadimg+'.jpg'
+        client.multipartUpload(uploadimg, this.files[0]).then(function (result) {
+            console.log(JSON.stringify(result));
+            if (result) {
+
+                var picname = uploadurl+'/'+result.name;
+                $('.bgimg').attr('src', picname);
+                uploadimg = uploadimg.toString().split('.')['0']+parseInt(1);
+            }
+          }).catch(function (err) {
+            console.log(err+'错误');
+          });
+      });
+
+    //群头像
+    function photo() {
+        var imgurl = $('.bgimg').attr('src')
+        //alert(imgurl);
+        if (imgurl == '../../img/carme.png') {
+            api.alert({
+                title: '',
+                msg: '群头像不能为空',
+            }, function(ret, err) {
+
+            });
+            return false
+        }
+    }
+
+    //群名称
+    function Group() {
+        var Group = $('#name').val();
+        if (Group == '') {
+            api.alert({
+                title: '',
+                msg: '群名称不能为空',
+            }, function(ret, err) {
+
+            });
+            return false
+        }
+    }
+
+    //群分类
+    function industry() {
+        var flied = $("#study option:selected").val();
+        if (flied == '') {
+            api.alert({
+                title: '',
+                msg: '群分类不能为空',
+            }, function(ret, err) {
+
+            });
+            return false
+        }
+    }
+    //群简介
+    function introduction() {
+        var introduction = $('#introduce').val();
+        if (introduction == '') {
+            api.alert({
+                title: '',
+                msg: '群简介不能为空',
+            }, function(ret, err) {
+
+            });
+            return false
+        }
+    }
+
+    //金额
+
+    function Money() {
+        var partten = /^\d+$/;
+		var numberVal = $('#money').val();
+		if(!partten.test(numberVal)){		//如果不是数字的话，则将其删除
+	        api.alert({
+	            title: '',
+	            msg: '只能输入数字',
+	        }, function(ret, err){
+                if (ret.buttonIndex == 1) {
+                    $('#money').val('')
+                }
+	        });
+            return false
+        }
+    }
+    //创建成功
+    function next() {
+            var amount =''
+            if (photo() !=false && Group() !=false && industry() !=false && introduction() !=false ) {
+                if ($('#money').val() == '') {
+                    amount = 0;
+                }else{
+                    amount = $('#money').val();
+                }
+                api.ajax({
+                    url: wtkurl +'classroomlist/create',
+                    method: 'post',
+                    headers: {
+                        'TOKEN': ygtuserinfo.token
+                    },
+                    data: {
+                        values: {
+                            uid: ygtuserinfo.id,
+                            title:$('#name').val(),
+                            pic:frontcardimg,
+                            intro:$('#introduce').val(),
+                            amount:amount,
+                            industry_id:$("#study option:selected").val()
+                        }
+                    }
+                }, function(data, err) {
+                    //alert(JSON.stringify(data));
+                    if(data){
+                        api.alert({
+                            title: '',
+                            msg: '群创建成功，请等待审核',
+                        }, function(ret, err){
+                            if (ret.buttonIndex == 1) {
+                                api.closeWin();
+                            }
+                        });
+                    }
+
+                    console.log(JSON.stringify(err))
+                });
+            }
+    }
+    //获取直播间信息
+    function listinfo() {
+        api.ajax({
+            url: wtkurl +'classroom/getListinfo',
+            method: 'post',
+            headers: {
+                'TOKEN': ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    listid: api.pageParam.id,
+                    uid: ygtuserinfo.id
+                }
+            }
+        }, function(data, err) {
+            //alert(JSON.stringify(data));
+             if (data) {
+                 $('.bgimg').attr('src',data.data.pic);
+                 $('#name').val(data.data.title);
+                 $("#study").val(data.data.industry_id);
+                 $('#introduce').val(data.data.intro);
+                 $('#money').val(data.data.amount);
+             }
+
+        });
+    }
+
+    //修改群资料
+    function modify() {
+        if (photo() !=false || Group() !=false || industry() !=false || introduction() !=false || Money() !=false) {
+            if ($('#money').val() == '') {
+                amount = 0;
+            }else{
+                amount = $('#money').val();
+            }
+            api.ajax({
+                url: wtkurl +'classroomlist/edit',
+                method: 'post',
+                headers: {
+                    'TOKEN': ygtuserinfo.token
+                },
+                data: {
+                    values: {
+                        uid: ygtuserinfo.id,
+                        listid: api.pageParam.id,
+                        title:$('#name').val(),
+                        pic:frontcardimg,
+                        intro:$('#introduce').val(),
+                        amount:amount
+                    }
+                }
+            }, function(data, err) {
+                console.log(JSON.stringify(data));
+                if (data) {
+                    api.alert({
+                        title: '',
+                        msg: data.msg,
+                    }, function(ret, err){
+                        if (ret.buttonIndex == 1) {
+                            api.closeWin();
+                        }
+                    });
+                }
+            });
+        }
+
+    }
+
+    $('.middle .list li .right #money').click(function () {
+        $('.middle .list li .right #money').val('')
+    })
+    $('.middle .list li .right #name').click(function () {
+        $('.middle .list li .right #name').val('')
+    })
+</script>
+
+</html>

@@ -1,0 +1,32 @@
+body{width: auto;position: relative;}
+.middle{margin-top: 70px;padding: 10px;color: #444}
+.middle .nodata{text-align: center;top: 50px;position: relative;}
+.middle .nodata img{width: 60px;}
+.middle .nodata p{color: #999;line-height: 30px;font-size: 12px;}
+.middle .nodata .Establish{display: inline-block;width: 80px;height: 25px;background: #ff9913;border-radius: 30px;color: #fff;line-height: 25px;}
+.middle .ex{box-shadow: 5px 5px 50px 5px #eee;line-height: 25px;padding: 10px;}
+.middle .ex .infor{font-size: 15px;background: #fff;padding: 5px 10px;}
+.middle .ex .content{font-size: 13px;margin-top: 10px;background: #fff;padding: 5px 10px;}
+.middle .ex .button{width: 100%;background: -webkit-linear-gradient(left, #ffca80 , #ff9913);height: 40px;line-height: 40px;text-align: center;border-radius: 5px;color: #fff;margin-top: 20px;margin-bottom: 20px;}
+.middle .editwork{box-shadow: 5px 5px 50px 5px #eee;line-height: 25px;padding: 10px;}
+.middle .editwork h5{font-size: 15px;background: #fff;padding: 5px 10px;}
+.middle .editwork .ediranswer{width: calc(100% - 30px);height: 100px;border: 1px solid #ddd;background: #fff;margin-left: 10px;margin-top: 10px;padding: 5px;line-height: 20px;font-size: 14px;}
+.middle .editwork .button{width: 100%;background: -webkit-linear-gradient(left, #ffca80 , #ff9913);height: 40px;line-height: 40px;text-align: center;border-radius: 5px;color: #fff;margin-top: 20px;margin-bottom: 20px;}
+@media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+  .middle{margin-top: 90px;}
+
+}
+/* xr */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) {
+  .middle{margin-top: 90px;}
+
+}
+/* xs max */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) {
+  .middle{margin-top: 90px;}
+}
+.answer{position: absolute;width: 100%;background: rgba(0,0,0,.5);top: 0;left: 0;display: none}
+.answer .answertoast {position: absolute;width: 80%;border-radius: 3px;background: #fff;left: 10%;top: 30%;text-align: center;padding: 20px 0;}
+.answer .answertoast .answerdec{border: 1px solid #ddd;height: 100px;display: block;width: calc(90% - 20px);text-align: left;margin-left: 5%;padding: 10px;font-size: 13px;}
+.answer .answertoast span{display: inline-block;background: #ff9913;width: 45%;line-height: 30px;margin-top: 20px;font-size: 14px;color: #fff;border-radius: 3px;}
+.answer .answertoast .cancl{background: #ccc;}

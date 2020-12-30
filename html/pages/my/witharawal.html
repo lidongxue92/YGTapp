@@ -1,0 +1,207 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>医管通APP</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" href="../../css/base.css">
+    <link rel="stylesheet" href="../../css/ygtcommon.css">
+    <link rel="stylesheet" href="../../css/my/witharawal.css">
+<body >
+    <header class="top" id="header">
+        <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span class="title">提现</span>
+            <span class="right" onclick="witharawallog();">记录</span>
+        </h1>
+    </header>
+    <div class="middle">
+            <h5>
+                <span class="tab active">银行卡转账</span>
+                <em>|</em>
+                <span class="tab wxtab" onclick="nomount();">微信提现</span>
+            </h5>
+            <div class="witharawal">
+                <p>您当前可提现金额</p>
+                <span class="big"></span>&ensp;元
+            </div>
+            <ul class="datalist card">
+                <li>
+                  <p>本次提现金额</p>
+                  <input class='charge' type="number" oninput="if(value.length>5)value=value.slice(0,5)" onblur="checkcharge()">
+               </li>
+               <li>
+                  <p>户名</p>
+                  <input class='cardname' type="text" name="" onblur="checkcardname()">
+               </li>
+               <li>
+                  <p>银行帐号</p>
+                  <input class='bankcard' type="number"  oninput="if(value.length>19)value=value.slice(0,19)" onblur="checkbankcard()">
+               </li>
+               <li>
+                  <p>开户行</p>
+                  <input class='bank' type="text" name="" onblur="checkbank()">
+               </li>
+            </ul>
+            <ul class="datalist wx">
+                <li>
+                   <p>本次提现金额</p>
+                   <input class='charge' type="number" oninput="if(value.length>5)value=value.slice(0,5)" onblur="checkcharge()">
+                </li>
+                <li>
+                   <p>收款方实名</p>
+                   <input class='cardname' type="text" name="" onblur="checkcardname()">
+                </li>
+            </ul>
+            <a class="button">提现</a>
+        </div>
+</body>
+<script src="../../js/lib/jquery-2.1.4.js"></script><script src="../../js/common.js"></script>
+<script type="application/javascript" src="../../script/api.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var charg = '';
+    var cardname = '';
+    var bankcard = '';
+    var bank = '';
+    var ygtuserinfo='';
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+        //  禁止左右滑动
+        $api.fixStatusBar(header);
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+        api.addEventListener({name: 'viewappear'}, function(ret, err){
+              loaddata();
+        })
+    };
+    function checkcharge() {
+        charg = $('.charge').val();
+        if(charg == '') {
+            api.toast({
+                msg: '提现金额不能为空',
+                duration: 2000,
+                location: 'middle'
+            });
+            return false;
+        }
+    }
+    function checkcardname() {
+        cardname = $('.cardname').val();
+        if(cardname == '') {
+            api.toast({
+                msg: '户名不能为空',
+                duration: 2000,
+                location: 'middle'
+            });
+            return false;
+        }
+    }
+    function checkbankcard() {
+        bankcard = $('.bankcard').val();
+        if(bankcard == '') {
+            api.toast({
+                msg: '银行卡号不能为空',
+                duration: 2000,
+                location: 'middle'
+            });
+            return false;
+        }
+    }
+    function checkbank() {
+        bank = $('.bank').val();
+        if(bank == '') {
+            api.toast({
+                msg: '开户行不能为空',
+                duration: 2000,
+                location: 'middle'
+            });
+            return false;
+        }
+    }
+    function loaddata() {
+        api.ajax({
+            url: wtkurl +'myhome/mywallet',
+            method: 'post',
+            headers: {
+                'TOKEN': ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    uid: ygtuserinfo.id
+                }
+            }
+        }, function(data, err) {
+            console.log(JSON.stringify(data))
+            $('.witharawal .big').html(data.data.wallet.amount);
+        });
+    }
+    $('.button').click(function () {
+        if(checkcharge() == false || checkcardname() == false || checkbankcard() == false || checkbank() == false ) {
+            return
+        }
+        api.ajax({
+            url: apihost + '/api/wtk/myhome/addCash',
+            method: 'post',
+            headers: {
+                'TOKEN': ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    uid: ygtuserinfo.id,
+                    'amount':charg,
+                    'type':1,
+                    'truename':cardname,
+                    'cardaccount':bankcard,
+                    'cardaddress':bank
+                }
+            }
+        }, function(data, err) {
+            console.log(JSON.stringify(data));
+            api.toast({
+                msg: data.msg,
+                duration: 2000,
+                location: 'middle'
+            });
+        });
+    })
+    //关于我们
+    function witharawallog() {
+        api.openWin({
+            name: 'witharawallog',
+            url: './witharawallog.html',
+            pageParam: {
+                name: 'test'
+            },
+            bgColor: 'rgba(0,0,0,0)',
+            animation: {
+                type: 'none'
+            }
+        })
+    }
+
+    //暂未开通页面
+    function nomount() {
+        api.toast({
+            msg: '暂未开通请耐心等待',
+            duration: 2000,
+            location: 'middle'
+        });
+
+    }
+</script>
+
+</html>

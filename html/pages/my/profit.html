@@ -1,0 +1,124 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>我的收益</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" href="../../css/base.css">
+    <link rel="stylesheet" href="../../css/ygtcommon.css">
+    <link rel="stylesheet" href="../../css/my/profit.css">
+<body >
+    <header class="top" id="header">
+        <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span class="title">我的收益</span>
+        </h1>
+    </header>
+    <div class="middle">
+        <div class="bgimg">
+            <p class="title">可提现金额(元)</p>
+            <p class="money"></p>
+            <a onclick="listlog()">查看明细</a>
+        </div>
+        <div class="profit">
+            <div class="left">
+                <p>累积收益(元)</p>
+                <p class="money"></p>
+            </div>
+            <div class="right">
+                <p>当月收益(元)</p>
+                <p class="money"></p>
+            </div>
+        </div>
+        <p class="witharawallog" onclick="witharawal()">
+            提现
+        </p>
+    </div>
+</body>
+<script src="../../js/lib/jquery-2.1.4.js"></script><script src="../../js/common.js"></script>
+<script type="application/javascript" src="../../script/api.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+        //  禁止左右滑动
+        $api.fixStatusBar(header);
+        api.addEventListener({name: 'viewappear'}, function(ret, err){
+               loaddata();
+         })
+    };
+
+
+    function loaddata() {
+        api.ajax({
+            url: wtkurl +'myhome/mywallet',
+            method: 'post',
+            headers: {
+                'TOKEN': ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    uid: ygtuserinfo.id
+                }
+            }
+        }, function(data, err) {
+            console.log(JSON.stringify(data));
+            if (data.code == 1) {
+                $('.bgimg .money').html(data.data.wallet.amount);
+                $('.profit .left .money').html(data.data.wallet.allamount);
+                $('.profit .right .money').html(data.data.todayamount);
+                amount = data.data.wallet.amount;
+                $api.setStorage('amount', amount);
+            }
+
+            console.log(JSON.stringify(err))
+        });
+    }
+    //明细
+    function listlog() {
+        api.openWin({
+            name: 'listlog',
+            url: './listlog.html',
+            pageParam: {
+                name: 'test'
+            },
+            bgColor: 'rgba(0,0,0,0)',
+            animation: {
+                type: 'none'
+            }
+        })
+    }
+
+    //提现
+    function witharawal() {
+        api.openWin({
+            name: 'witharawal',
+            url: './witharawal.html',
+            pageParam: {
+                name: 'test'
+            },
+            bgColor: 'rgba(0,0,0,0)',
+            animation: {
+                type: 'none'
+            }
+        })
+    }
+
+</script>
+
+</html>

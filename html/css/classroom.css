@@ -1,0 +1,1237 @@
+body, html {
+    font-size: 0.9rem;
+    font-family: "微软雅黑";
+    background: #fff;
+    color: #333;
+    padding: 0;
+    margin: auto;
+    height: 100%;
+    position: relative;
+}
+
+#bg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    left: 0;
+    top: 0;
+    z-index: 1;
+    display: none;
+}
+
+
+/*头部*/
+
+
+/*banner*/
+
+.header {
+    display: block;
+    position: fixed;
+    left: 0;
+    right: 0;
+    max-width: 640px;
+    margin: 0 auto;
+    background: #fff;
+    top: 0;
+}
+
+.swiper-container {
+    width: 100%;
+    min-height: 200px;
+    max-height: 225px;
+    background: #f5f5f6;
+    /*border-bottom: 1px solid #d7d7d9;*/
+    box-sizing: border-box;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    position: relative;
+    top: 5rem;
+}
+
+.swiper-wrapper {
+    z-index: 1;
+    display: flex;
+    display: flex;
+    -webkit-transition-property: -webkit-transform;
+    transition-property: -webkit-transform;
+    transition-property: transform;
+    transition-property: transform, -webkit-transform;
+    box-sizing: content-box;
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.swiper-wrapper video {
+    width: 100%;
+    height: 100%;
+}
+
+.swiper-slide {
+    text-align: center;
+    font-size: 18px;
+    display: flex;
+    -webkit-box-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    align-items: center;
+    overflow: hidden;
+    flex-shrink: 0;
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.swiper-slide img {
+    width: 100%;
+    height: 100%;
+    vertical-align: middle;
+}
+
+.swiper-pagination-fraction {
+    font-size: 12px;
+    width: 50px;
+    height: 20px;
+    line-height: 20px;
+    color: #fff;
+    background: url(../img/tranbg.png);
+    border-radius: 25px;
+    bottom: 2px;
+    display: block;
+    left: 50%;
+    margin-left: -25px;
+    position: absolute;
+    text-align: center;
+    transform: translate3d(0, 0, 0);
+    z-index: 10;
+}
+
+.swiper-lazy-preloader {
+    width: 42px;
+    height: 42px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -21px;
+    margin-top: -21px;
+    z-index: 10;
+    -webkit-transform-origin: 50%;
+    transform-origin: 50%;
+}
+
+
+/*.swiper-lazy-preloader:after{
+   display: block;
+   content: "";
+   width: 100%;
+   height: 100%;
+   background-image: url(../img/loading.gif);
+   background-position: 50%;
+   background-size: 100%;
+   background-repeat: no-repeat;
+}*/
+
+
+/*用户名字*/
+
+.users {
+    position: absolute;
+    top: 75px;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    color: #fff;
+    font-size: 12px;
+    overflow: hidden;
+    max-width: 640px;
+    margin: 0 auto;
+    display: none;
+}
+
+.users .users-head {
+    height: 30px;
+    line-height: 30px;
+    display: block;
+    width: auto;
+    overflow: hidden;
+    float: left;
+    background: url(../img/tranbg.png);
+    padding: 0 10px 0 5px;
+    border-radius: 0 25px 25px 0;
+}
+
+.users-attention {
+    display: block;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    line-height: 30px;
+    margin-left: 5px;
+    overflow: hidden;
+    float: left;
+    background: url(../img/tranbg.png);
+    border-radius: 100%;
+}
+
+.users .users-item {
+    display: block;
+    width: auto;
+    float: right;
+    line-height: 25px;
+    text-align: right;
+    background: url(../img/tranbg.png);
+    padding: 2.5px;
+    border-radius: 35px 0 0 35px;
+}
+
+.users .users-item img {
+    width: 25px;
+    height: 25px;
+    float: left;
+    border-radius: 100%;
+    margin-right: 5px;
+}
+
+
+/*广告*/
+
+.bulletin {
+    position: relative;
+    width: 100%;
+    height: 25px;
+    background: #f5c280;
+    background-size: auto;
+    padding: 0 5px;
+    box-sizing: border-box;
+    float: left;
+    font-size: 0.8rem;
+    top: 0px;
+    z-index: 11;
+}
+
+.bulletin a {
+    display: block;
+    color: #b56803;
+    line-height: 25px;
+    font-size: 0.8rem;
+}
+
+.bulletin a span {
+    display: block;
+    float: right;
+    width: calc(100% - 22px);
+    height: 25px;
+    overflow: hidden;
+    font-size: 12px;
+    position: relative;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    user-select: none;
+    white-space: nowrap;
+}
+
+.str_move {
+    width: 100%;
+    white-space: nowrap;
+    position: absolute;
+    left: 0;
+    cursor: move;
+    font-size: 0.8rem;
+    overflow: hidden;
+}
+
+
+/*中间内容*/
+
+.section {
+    padding: 10px 0;
+    bottom: 50px;
+    overflow: hidden;
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    background: #ebebeb;
+    margin-top: 20px;
+    top: 220px;
+}
+
+.message-list {
+    position: absolute;
+    bottom: 0;
+    top: 0px;
+    display: block;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 10px 5px;
+    width: -moz-calc(100% - 10px);
+    width: -webkit-calc(100% - 10px);
+    width: -o-calc(100% - 10px);
+    width: calc(100% - 10px);
+}
+
+
+
+.message-list li .redtip {
+    display: block;
+    width: 90%;
+    font-size: 12px;
+    color: #fff;
+    background: #edcb91;
+    text-align: center;
+    line-height: 22px;
+    padding: 0 10px;
+    border-radius: 3px;
+    margin: 0 auto;
+}
+
+
+/*下拉刷新插件*/
+
+.weui-pull-to-refresh__layer {
+    height: 30px;
+    line-height: 30px;
+    padding: 10px;
+    text-align: center;
+}
+
+.weui-pull-to-refresh__layer .weui-pull-to-refresh__arrow {
+    display: inline-block;
+    z-index: 10;
+    height: 30px;
+    width: 30px;
+    margin-right: 4px;
+    vertical-align: -4px;
+    background: url(../img/loading.gif) center no-repeat;
+    background-size: 100%;
+    -webkit-transition-duration: 0s;
+    transition-duration: .3s;
+    -webkit-transform: rotate(0) translate3d(0, 0, 0);
+    transform: rotate(0) translate3d(0, 0, 0);
+}
+
+.weui-pull-to-refresh__layer .weui-pull-to-refresh__preloader {
+    display: none;
+    vertical-align: -4px;
+    margin-right: 4px;
+    width: 30px;
+    height: 30px;
+    -webkit-transform-origin: 50%;
+    transform-origin: 50%;
+    -webkit-animation: preloader-spin 0s steps(12, end) infinite;
+    animation: preloader-spin 0s steps(12, end) infinite;
+}
+
+.weui-pull-to-refresh__layer .down {
+    display: inline-block;
+}
+
+.weui-pull-to-refresh__layer .refresh, .weui-pull-to-refresh__layer .up {
+    display: none;
+}
+
+.weui-pull-to-refresh__layer .refresh {
+    line-height: 30px;
+}
+
+.weui-pull-to-refresh__layer .weui-pull-to-refresh__preloader:after {
+    display: block;
+    width: 100%;
+    height: 100%;
+    content: "";
+    background-image: url(../img/loading.gif);
+    background-repeat: no-repeat;
+    background-position: 50%;
+    background-size: 100%;
+}
+
+.weui-loading {
+    background: url(../img/loading.gif);
+    background-size: 100%;
+    width: 30px;
+    height: 30px;
+    -webkit-animation: e 0s steps(12) infinite;
+    animation: e 0s steps(12) infinite;
+}
+
+
+/*下拉刷新插件*/
+
+.message-list li {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    padding-bottom: 15px;
+}
+
+.message-list li .user-head {
+    float: left;
+    width: 40px;
+    height: auto;
+    overflow: hidden;
+}
+
+.message-list li .user-head img {
+    width: 40px;
+    height: 40px;
+    border-radius: 3px;
+    border: 0.5px solid #d0d0d0;
+}
+
+.message-list li .user-head .reward {
+    display: block;
+    width: 25px;
+    height: 25px;
+    background: #edcb91;
+    color: #b98d42;
+    text-align: center;
+    line-height: 25px;
+    border-radius: 100%;
+    margin: 3px auto;
+    font-weight: bold;
+}
+
+.message-list li .user-msgw {
+    float: left;
+    width: 100%;
+    margin-left: 8px;
+    width: -moz-calc(100% - 120px);
+    width: -webkit-calc(100% - 120px);
+    width: -o-calc(100% - 120px);
+    width: calc(100% - 120px);
+}
+
+.message-list li .user-msgw .user-name {
+    height: 15px;
+    line-height: 15px;
+    font-size: 12px;
+    color: #666;
+    /*margin-top: -2px;*/
+}
+
+.message-list li .user-msgw .user-name em {
+    color: #ff9913;
+    margin-left: 5px;
+    font-style: normal;
+}
+
+.message-list li .user-msgw .user-msg {
+    background: #fff;
+    padding: 7px 10px;
+    float: left;
+    border: 0.5px solid #d0d0d0;
+    color: #333;
+    font-size: 16px;
+    border-radius: 5px;
+    max-width: 100%;
+    position: relative;
+    margin-bottom: 5px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    word-break: break-all;
+    -webkit-user-select: text;
+    -khtml-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+}
+
+.message-list li .user-msg.msgvoice {
+    color: #999;
+    font-size: 14px;
+    height: 41.6px;
+    line-height: 28px;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.message-list li .user-msg i.ico {
+    display: block;
+    position: absolute;
+    left: -7px;
+    top: 14px;
+    width: 7px;
+    height: 9px;
+    background: url(../img/wel.png);
+    background-size: 100%;
+}
+
+.message-list li .user-msg.msgvoice i.iconfont {
+    font-size: 16px;
+    margin: 0 50px 0 0;
+    float: left;
+}
+
+.message-list li .user-msg.msgvoice.isPlaying i.iconfont {
+    float: left;
+    display: inline-block;
+    width: 16px;
+    height: 25.6px;
+    font-size: 0;
+    background-image: url(../img/audioPlaying.gif);
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: center left;
+}
+
+.message-list li.my .user-msg.msgvoice.isPlaying i.iconfont {
+    float: right;
+    display: inline-block;
+    width: 16px;
+    height: 18px;
+    font-size: 0;
+    background-image: url(../img/myaudioPlaying.gif);
+    background-size: 100%;
+    background-repeat: no-repeat;
+    margin-top: 3px;
+    transform: rotate(180deg);
+}
+
+.message-list li.my .user-msg.msgvoice.audioloading i.iconfont {
+    float: right;
+    display: inline-block;
+    width: 16px;
+    height: 18px;
+    font-size: 0;
+    background-image: url(../img/logo_loading_3.gif);
+    background-size: 100%;
+    background-repeat: no-repeat;
+    margin-top: 3px;
+    transform: rotate(180deg);
+}
+
+.message-list li .user-msg i.unread {
+    display: block;
+    position: absolute;
+    left: auto;
+    right: -14px;
+    top: 0px;
+    width: 8px;
+    height: 8px;
+    border-radius: 100%;
+    background: red;
+}
+
+.message-list li .systemtip {
+    text-align: center;
+}
+
+.message-list li .systemtip em {
+    display: inline-block;
+    font-size: 12px;
+    color: #666;
+    background: #ddd;
+    line-height: 20px;
+    padding: 5px 20px;
+    border-radius: 3px;
+    margin: 0 auto;
+    max-width: 70%;
+}
+
+.message-list li .user-msg.red {
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+}
+
+.message-list li .user-msg.red i.ico {
+    display: block;
+    position: absolute;
+    left: -7px;
+    top: 14px;
+    width: 7px;
+    height: 9px;
+    background-size: 100%;
+    background-image: url(../img/welred.png)
+}
+
+.message-list li .user-msg.red dl {
+    width: 180px;
+    padding: 8px;
+    height: auto;
+    background: #fa9e38;
+    border: 1px solid #eb9639;
+    overflow: hidden;
+    border-radius: 5px 5px 0 0;
+    border-bottom: none;
+}
+
+.message-list li p.redtip {
+    display: block;
+    width: 90%;
+    font-size: 12px;
+    color: #fff;
+    background: #edcb91;
+    text-align: center;
+    line-height: 22px;
+    margin: 0 auto;
+    padding: 0 10px;
+    border-radius: 3px;
+    margin-top: 20px;
+}
+
+.message-list li .user-msg.red dl dt {
+    float: left;
+    width: 35px;
+    height: 40px;
+    color: #d03b33;
+}
+
+.message-list li .user-msg img {
+    max-width: 100%;
+    float: left;
+}
+
+.message-list li .user-msg.red dl dd {
+    color: #fff;
+    float: left;
+    margin-left: 5px;
+    font-size: 12px;
+    line-height: 20px;
+}
+
+.message-list li .user-msg.red dl {
+    width: 180px;
+    padding: 8px;
+    height: auto;
+    background: #fa9e38;
+    border: 1px solid #eb9639;
+    overflow: hidden;
+    border-radius: 5px 5px 0 0;
+    border-bottom: none;
+}
+
+.message-list li .user-msg.red p {
+    padding: 2px 8px;
+    border: 1px solid #ddd;
+    border-top: none;
+    border-radius: 0 0 5px 5px;
+    font-size: 14px;
+    overflow: hidden;
+}
+
+.message-list li .user-msg.red p em {
+    float: left;
+    color: #999;
+    font-size: 12px;
+    line-height: 25px;
+    padding: 0;
+}
+
+.message-list li .user-msg.red p .iconfont {
+    float: right;
+    font-size: 16px;
+    color: #ddd;
+}
+
+
+/*右侧菜单栏*/
+
+.fast {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+
+.fast a {
+    display: block;
+    margin-top: 5px;
+    width: 35px;
+    height: 35px;
+    line-height: 35px;
+    text-align: center;
+    background: url(../img/tranbg.png);
+    border-radius: 50%;
+    font-size: 16px;
+    color: #fff;
+}
+
+.fast a #msg {
+    display: block;
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    line-height: 18px;
+    color: red;
+    top: 0;
+    left: 0;
+    transform: rotate(180deg);
+    font-size: 16px;
+    -webkit-animation: msg 1.5s infinite ease-in;
+}
+
+@-webkit-keyframes msg {
+    0% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+
+/*提问*/
+
+.Qform {
+    display: none;
+    background: url(../img/tranbg.png);
+    margin: 0 auto;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    overflow: hidden;
+    z-index: 111;
+}
+
+.Qform .returnbut {
+    position: absolute;
+    bottom: 130px;
+    display: block;
+    background: #2577e3;
+    color: #fff;
+    height: 30px;
+    line-height: 30px;
+    width: 40%;
+    font-size: 14px;
+    border-radius: 30px;
+    margin: 0 auto;
+    text-align: center;
+    overflow: hidden;
+    left: 30%;
+}
+
+.Qform .returnbut .iconfont {
+    font-size: 12px;
+    float: left;
+    height: 30px;
+    line-height: 30px;
+    width: 30px;
+    background: #ff9913;
+    border-radius: 30px;
+    text-align: center;
+}
+
+.Qform .qpop {
+    display: none;
+    background: #fff;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 640px;
+    margin: 0 auto;
+    max-height: 85%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.Qform .qpop .qpoptit {
+    background: #efefef;
+    border-bottom: 1px solid #ddd;
+    padding: 8px 5px;
+    overflow: hidden;
+}
+
+.Qform .qpop .qpoptit span {
+    color: #666;
+    float: left;
+}
+
+.Qform .qpop .qpoptit a {
+    float: right;
+    color: #2577e3;
+}
+
+.Qform .qpop .qpopcon {
+    background: #fff;
+    padding: 5px;
+}
+
+.weui-textarea {
+    display: block;
+    border: 0;
+    resize: none;
+    width: 100%;
+    color: inherit;
+    font-size: 1em;
+    line-height: inherit;
+    outline: 0;
+}
+
+.zinum {
+    text-align: right;
+    color: #999;
+    overflow: hidden;
+}
+
+.zinum em {
+    float: left;
+    font-style: normal;
+    color: red;
+}
+
+
+/*聊天*/
+
+.PTmessage-listbox {
+    position: absolute;
+    right: 3px;
+    top: 73px;
+    width: 50%;
+    max-height: -moz-calc(100% - 100px);
+    max-height: -webkit-calc(100% - 100px);
+    max-height: -o-calc(100% - 100px);
+    max-height: calc(100% - 100px);
+    z-index: 11;
+}
+
+.PTmessage-list {
+    float: right;
+    width: 100%;
+    overflow-y: auto;
+    max-height: 150px;
+    background: transparent;
+    z-index: 1;
+    -webkit-overflow-scrolling: touch;
+}
+
+.PTmessage-list li {
+    list-style: none;
+    overflow: hidden;
+    background: url(../img/tranbg.png);
+    padding: 5px;
+    border-radius: 5px;
+    margin-top: 5px;
+}
+
+.PTmessage-list li img {
+    width: 25px;
+    height: 25px;
+    border-radius: 100%;
+    float: left;
+}
+
+.PTmessage-list li p {
+    color: #fff;
+    font-size: 12px;
+    float: right;
+    overflow: hidden;
+    text-align: justify;
+    line-height: 15px;
+    word-break: break-all;
+    width: -moz-calc(100% - 30px);
+    width: -webkit-calc(100% - 30px);
+    width: -o-calc(100% - 30px);
+    width: calc(100% - 30px);
+}
+
+.PTmessage-list li p.name {
+    font-size: 12px;
+}
+
+.message-list li .user-msg img {
+    max-width: 100%;
+    float: left;
+}
+
+.PTmessage-listbox .closelist {
+    display: block;
+    float: left;
+    margin-top: -20px;
+    margin-left: -10px;
+    background: #333;
+    width: 30px;
+    height: 30px;
+    border-radius: 100%;
+    text-align: center;
+    line-height: 33px;
+    color: #fff;
+    transform: rotate(220deg);
+    font-weight: bold;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+
+/*红包*/
+
+.redwrap {
+    position: fixed;
+    z-index: 9999;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: url(../img/tranbg.png);
+    display: none;
+}
+
+.redwrap .redcont {
+    position: fixed;
+    right: 20px;
+    bottom: 30px;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    width: 80%;
+    height: 80%;
+    left: 10%;
+    top: 10%;
+}
+
+.redwrap .redcont .close {
+    position: absolute;
+    z-index: 9;
+    right: 10px;
+    top: 10px;
+    color: #fff;
+    border: 1px solid #fff;
+    border-radius: 100%;
+    width: 25px;
+    height: 25px;
+    text-align: center;
+    line-height: 28px;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.redwrap .redcont .redcont-head {
+    position: relative;
+    height: 140px;
+    background-image: url(../img/redbag.png);
+    background-position: top center;
+    background-repeat: no-repeat;
+    background-size: 100% 110px;
+}
+
+.redwrap .redcont .redcont-name {
+    font-size: 32px;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.redwrap .redcont .redcont-tip {
+    width: 85%;
+    margin: 0 auto;
+    text-align: center;
+    font-size: 16px;
+    color: #666;
+    margin-top: 10px;
+    border-bottom: 1px dotted #ddd;
+    padding-bottom: 15px;
+}
+
+.redwrap .redcont .redcont-num {
+    overflow: hidden;
+    width: 90%;
+    margin: 20px auto;
+}
+
+.redwrap .redcont .redcont-num li {
+    display: block;
+    float: left;
+    width: 33.3%;
+}
+
+.redwrap .redcont .redcont-num li button {
+    display: block;
+    background: #fff;
+    border: 1px solid #d74751;
+    width: 90%;
+    margin: 8px auto;
+    color: #d74751;
+    font-size: 16px;
+    padding: 3px 0;
+    border-radius: 5px;
+}
+
+.redwrap .redcont .redcont-num li button em {
+    font-size: 26px;
+    margin-right: 5px;
+}
+
+.redwrap .redcont .redcont-head .redcont-headimg {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+.redwrap .redcont .redcont-head img {
+    width: 80px;
+    height: 80px;
+    border-radius: 100%;
+    margin: 0 auto;
+    display: block;
+    margin-top: 30px;
+}
+
+
+/*底部*/
+
+.footer {
+    width: 100%;
+    background: #f5f5f6;
+    border-top: 1px solid #d7d7d9;
+    position: absolute;
+    z-index: 5;
+    bottom: 0;
+    font-size: 14px;
+    overflow: hidden;
+}
+
+.footer textarea {
+    display: inline-block;
+    width: calc(100% - 80px);
+    min-height: 38px;
+    line-height: 25px;
+    padding: 6.5px 32px 6.5px 15px;
+    font-size: 16px;
+    text-align: justify;
+    border: 1px solid#c0c2c6;
+    border-radius: 20px;
+    background: #fff;
+    overflow: hidden;
+    overflow-y: auto;
+    overflow-scrolling: touch;
+    -moz-overflow-scrolling: touch;
+    -webkit-overflow-scrolling: touch;
+    resize: none;
+    box-sizing: border-box;
+}
+
+.footer .submitbut {
+    right: 4px;
+    bottom: 15px;
+    width: 70px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    border: 0 none;
+    background: #45c018;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 16px;
+    /*transform: rotate(90deg);*/
+    margin: 0 auto;
+    display: inline-block;
+    float: right;
+    margin-top: 5px;
+}
+
+.footer .right {
+    width: 30px;
+    min-height: 40px;
+    float: right;
+    overflow: hidden;
+    text-align: center;
+}
+
+.footer .right .openbut {
+    padding: 0;
+    margin: 0;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    border: 1px solid#83868c;
+    border-radius: 50%;
+    color: #7f8389;
+    background: transparent;
+    transition: all 0.4s ease-in-out;
+    margin-top: 5px;
+}
+
+.footer .tools {
+    clear: both;
+    overflow: hidden;
+    border-top: 1px solid #c0c2c6;
+    box-sizing: border-box;
+}
+
+.foot .tools ul {
+    padding: 10px;
+    overflow: hidden;
+}
+
+.foot .tools ul li {
+    float: left;
+    width: 25%;
+    padding: 5px 0;
+}
+
+.foot .tools ul li a {
+    display: block;
+    text-align: center;
+}
+
+.foot .tools ul li .iconfont {
+    width: 55px;
+    height: 55px;
+    line-height: 55px;
+    display: block;
+    border: 1px solid #dcdcdd;
+    color: #6f7378;
+    font-size: 28px;
+    background: #fff;
+    border-radius: 50%;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+.foot .tools ul li p {
+    color: #888;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.foot .right .openbut.in {
+    transform: rotate(225deg);
+}
+
+#dofavorite {
+    width: 2rem;
+}
+
+#see {
+    width: 2rem
+}
+
+
+/*分享*/
+
+.foot {
+    min-height: 190px;
+    display: none;
+    z-index: 11;
+    bottom: 0;
+    padding-top: 10px;
+}
+
+.foot .right {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
+
+.foot img {
+    width: 2.4rem;
+}
+
+.foot .tools {
+    border-top: 0;
+}
+
+.foot h5 {
+    color: #666;
+    text-align: center;
+    font-weight: normal;
+    padding: 0;
+    margin: 0;
+    font-size: 1rem;
+}
+
+.foot #opentool {
+    background: #fff;
+    text-align: center;
+    line-height: 50px;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    line-height: 50px;
+}
+
+.sh {
+    display: block;
+}
+
+.message-list li .user-msgw .user-msg {
+    text-align: left!important;
+}
+/* x xs */
+@media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+  .swiper-container {
+      top: 90px;
+  }
+  .users {
+      top: 95px;
+  }
+  .PTmessage-listbox {
+      top: 73px;
+  }
+  .PTmessage-list {
+      max-height: 300px;
+  }
+  .fast {
+      bottom: 30px
+  }
+  .footer {
+      padding-bottom: 10px;
+  }
+  .foot {
+      padding-bottom: 20px;
+  }
+}
+/* xr */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) {
+  .swiper-container {
+      top: 90px;
+  }
+  .users {
+      top: 95px;
+  }
+  .PTmessage-listbox {
+      top: 73px;
+  }
+  .PTmessage-list {
+      max-height: 300px;
+  }
+  .fast {
+      bottom: 30px
+  }
+  .footer {
+      padding-bottom: 10px;
+  }
+  .foot {
+      padding-bottom: 20px;
+  }
+}
+/* xs max */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) {
+  .swiper-container {
+      top: 90px;
+  }
+  .users {
+      top: 95px;
+  }
+  .PTmessage-listbox {
+      top: 73px;
+  }
+  .PTmessage-list {
+      max-height: 300px;
+  }
+  .fast {
+      bottom: 30px
+  }
+  .footer {
+      padding-bottom: 10px;
+  }
+  .foot {
+      padding-bottom: 20px;
+  }
+}

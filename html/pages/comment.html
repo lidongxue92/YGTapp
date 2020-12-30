@@ -1,0 +1,163 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>医管通APP</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/ygtcommon.css">
+    <link rel="stylesheet" href="../css/index/comment.css">
+<body >
+    <header class="top" id="header">
+        <h1>
+            <span class="left" onclick="api.closeWin()">关闭</span>
+            <span class="title"></span>
+            <span class="right ff9913" onclick="next()">发送</span>
+        </h1>
+    </header>
+    <div class="middle">
+        <input class="title" placeholder="标题" />
+        <textarea class="task" placeholder="内容"></textarea>
+    </div>
+</body>
+<script src="../js/lib/jquery-2.1.4.js"></script><script src="../js/common.js"></script>
+<script type="application/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+        //  禁止左右滑动
+        $api.fixStatusBar(header);
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+
+        if (api.pageParam.name == 'Answerdetails') {
+            $('.title').html('评论');
+            $('.middle .title').css('display','none');
+            $('.middle .task').focus();
+        }else{
+            $('.title').html('练习');
+            $('.middle .title').focus();
+        }
+
+    };
+
+    function Task() {
+        var task = $('.middle .task').val();
+
+        if (task == '') {
+            api.alert({
+                title: '',
+                msg: '内容不可以为空',
+            }, function(ret, err){
+                if( ret ){
+                    // alert( JSON.stringify( ret ) );
+                }
+            });
+            return false
+        }
+    }
+    function next() {
+        if (Task() != false) {
+            if (api.pageParam.name == 'Answerdetails') {
+                api.ajax({
+                    url: wtkurl +'classroomlist/commentanswer',
+                    method: 'post',
+                    headers: {
+                        'TOKEN':ygtuserinfo.token
+                    },
+                    data: {
+                        values: {
+                            answerid:api.pageParam.id,
+                            uid:ygtuserinfo.id,
+                            content:$('.task').val()
+                        },
+                    }
+                }, function(data, err) {
+                    console.log(JSON.stringify(data));
+                    if (data.code == 1) {
+                        api.alert({
+                            title:'' ,
+                            msg: data.msg,
+                        }, function(ret, err){
+                            if (ret.buttonIndex ==1) {
+                                api.closeWin()
+                            }
+                        });
+                    }else{
+                        if (data.msg == '您已经回答过这作业了') {
+                            api.alert({
+                                title:'' ,
+                                msg: data.msg,
+                            }, function(ret, err){
+                                if (ret.buttonIndex ==1) {
+                                    api.closeWin()
+                                }
+                            });
+                        }
+                        api.alert({
+                            title:'' ,
+                            msg: data.msg,
+                        }, function(ret, err){
+                            if (ret.buttonIndex ==1) {
+
+                            }
+                        });
+                    }
+                });
+            }else{
+                api.ajax({
+                    url: wtkurl +'classroomlist/createAnswer',
+                    method: 'post',
+                    headers: {
+                        'TOKEN':ygtuserinfo.token
+                    },
+                    data: {
+                        values: {
+                            questionid:api.pageParam.id,
+                            uid:ygtuserinfo.id,
+                            atitle:$('.middle .title').val(),
+                            answer:$('.task').val()
+                        },
+                    }
+                }, function(data, err) {
+                    console.log(JSON.stringify(data));
+                    if (data.code == 1) {
+                        api.alert({
+                            title:'' ,
+                            msg: data.msg,
+                        }, function(ret, err){
+                            if (ret.buttonIndex ==1) {
+                                api.closeWin()
+                            }
+                        });
+
+                    }else{
+                        api.alert({
+                            title:'' ,
+                            msg: data.msg,
+                        }, function(ret, err){
+
+                        });
+                    }
+                });
+            }
+        }
+    }
+</script>
+
+</html>

@@ -1,0 +1,208 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>医管通APP</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/ygtcommon.css">
+    <link rel="stylesheet" href="../css/index/relation.css">
+<body >
+    <header class="top" id="header">
+        <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span class="title">关联课时</span>
+            <span class="right" onclick="Arrangement()">布置</span>
+        </h1>
+    </header>
+    <div class="middle">
+         <!-- <div class="list selected">
+            <img src="../img/classroom.jpg" />
+            <div class="right">
+                <h5 class="title">88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888</h5>
+                <p>2019-08-05</p>
+            </div>
+        </div> -->
+    </div>
+</body>
+<script src="../js/lib/jquery-2.1.4.js"></script><script src="../js/common.js"></script>
+<script type="application/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+        //  禁止左右滑动
+        $api.fixStatusBar(header);
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+        var top = $api.offset($api.byId('header')).h;
+        api.openFrame({
+            name: 'relationframe',
+            url: './relationframe.html',
+            rect: {
+                marginLeft:0,    //相对父 window 左外边距的距离
+                marginTop:top,    //相对父 window 上外边距的距离
+                marginBottom:0,    //相对父 window 下外边距的距离
+                marginRight:0
+            },
+            pageParam: {
+                id: api.pageParam.id
+            },
+            bounces: true,
+            vScrollBarEnabled: false,
+            hScrollBarEnabled: false
+        });
+
+    };
+
+    function Arrangement() {
+        taskid  =  $api.getStorage('taskid');
+        tasktitle = $api.getStorage('tasktitle');
+        tasknote = $api.getStorage('tasknote');
+        relquestionid = $api.getStorage('relquestionid');
+        if (relquestionid != '') {
+          api.confirm( {
+            title: '提示',
+            msg: '该课程已经有作业了，确定重新布置作业吗？',
+            buttons: [ '确定', '取消' ]
+          }, function ( ret, err ) {
+            var index = ret.buttonIndex;
+            if ( index == 1 ) {
+              if (taskid) {
+                  api.ajax({
+                      url: wtkurl +'classroomlist/editTask',
+                      method: 'post',
+                      headers: {
+                          'TOKEN':ygtuserinfo.token
+                      },
+                      data: {
+                          values: {
+                              questionid: relquestionid,
+                              question: tasktitle,
+                              note: tasknote,
+                              uid:ygtuserinfo.id
+                          },
+                      }
+                  }, function(data, err) {
+                      //alert(JSON.stringify(data));
+                      if (data) {
+                          if (data.code != 1) {
+                              api.alert({
+                                  title: '',
+                                  msg: data.msg,
+                              }, function(ret, err){
+
+                              });
+
+                          }else{
+                              api.alert({
+                                  title: '',
+                                  msg: '布置成功',
+                              }, function(ret, err){
+                                  if (ret.buttonIndex == 1) {
+                                      api.closeWin({
+                                          name: 'homework'
+                                      });
+                                      api.closeWin({
+                                          name: 'custom'
+                                      });
+                                      api.closeWin();
+
+                                  }
+                              });
+                          }
+                      } else {
+                          console.log('接口错误信息getchatlist：');
+                          console.log(JSON.stringify(err));
+                      }
+                  });
+              }else{
+                  api.alert({
+                      title: '',
+                      msg: '请选择关联课时',
+                  }, function(ret, err){
+
+                  });
+              }
+            }
+          } )
+
+
+        }else{
+          if (taskid) {
+              api.ajax({
+                  url: wtkurl +'classroomlist/createTask',
+                  method: 'post',
+                  headers: {
+                      'TOKEN':ygtuserinfo.token
+                  },
+                  data: {
+                      values: {
+                          classroomid: taskid,
+                          question: tasktitle,
+                          note: tasknote,
+                          uid:ygtuserinfo.id
+                      },
+                  }
+              }, function(data, err) {
+                  //alert(JSON.stringify(data));
+                  if (data) {
+                      if (data.code != 1) {
+                          api.alert({
+                              title: '',
+                              msg: data.msg,
+                          }, function(ret, err){
+
+                          });
+
+                      }else{
+                          api.alert({
+                              title: '',
+                              msg: '布置成功',
+                          }, function(ret, err){
+                              if (ret.buttonIndex == 1) {
+                                  api.closeWin({
+                                      name: 'homework'
+                                  });
+                                  api.closeWin({
+                                      name: 'custom'
+                                  });
+                                  api.closeWin();
+
+                              }
+                          });
+                      }
+                  } else {
+                      console.log('接口错误信息getchatlist：');
+                      console.log(JSON.stringify(err));
+                  }
+              });
+          }else{
+              api.alert({
+                  title: '',
+                  msg: '请选择关联课时',
+              }, function(ret, err){
+
+              });
+
+          }
+        }
+
+    }
+</script>
+
+</html>

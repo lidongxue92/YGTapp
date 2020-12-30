@@ -1,0 +1,647 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>医管通APP</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/ygtcommon.css" />
+    <link rel="stylesheet" type="text/css" href="../css/swder.css" />
+    <link rel="stylesheet" href="../css/index/classificationframe.css">
+    <body>
+        <!-- 头部 -->
+        <section data-url='index'>
+            <div class="live free line Special" data-sta=''>
+                <h5>系列课</h5>
+                <div id="Specialcolumn" style="margin-top:10px">
+                </div>
+                <a class="more Specialmore" onclick="Specialcolumn();">查看更多&ensp;<img src="../img/back_light.png" /></a>
+            </div>
+            <div class="live free line" data-sta=''>
+                <h5>微课</h5>
+                <div id="beginlist"></div>
+                <!-- <div class="freeclass">
+                    <img src="./img/classroom.jpg" />
+                    <div class="right">
+                        <h5 class="title">附近都看啦刚看到阿来概括的来看该路段看该路口的附近都看啦刚看到阿来概括的来看该路段看该路口的</h5>
+                        <p>
+                            <span class="Browsing"><b>657</b>人在学</span>
+                            <span class="charge">￥19.9</span>
+                        </p>
+                    </div>
+                </div> -->
+                <a class="more linemore" onclick="Livebroadcast();">查看更多&ensp;<img src="../img/back_light.png" /></a>
+            </div>
+            <!-- <div class="live free line word">
+                <h5>文库</h5>
+                <div id="wordlist"></div>
+                    <div class="freeclass">
+                    <img src="../img/58ad34652e7eb.png" />
+                    <div class="right">
+                        <h5 class="title">附近都看啦刚看到阿来概括的来看该路段看该路口的附近都看啦刚看到阿来概括的来看该路段看该路口的</h5>
+                        <p>
+                            <span class="Browsing"><b>657</b>人阅读</span>
+                        </p>
+                    </div>
+                </div>
+                <a class="more" onclick="Livebroadcast();">查看更多&ensp;<img src="../img/back_light.png" /></a>
+            </div> -->
+            <div class="live free openlist" data-sta=''>
+                <h5>线下训练营</h5>
+                <div id="openlist">
+                </div>
+                <!-- <div class="list">
+                <img src="./img/classroom.jpg" />
+                <div class="right">
+                    <h5 class="title">附近都看啦刚看到阿来概括的来看该路段看该路口的附近都看啦刚看到阿来概括的来看该路段看该路口的</h5>
+                    <p>
+                        <span class="address">上海市</span>
+                        <span class="time">2019-08-05</span>
+                    </p>
+                </div>
+                <span class="sub">报名</span> -->
+                <a class="more openlistmore" onclick="openclass();">查看更多&ensp;<img src="../img/back_light.png" /></a>
+            </div>
+
+        </section>
+        <div class="loading">
+            <span>
+                <img src="../img/loading.gif" />
+            </span>
+        </div>
+        <div class="message">暂无更多数据</div>
+    </body>
+    <script src="../js/lib/jquery-2.1.4.js"></script><script src="../js/common.js"></script>
+    <script src="../js/jquery-weui.js"></script>
+    <script src="../js/swiper.min.js" charset='utf-8'></script>
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="application/javascript">
+        var apihost = $api.getStorage('apihost');
+        if (apihost == undefined || apihost == '') {
+            apihost = 'http://member.ygt.cm';
+            $api.setStorage('apihost', apihost);
+        }
+
+        var ygtuserinfo = '';
+        var myswiper = '';
+        var systemtype = '';
+        var iswxpay = $api.getStorage('iswxpay');
+        var typeid = '';
+        var loading = false;
+        var classification ='';
+        apiready = function() {
+            systemtype = api.systemType;
+            $(".loading").show();
+            ygtuserinfo = $api.getStorage('ygtuserinfo');
+            console.log(JSON.stringify(ygtuserinfo));
+            typeid = 0;
+            api.setRefreshHeaderInfo({
+                bgColor: '#fefefe',
+                textColor: '#999',
+                textDown: '下拉刷新...',
+                textUp: '松开刷新...',
+                //  textLoading:'<img src="widget://img/loading.gif" />',
+                showTime: false
+            }, function(ret, err) {
+                //在这里从服务器加载数据，加载完成后调用api.refreshHeaderLoadDone()方法恢复组件到默认状态
+                page = 1;
+                $api.html($api.byId('Tolist'), '');
+                api.refreshHeaderLoading();
+                Special();
+                livelode();
+                openload();
+                if (loading) loading = false;
+                 //api.refreshHeaderLoadDone();
+            });
+            Special();
+            livelode();
+            openload();
+            //  禁止左右滑动
+            api.setWinAttr({
+                slidBackEnabled: false
+            });
+            //  禁止左右滑动
+        };
+
+        //专栏课程
+        function Special() {
+            api.ajax({
+                url: wtkurl +'Special/getSpeicalList',
+                method: 'post',
+                headers: {
+                    //'TOKEN': ygtuserinfo.token
+                },
+                data: {
+                    values: {
+                        //uid: ygtuserinfo.id,
+                        page: 1,
+                        pagesize: 3,
+                        typeid: api.pageParam.typeid
+                    }
+                }
+            }, function(ret, err) {
+                $('#Specialcolumn').html(' ')
+                console.log(JSON.stringify(ret)+'xilei');
+                console.log(JSON.stringify(err) + '报错');
+                if (ret) {
+                    if (ret.data.total == 0) {
+                        $('.Special').hide();
+                    } else if (ret.data.total > 3 ) {
+                        $('.Special .Specialmore').show();
+                    } else {
+
+                        $('.Special .Specialmore').hide();
+                        $('.message').hide();
+                    }
+                    $(".loading").hide();
+                    if (ret.code == 1) {
+                        var len = ret.data.result.length;
+                        var html = '';
+                        for (var i = 0; i < len; i++) {
+                            html += '<div class="freeclass"  onclick="Specialguide(' + ret.data.result[i]['id'] + ');" >';
+                            html += '<img class="Specialcolumnimg"  src="' + ret.data.result[i]['pic'] + '" />' +
+                                '<div class="right">' +
+                                '<h5 class="title">' + ret.data.result[i]['name'] + '</h5>' +
+                                '<p>' + ret.data.result[i]['listtitle'] + '</p>'
+                            if (ret.data.result[i]['style'] == 1) {
+                                html += '<p><span class="charge">免费</span></p>';
+                            } else if (ret.data.result[i]['style'] == 2) {
+                                html += '<p><span class="charge">密码</span></p>';
+                            } else {
+                                if (ret.data.result[i]['limitpaying'] == 1) {
+                                    html += '<p><span style="float:right;"><b  class="charge">￥' + ret.data.result[i]['price'] + '</b><b class="freebth">限免</b></span></p>';
+                                } else {
+                                    if (viplist.includes(ret.data.result[i]['list_id']) && $api.getStorage('isitamember') !=undefined || $api.getStorage('isitsevenamember') !=undefined) {
+                                        html += '<p><span class="charge">会员免费</span><span class="pricecancel">￥' + ret.data.result[i]['price'] + '</span></p>';
+                                    } else {
+                                        html += '<p><span class="charge">￥' + ret.data.result[i]['price'] + '</span></p>';
+                                    }
+                                }
+                              }
+                            html += '</div>' +
+                                '</div>';
+                        }
+                        $api.append($api.byId('Specialcolumn'), html);
+                        if (ret.data.total <=3) {
+                            if (ret.data.result.length <= 3) {
+                                var html2 = '';
+                                html2 += "<div class='lasttitle'>暂无更多数据</div>";
+                                $api.append($api.byId('Specialcolumn'), html2);
+                            }
+                        }
+
+                    }
+                }
+                api.refreshHeaderLoadDone();
+            });
+        }
+        //线上课模块
+        function livelode() {
+            // var liveurl = wtkurl +'classroom/overClassroomlist';
+            liveurl = wtkurl +'classroom/getClassroomList';
+            var pagesize = 5
+            $('.line .linemore').show();
+            api.ajax({
+                url: liveurl,
+                method: 'post',
+                headers: {
+                    // 'TOKEN': ygtuserinfo.token
+                },
+                data: {
+                    values: {
+                        page: 1,
+                        pagesize: pagesize,
+                        // uid: ygtuserinfo.id
+                        typeid: api.pageParam.typeid
+                    }
+                }
+            }, function(ret, err) {
+                console.log('直播课程:');
+                console.log(JSON.stringify(ret));
+                $(".loading").hide();
+                if (ret) {
+                    if (ret.code == 1) {
+                        if (ret.data.total == 0) {
+                            $('.line').hide();
+                            $('.message').show();
+                        } else if (ret.data.total > 5 && ret.data.total != 0) {
+                            $('.line .linemore').show();
+                        }else{
+                            $('.line .linemore').hide();
+                        }
+
+                        $api.html($api.byId('beginlist'), '');
+                        var len = ret.data.result.length;
+                        var html = '';
+                        for (var i = 0; i < len; i++) {
+                            html += '<div class="freeclass" tapmode onclick="openguide(' + ret.data.result[i]['id'] + ');" >';
+                            html += '<img src="' + ret.data.result[i]['thumb'] + '" />' +
+                                '<div class="right">' +
+                                '<h5 class="title" id="title">' + ret.data.result[i]['name'] + '</h5>'+
+                                '<p class="Browsing">'+ ret.data.result[i]['listtitle'] +'</p><p class="Browsing">'
+                            var count = ret.data.counts[ret.data.result[i]['id']];
+                            if (count > 300) {
+                                html += '<span >' + count + ' 人在学</span>';
+                            }
+                            if (ret.data.result[i]['style'] == 1) {
+                                html += '<span class="charge">免费</span></p>';
+                            } else if (ret.data.result[i]['style'] == 2) {
+                                html += '<span class="charge">密码</span></p>';
+                            } else {
+                                if (ret.data.result[i]['limitpaying'] == 1) {
+                                    html += '<span style="float:right;"><b  class="charge">￥' + ret.data.result[i]['price'] + '</b><b class="freebth">限免</b></span></p>';
+                                } else {
+                                    if (viplist.includes(ret.data.result[i]['listid']) && $api.getStorage('isitamember') !=undefined || $api.getStorage('isitsevenamember') !=undefined) {
+                                        html += '<span class="charge">会员免费</span><span class="pricecancel">￥' + ret.data.result[i]['price'] + '</span></p>';
+                                    } else {
+                                        html += '<span class="charge">￥' + ret.data.result[i]['price'] + '</span></p>';
+                                    }
+                                }
+                              }
+
+                            html += '</div>' +
+                                '</div>';
+                        }
+                        $api.append($api.byId('beginlist'), html);
+                        if (ret.data.total <=5) {
+                            if (ret.data.result.length <= 5 ) {
+                                var html2 = '';
+                                html2 += "<div class='lasttitle'>暂无更多数据</div>";
+                                $api.append($api.byId('beginlist'), html2);
+                            }
+                        }
+
+                    }
+                } else {
+                    console.log(JSON.stringify(err));
+                }
+            });
+        }
+        //公开课模块
+        function openload() {
+            var liveurl = wwwurl +'course/getCourses';
+            var pagesize = 3
+            $('.openlist .openlistmore').show();
+            if (typeid != 0) {
+                pagesize = 10
+                $('.openlist .openlistmore').hide();
+            }
+            api.ajax({
+                url: liveurl,
+                method: 'post',
+                headers: {
+                    // 'TOKEN': ygtuserinfo.token
+                },
+                data: {
+                    values: {
+                        page: '1',
+                        pagesize: pagesize,
+                        type: '0',
+                        typeid: api.pageParam.typeid
+                            // uid: ygtuserinfo.id
+                    },
+                }
+            }, function(ret, err) {
+                if (ret) {
+                    if (ret.code == 1) {
+                        console.log('显现客')
+                        console.log(JSON.stringify(ret.data));
+                        if (ret.data.total == 0) {
+                            $('.openlist').hide();
+                        } else if (ret.data.total > 3 && ret.data.total != 0) {
+                            $('.openlist .openlistmore').show();
+                            setTimeout('$(".message").hide()', '500');
+                        } else {
+                            $('.openlist .openlistmore').hide();
+                            setTimeout('$(".message").hide()', '500');
+                        }
+                        $api.html($api.byId('openlist'), '');
+                        var len = ret.data.result.length;
+                        var html = '';
+                        for (var i = 0; i < len; i++) {
+                            html += '<div  class="list" onclick="coursedetail(' + ret.data.result[i]['id'] + ');" >' +
+                                '<img src="' + ret.data.result[i]['smeta']['thumb'] + '" />' +
+                                '<div class="right">' +
+                                '<h5 class="title">' + ret.data.result[i]['showtitle'] + '</h5>' +
+                                '<p>';
+                            html += '<span class="address">' + ret.data.result[i]['shortaddress'] + '</span>' +
+                                '<span class="time">' + ret.data.result[i]['begintime'] + '</span>' +
+                                '</p>' +
+                                '</div>' +
+                                '<span class="sub">报名</span></div>';
+                        };
+
+                        $api.append($api.byId('openlist'), html);
+                        if (ret.data.total <=3) {
+                            if (ret.data.result.length <= 3) {
+                                var html2 = '';
+                                html2 += "<div class='lasttitle'>暂无更多数据</div>";
+                                $api.append($api.byId('openlist'), html2);
+                            }
+                        }
+
+
+                    }
+
+
+                } else {
+                    console.log(JSON.stringify(err) + 'ccccc');
+                }
+            });
+        }
+        //banner跳转
+        function openbanner(forse, id) {
+            if (forse == 'live') {
+                api.openWin({
+                    name: 'guide',
+                    url: './guide.html',
+                    pageParam: {
+                        id: id
+                    }
+                });
+            } else if (forse == 'course') {
+                api.openWin({
+                    name: 'coursedetail',
+                    url: './coursedetail.html',
+                    pageParam: {
+                        id: id
+                    }
+                });
+            }
+        }
+        //线上课
+        function Livebroadcast() {
+            var id = api.pageParam.typeid
+            api.openWin({
+                name: 'livebroadcast',
+                url: './livebroadcast.html',
+                pageParam: {
+                    classification:api.pageParam.classification,
+                    id: id
+                },
+                bgColor: 'rgba(0,0,0,0)',
+                reload: true,
+                animation: {
+                    type: 'none'
+                }
+            })
+        }
+
+        //系列课 跳转
+        function Specialcolumn() {
+            var id = api.pageParam.typeid
+            // alert(api.pageParam.classification);
+            api.openWin({
+                name: 'specialcolumn',
+                url: './specialcolumn.html',
+                pageParam: {
+                    classification:api.pageParam.classification,
+                    id: id
+                },
+                bgColor: 'rgba(0,0,0,0)',
+                reload: true,
+                animation: {
+                    type: 'none'
+                }
+            })
+        }
+        //公开课
+        function openclass() {
+            api.openWin({
+                name: 'openclass',
+                url: './openclass.html',
+                pageParam: {
+                    name: 'test'
+                },
+                bgColor: 'rgba(0,0,0,0)',
+                animation: {
+                    type: 'none'
+                }
+            })
+        }
+        //公开课详情
+        function coursedetail(id) {
+            api.openWin({
+                name: 'coursedetail',
+                url: './coursedetail.html',
+                pageParam: {
+                    name: 'test',
+                    id: id
+                },
+                bgColor: 'rgba(0,0,0,0)',
+                animation: {
+                    type: 'none'
+                }
+            })
+        }
+        // 购买课程
+        function openguide(id) {
+            api.openWin({
+                name: 'guide',
+                url: './guide.html',
+                pageParam: {
+                    name: 'test',
+                    id: id
+                },
+                reload: true,
+                animation: {
+                    type: 'none'
+                }
+            });
+
+
+        }
+        //免费课
+        function Management() {
+            api.openWin({
+                name: 'management',
+                url: './management.html',
+                pageParam: {
+                    name: 'test'
+                },
+                animation: {
+                    type: 'none'
+                }
+            });
+        }
+        // 会员
+        function vip() {
+            api.openWin({
+                name: 'vip',
+                url: './vip.html',
+                pageParam: {
+                    name: 'test'
+                },
+                animation: {
+                    type: 'none'
+                }
+            });
+        }
+        // 医培云
+        function openypy() {
+            api.openWin({
+                name: 'homenew',
+                url: '../html/homenew.html',
+                pageParam: {
+                    name: 'test'
+                },
+                animation: {
+                    type: 'none'
+                }
+            });
+        }
+        //回顾语音ppt
+        function classroomhistory(id) {
+            ygtuserinfo = $api.getStorage('ygtuserinfo');
+            if (ygtuserinfo.id == -1 || ygtuserinfo == undefined) {
+                api.openWin({
+                    name: 'loginframe',
+                    url: './loginframe.html',
+                    animation: {
+                        type: 'none'
+                    }
+                });
+
+            } else {
+                api.openWin({
+                    name: 'classroomhistory',
+                    url: './classroomhistory.html',
+                    pageParam: {
+                        name: 'test',
+                        id: id
+                    }
+                });
+            }
+        }
+        //直播详情
+        function classroom(id) {
+            ygtuserinfo = $api.getStorage('ygtuserinfo');
+            if (ygtuserinfo.id == -1 || ygtuserinfo == undefined) {
+                api.openWin({
+                    name: 'loginframe',
+                    url: './loginframe.html',
+                    animation: {
+                        type: 'none'
+                    }
+                });
+
+            } else {
+                api.openWin({
+                    name: 'classroom',
+                    url: './classroom.html',
+                    pageParam: {
+                        id: id
+                    }
+                });
+            }
+
+        }
+        // 打开直播视频
+        function openvideo(id) {
+            ygtuserinfo = $api.getStorage('ygtuserinfo');
+            if (ygtuserinfo.id == -1 || ygtuserinfo == undefined) {
+                api.openWin({
+                    name: 'loginframe',
+                    url: './loginframe.html',
+                    animation: {
+                        type: 'none'
+                    }
+                });
+
+            } else {
+                api.openWin({
+                    name: 'classroomvide',
+                    url: './classroomvide.html',
+                    pageParam: {
+                        id: id
+                    }
+                });
+            }
+
+        }
+        // 打开回顾视频
+        function openvideohistory(id) {
+            ygtuserinfo = $api.getStorage('ygtuserinfo');
+            if (ygtuserinfo.id == -1 || ygtuserinfo == undefined) {
+                api.openWin({
+                    name: 'loginframe',
+                    url: './loginframe.html',
+                    animation: {
+                        type: 'none'
+                    }
+                });
+
+            } else {
+                api.openWin({
+                    name: 'clsromvdohistory',
+                    url: './clsromvdohistory.html',
+                    pageParam: {
+                        id: id
+                    }
+                });
+            }
+
+        }
+        //打开单课音频
+        function openaudioclass(id) {
+            ygtuserinfo = $api.getStorage('ygtuserinfo');
+            var url1 = $('section').attr('data-url')
+            $api.setStorage('url', url1);
+            $api.setStorage('url1', url1);
+            if (ygtuserinfo.id == -1 || ygtuserinfo == undefined) {
+                api.openWin({
+                    name: 'loginframe',
+                    url: './loginframe.html',
+                    animation: {
+                        type: 'none'
+                    }
+                });
+
+            } else {
+                api.openWin({
+                    name: 'sigleaudio',
+                    url: './sigleaudio.html',
+                    pageParam: {
+                        id: id
+                    },
+                    animation: {
+                        type: 'none'
+                    },
+                    reload: true
+                });
+            }
+
+        }
+        //音频系列付费
+        function Specialguide(id) {
+            ygtuserinfo = $api.getStorage('ygtuserinfo');
+            var url1 = $('section').attr('data-url')
+            $api.setStorage('url1', url1);
+            if (ygtuserinfo.id == -1 || ygtuserinfo == undefined) {
+                api.openWin({
+                    name: 'loginframe',
+                    url: './loginframe.html',
+                    animation: {
+                        type: 'none'
+                    }
+                });
+
+            } else {
+                api.openWin({
+                    name: 'specialguide',
+                    url: './special/specialguide.html',
+                    pageParam: {
+                        id: id
+                    },
+                    reload: true
+                });
+            }
+
+        }
+
+
+    </script>
+
+</html>

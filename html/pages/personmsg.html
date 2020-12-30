@@ -1,0 +1,377 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>医管通APP</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/ygtcommon.css">
+    <link rel="stylesheet" href="../css/index/personmsg.css">
+    <style>
+        .redrequire {
+            color: red;
+        }
+    </style>
+
+    <body>
+        <header class="top" id="header">
+            <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span class="title">完善用户信息</span>
+        </h1>
+        </header>
+        <div class="middle">
+
+            <div class="name">
+                <!-- <h5 style="color:#ff9913;font-size:12px">注：填写信息即可领取7天免费会员，7天会员期内购买年卡会员额外赠送2个月会员</h5> -->
+                <h5><img src="../img/xuantian.png">个人信息</h5>
+                <p>
+                    <span><em class="redrequire">*</em> 姓名：<input type="text" class="truename"></span>
+                    <span>手机号：<input type="text" maxlength="11" class="phone"></span>
+                </p>
+                <p>详细地址：<input type="text" id='address' class="address"></p>
+            </div>
+            <div class="area" id="addressarea">
+                <h5><img src="../img/bitian.png">机构所属区域</h5>
+                <ul>
+                    <li onclick="area(this);" addressid='1'>华东</li>
+                    <li onclick="area(this);" addressid='2'>华中</li>
+                    <li onclick="area(this);" addressid='3'>华南</li>
+                    <li onclick="area(this);" addressid='4'>华北</li>
+                    <li onclick="area(this);" addressid='5'>东北</li>
+                    <li onclick="area(this);" addressid='6'>西南</li>
+                    <li onclick="area(this);" addressid='7'>西北</li>
+                    <li onclick="area(this);" addressid='8'>港澳台地区</li>
+                </ul>
+            </div>
+
+            <div class="nature">
+                <h5><img src="../img/bitian.png">任职医疗机构性质</h5>
+                <ul>
+                    <li onclick="nature(this);" natureid='4'>公立</li>
+                    <li onclick="nature(this);" natureid='3'>民营营利</li>
+                    <li onclick="nature(this);" natureid='2'>民营非营利</li>
+                </ul>
+            </div>
+            <div class="level">
+                <h5><img src="../img/bitian.png">任职医疗机构等级</h5>
+                <ul>
+                    <li onclick="level(this);" levelid='1'>三级甲等</li>
+                    <li onclick="level(this);" levelid='2'>三级乙等</li>
+                    <li onclick="level(this);" levelid='3'>二级甲等</li>
+                    <li onclick="level(this);" levelid='4'>二级乙等</li>
+                    <li onclick="level(this);" levelid='5'>一级甲等</li>
+                    <li onclick="level(this);" levelid='6'>一级乙等</li>
+                    <li onclick="level(this);" levelid='0'>未定级</li>
+                </ul>
+            </div>
+            <div class="job">
+                <h5><img src="../img/bitian.png">您的职位（可多选）</h5>
+                <ul>
+                    <li onclick="job(this);" datajob="1">医院主管</li>
+                    <li onclick="job(this);" datajob="2">医生</li>
+                    <li onclick="job(this);" datajob="3">护理</li>
+                    <li onclick="job(this);" datajob="4">医技</li>
+                    <li onclick="job(this);" datajob="5">行政职能</li>
+                    <li onclick="job(this);" datajob="6">后勤</li>
+                </ul>
+            </div>
+            <div class="like">
+                <h5><img src="../img/bitian.png">您的兴趣（可多选）</h5>
+                <ul>
+                    <li onclick="like(this);" datalike='1'>质量安全</li>
+                    <li onclick="like(this);" datalike='2'>医务管理</li>
+                    <li onclick="like(this);" datalike='3'>护理管理</li>
+                    <li onclick="like(this);" datalike='4'>运营管理</li>
+                    <li onclick="like(this);" datalike='5'>市场营销</li>
+                    <li onclick="like(this);" datalike='6'>优质服务</li>
+                    <li onclick="like(this);" datalike='7'>财务/成本</li>
+                    <li onclick="like(this);" datalike='8'>后勤管理</li>
+                    <li onclick="like(this);" datalike='9'>人力资源</li>
+                    <li onclick="like(this);" datalike='10'>流程再造</li>
+                    <li onclick="like(this);" datalike='11'>信息化管理</li>
+                    <li onclick="like(this);" datalike='12'>其他</li>
+                </ul>
+            </div>
+            <a class="bth">提交</a>
+        </div>
+    </body>
+    <script src="../js/lib/jquery-2.1.4.js"></script>
+    <script src="../js/common.js"></script>
+    <script type="application/javascript" src="../script/api.js"></script>
+    <script type="text/javascript">
+        var apihost = $api.getStorage('apihost');
+        if (apihost == undefined || apihost == '') {
+            apihost = 'http://member.ygt.cm';
+            $api.setStorage('apihost', apihost);
+        }
+        var ygtuserinfo = $api.getStorage('ygtuserinfo');
+        var jobobj = [];
+        var likeobj = [];
+        var issevenvip = '';
+        apiready = function() {
+            //输出Log，Log将显示在APICloud Studio控制台
+            console.log("Hello World! Hello APICloud!");
+            var header = $api.byId('header');
+            $api.fixStatusBar(header);
+            //  禁止左右滑动
+            api.setWinAttr({
+                slidBackEnabled: false
+            });
+            //  禁止左右滑动
+            $api.fixStatusBar(header);
+            //ygtuserinfo = $api.getStorage('ygtuserinfo');
+            api.addEventListener({
+                name: 'viewappear'
+            }, function(ret, err) {
+                ygtuserinfo = $api.getStorage('ygtuserinfo');
+                console.log(JSON.stringify(ygtuserinfo));
+                checkperson();
+            });
+        };
+
+        function checkperson() {
+            api.ajax({
+                url: wtkurl + 'myhome/getperson',
+                method: 'post',
+                headers: {
+                    'TOKEN': ygtuserinfo.token
+                },
+                data: {
+                    values: {
+                        uid: ygtuserinfo.uid,
+                    }
+                }
+            }, function(ret, err) {
+                if (ret) {
+                    if (ret.code == 1) {
+                        console.log(JSON.stringify(ret))
+                        let salesinfo = $api.getStorage('salesinfo');
+                        let activeid = $api.getStorage('activeid');
+                        let oldTime = parseInt(new Date().getTime() / 1000);
+                        if (ret.data != '') {
+                            $('.truename').val(ret.data.truename);
+                            $('.phone').val(ret.data.phone);
+                            $('.address').val(ret.data.address);
+                            // 地区
+                            $('.area li').each(function(i) {
+                                    if ($('.area li').eq(i).attr('addressid') == ret.data.area) {
+
+                                        $('.area li').eq(i).addClass('active')
+                                    }
+                                })
+                                // 机构性质
+                            $('.nature li').each(function(i) {
+                                    if ($('.nature li').eq(i).attr('natureid') == ret.data.comkind) {
+                                        $('.nature li').eq(i).addClass('active')
+                                    }
+                                })
+                                // 机构等级
+                            $('.level li').each(function(i) {
+                                    if ($('.level li').eq(i).attr('levelid') == ret.data.comgrade) {
+                                        $('.level li').eq(i).addClass('active')
+                                    }
+                                })
+                                // 职位
+                            $('.job li').each(function(i) {
+                                    if (ret.data.jobtype.includes($('.job li').eq(i).attr('datajob'))) {
+                                        $('.job li').eq(i).addClass('active')
+                                    }
+                                })
+                                // 兴趣
+                            $('.like li').each(function(i) {
+                                if (ret.data.interest.includes($('.like li').eq(i).attr('datalike'))) {
+                                    $('.like li').eq(i).addClass('active')
+                                }
+                            })
+                        }
+                        if (salesinfo != undefined && salesinfo.begintime < oldTime && salesinfo.endtime > oldTime) {
+
+                            if (salesinfo.sales_type == 2) {
+                                api.ajax({
+                                    url: wtkurl + 'myhome/addsevenvip',
+                                    method: 'post',
+                                    headers: {
+                                        'TOKEN': ygtuserinfo.token
+                                    },
+                                    data: {
+                                        values: {
+                                            uid: ygtuserinfo.uid,
+                                            salesid: activeid
+                                        }
+                                    }
+                                }, function(ret, err) {
+                                    console.log(JSON.stringify(ret));
+                                    console.log(JSON.stringify(err));
+                                    if (ret.code == 1) {
+
+                                    } else {
+                                        //alert(ret.msg)
+                                    }
+                                });
+                            } else {
+                                if (ret.data.isseven == 1) {
+                                    issevenvip = ret.data.isseven;
+                                } else {
+                                    // 没有领取过7天会员，活动期间
+
+                                }
+                            }
+                        }
+
+                    }
+                } else {
+                    alert(err.msg);
+                    return;
+                }
+            });
+        }
+        //地区
+        function area(addressobj) {
+            $(".area li").removeClass('active')
+            $api.addCls(addressobj, 'active');
+        }
+        //性质
+        function nature(natureobj) {
+            $(".nature li").removeClass('active')
+            $api.addCls(natureobj, 'active');
+        }
+        //级别
+        function level(levelobj) {
+            $(".level li").removeClass('active')
+            $api.addCls(levelobj, 'active');
+        }
+        //职位
+        function job(obj) {
+            $api.toggleCls(obj, 'active');
+        }
+        //兴趣
+        function like(obj) {
+            $api.toggleCls(obj, 'active');
+        }
+        // 提交资料
+        $('.bth').click(function() {
+            salesinfo = $api.getStorage('salesinfo');
+            if ($api.val($api.dom('.truename')) == '') {
+                alert('姓名不能为空');
+                return;
+            }
+            if ($('.area .active').attr('addressid') == '' || $('.area .active').attr('addressid') == undefined) {
+                alert('机构所在区域不能为空');
+                return;
+            }
+            if ($('.level .active').attr('levelid') == '' || $('.level .active').attr('levelid') == undefined) {
+                alert('机构等级不能为空');
+                return;
+            }
+            if ($('.nature .active').attr('natureid') == '' || $('.nature .active').attr('natureid') == undefined) {
+                alert('机构性质不能为空');
+                return;
+            }
+            // 职位
+            jobtype = '';
+            $('.job .active').each(function(i) {
+                jobtype += $(this).attr('datajob') + ',';
+            });
+            if (jobtype == '') {
+                jobtype = '';
+                alert('职位不能为空');
+                return;
+            } else {
+                jobtype = "," + jobtype;
+            }
+            // 兴趣
+            interest = '';
+            $('.like .active').each(function(i) {
+                interest += $(this).attr('datalike') + ',';
+            });
+            if (interest == '') {
+                interest = '';
+                alert('兴趣不能为空')
+                return;
+            } else {
+                interest = "," + interest;
+            }
+            api.ajax({
+                url: wtkurl + 'myhome/saveperson',
+                method: 'post',
+                headers: {
+                    'TOKEN': ygtuserinfo.token
+                },
+                data: {
+                    values: {
+                        uid: ygtuserinfo.uid,
+                        truename: $('.truename').val(),
+                        phone: $('.phone').val(),
+                        address: $('.address').val(),
+                        area: $('.area .active').attr('addressid'),
+                        comgrade: $('.level .active').attr('levelid'),
+                        comkind: $('.nature .active').attr('natureid'),
+                        jobtype: jobtype,
+                        interest: interest
+                    }
+                }
+            }, function(ret, err) {
+                console.log(JSON.stringify(ret));
+                if (ret.code == 1) {
+                    api.alert({
+                        title: '温馨提示',
+                        msg: ret.msg,
+                    }, function(ret, err) {
+                        if ($api.getStorage('activeid')) {
+                            api.ajax({
+                                url: wtkurl + 'myhome/addsevenvip',
+                                method: 'post',
+                                headers: {
+                                    'TOKEN': ygtuserinfo.token
+                                },
+                                data: {
+                                    values: {
+                                        uid: ygtuserinfo.uid,
+                                        salesid: $api.getStorage('activeid')
+                                    }
+                                }
+                            }, function(ret, err) {
+                                console.log(JSON.stringify(ret));
+                                console.log(JSON.stringify(err));
+                                if (ret.code == 1) {
+                                    // $api.rmStorage('salesinfo');
+                                    if (salesinfo.sales_type == 1) {
+                                        alert(ret.msg);
+                                    }
+                                }
+                                if (issevenvip == 1 && salesinfo != undefined && salesinfo.sales_type == 1) {
+                                    alert('您已经领取过体验会员')
+                                }
+                                oldTime = parseInt(new Date().getTime() / 1000)
+                                    // 双十一活动
+                                if (salesinfo != undefined && salesinfo.begintime < oldTime && salesinfo.endtime > oldTime && salesinfo.sales_type == 2) {
+                                    api.openWin({
+                                        name: 'vipsure',
+                                        url: './vipsure.html',
+                                    })
+                                } else {
+                                    // 7天活动
+                                    api.openWin({
+                                        name: 'root',
+                                        url: '../index.html',
+                                    })
+                                }
+                            });
+                        } else {
+                            //alert(ret.msg)
+                            api.openWin({
+                                name: 'root',
+                                url: '../index.html',
+                            })
+                        }
+                    });
+                }
+            });
+        })
+    </script>
+
+</html>

@@ -1,0 +1,22 @@
+#header .right{float: right;font-size: 12px;margin-right: 20px;}
+.middle{text-align: left;margin-top: 75px;}
+.middle .title{line-height: 30px;text-align: center;display: none;}
+.list li{padding: 10px 15px;background: #fff;border-bottom: 1px solid #eee;}
+.list li span{float:right;font-size:14px;position: relative;top: 10px;}
+.list li span em{color:#ff9913;font-size:14px;padding: 0 5px;font-style: normal;}
+.list .left{display: inline-block;width: 70%;font-size:12px;color:#666;}
+.list .left h5{font-weight: normal;font-size:16px;}
+.list .left p{font-size:12px;color:#999;}
+@media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+  .middle{margin-top: 90px;}
+
+}
+/* xr */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) {
+  .middle{margin-top: 90px;}
+
+}
+/* xs max */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) {
+  .middle{margin-top: 90px;}
+}

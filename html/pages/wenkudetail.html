@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>文档详情</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/ygtcommon.css" />
+    <link rel="stylesheet" href="../css/index/wenkudetail.css">
+</head>
+
+<body>
+  <header id='header' class="top">
+      <h1>
+          <img onclick="api.closeWin()"  src="../img/back_light.png">
+          <span  class="title">文档详情</span>
+      </h1>
+  </header>
+    <div class="detail">
+        <h5 class="filename"></h5>
+        <p class="filemsg"></p>
+        <p class="down"></p>
+        <span class="downfile">下载</span>
+        <img class="collection" src="../img/Collection.png">
+    </div>
+    <img class="img" src="">
+</body>
+<script src="../js/lib/jquery-2.1.4.js"></script><script src="../js/common.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    var pdfurl = '';
+    var pdfname = ''
+
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+        loadData();
+        api.addEventListener({
+            name:'swipeup'
+        }, function(ret, err){
+          console.log('向下轻扫');
+          var pdfReader = api.require('pdfReader');
+          pdfReader.open({
+              path: pdfurl,
+              hidden:{
+                print: true,
+                export: true,
+                bookmark: true,
+                email: true
+              }
+          });
+        });
+    };
+    function  loadData(){
+      loading = true;
+      api.ajax({
+              url: wenkuurl +'wkfile/filedetail',
+              method: 'post',
+              headers: {
+                  'TOKEN':ygtuserinfo.token
+              },
+              data: {
+                  values: {
+                      uid: ygtuserinfo.uid,
+                      id:api.pageParam.id
+                  }
+              }
+          },function(ret, err) {
+            console.log(JSON.stringify(ret));
+            $('.img').attr('src',ret.data.thumb)
+            $('.filename').html(ret.data.title)
+            $('.detail .filemsg').html('上传日期：'+format(ret.data.create_time*1000).split(' ')[0]+'&ensp;文件大小：'+Math.round(ret.data.size / 1024) +'KB')
+            $('.detail .down').html('下载次数：'+ret.data.downcount+'次');
+            if (ret.data.isfavorite == 1) {
+              $(".collection").attr('src','../img/Collectionend.png');
+            }
+            pdfurl = ret.data.url;
+            pdfname = ret.data.title;
+          });
+    }
+
+    $('.downfile').click(function () {
+      api.download({
+          url: pdfurl,
+          savePath: 'fs://'+pdfname+'.pdf',
+          report: true,
+          cache: true,
+          allowResume: true
+      }, function(ret, err) {
+          if (ret.state == 1) {
+            console.log(JSON.stringify(ret))
+            var addrsss = ret.savePath
+              //下载成功
+              api.ajax({
+                  url: wenkuurl +'wkfile/downfile',
+                  method: 'post',
+                  headers: {
+                      'TOKEN':ygtuserinfo.token
+                  },
+                  data: {
+                      values: {
+                          uid: ygtuserinfo.uid,
+                          id:api.pageParam.id
+                      }
+                  }
+              },function(ret, err) {
+                console.log(JSON.stringify(ret));
+                systemtype = api.systemType;
+                if (systemtype == 'ios') {
+                  api.alert({
+                        title: '提示',
+                        msg:'下载成功，存储地址'+addrsss+'\n'+'ios不支持本地查看；请点击预览同步到云盘',
+                        buttons:['确认']
+                    },function(ret,err,message){
+                       if(ret.buttonIndex == 1){//点击确定退出应用
+
+                       }
+                    });
+                }else{
+                  api.alert({
+                        title: '提示',
+                        msg:'下载成功，存储地址'+addrsss,
+                        buttons:['确认']
+                    },function(ret,err,message){
+                       if(ret.buttonIndex == 1){//点击确定退出应用
+
+                       }
+                    });
+
+                }
+              });
+          }
+      });
+    })
+
+
+    $('.img').click(function () {
+
+      var pdfReader = api.require('pdfReader');
+      pdfReader.open({
+          path: pdfurl,
+          hidden:{
+            print: true,
+            export: true,
+            bookmark: true,
+            email: true
+          }
+      });
+    })
+
+    // 时间戳转日期
+    function add0(m){return m<10?'0'+m:m };
+    function format(shijianchuo){
+        //shijianchuo是整数，否则要parseInt转换
+        var time = new Date(shijianchuo);
+        var y = time.getFullYear();
+        var m = time.getMonth()+1;
+        var d = time.getDate();
+        var h = time.getHours();
+        var mm = time.getMinutes();
+        var s = time.getSeconds();
+        return y+'-'+add0(m)+'-'+add0(d)+' '+add0(h)+':'+add0(mm)+':'+add0(s);
+    }
+    // 点击收藏
+    $('.collection').click(function(){
+      api.ajax({
+          url: wenkuurl +'wkfile/dofavorite',
+          method: 'post',
+          data: {
+              values: {
+                  uid:ygtuserinfo.id,
+                  id:api.pageParam.id
+              }
+          }
+      },function(ret, err){
+          if (ret.code == 1) {
+              $api.toast('提示',ret.msg,'2000');
+              $(".collection").attr('src','../img/Collectionend.png')
+          } else {
+              alert(ret.msg);
+              console.log( JSON.stringify( err));
+          }
+      });
+  })
+
+</script>
+
+</html>

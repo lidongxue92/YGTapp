@@ -1,0 +1,17 @@
+.middle {margin-top: 75px;}
+.middle h5{padding:5px 10px;background: #fff;font-weight: normal;font-size: 14px;}
+.middle h5 span{display: inline-block;padding:10px 15px;}
+.middle h5 .active{color: #ff9913;border-bottom: 1px solid #ff9913;}
+@media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+  .middle{margin-top: 90px;}
+
+}
+/* xr */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) {
+  .middle{margin-top: 90px;}
+
+}
+/* xs max */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) {
+  .middle{margin-top: 90px;}
+}

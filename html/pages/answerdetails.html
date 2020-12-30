@@ -1,0 +1,186 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>医管通APP</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/ygtcommon.css">
+    <link rel="stylesheet" href="../css/index/answerdetails.css">
+<body >
+    <header class="top" id="header">
+        <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span class="title">练习</span>
+        </h1>
+    </header>
+    <div class="middle">
+        <div class="ex">
+            <h5 class="introduce"><img src="../img/noavatar1.png" />&ensp;<span class="tecname">周汉</span> <span class="tec"></span></h5>
+            <h6 class="title">#课程你附加费看结果放客服发看看是方法课程你附加费看结果放客服发看看是方法课程你附加费看结果放客服发看看是方法课程你附加费看结果放客服发看看是方法</h6>
+            <p class="content"> 不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发
+                高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布
+                发达不规不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股
+                份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达不规范
+                范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达不规范大爆发高大宝的股份办发大巴发达大发布发达</p>
+        </div>
+        <div class="answer">
+            <h5 class="titile">全部评论</h5>
+            <h5 class="comment" onclick="comment()"><img src="../img/noavatar1.png" /> <p class="comdetail">我来说几句</p></h5>
+            <div class="commlist"></div>
+        </div>
+    </div>
+    <div class="loading">
+        <span>
+            <img src="../img/loading.gif" />
+        </span>
+    </div>
+</body>
+<script src="../js/lib/jquery-2.1.4.js"></script><script src="../js/common.js"></script>
+<script type="application/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    var answerid = '';
+    var page = 1;
+    var pagesize = 10;
+    var loading = false;
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+        //  禁止左右滑动
+        $api.fixStatusBar(header);
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+        $('.loading').show();
+
+        api.addEventListener({
+            name:'scrolltobottom',
+            extra:{
+                threshold:0            //设置距离底部多少距离时触发，默认值为0，数字类型
+            }
+        }, function(ret, err){
+            if (loading == true) {
+                page++; //页数
+                com();
+                loading = false;
+            }
+        });
+        api.addEventListener({name: 'viewappear'}, function(ret, err){
+            $('.commlist').html('');
+            Arrangement();
+         })
+    };
+    function timestampToTime(timestamp) {
+        var date = new Date(timestamp * 1000);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+        Y = date.getFullYear() + '-';
+        M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+        D = date.getDate() + ' ';
+        h = date.getHours() + ':';
+        m = (date.getMinutes() < 10 ? '0'+(date.getMinutes()) : date.getMinutes()) + ':';
+        s = (date.getSeconds() < 10 ? '0'+(date.getSeconds()) : date.getSeconds());
+        return Y+M+D+h+m+s;
+    }
+    function Arrangement() {
+        api.ajax({
+            url: wtkurl +'classroomlist/getAnswerById',
+            method: 'post',
+            headers: {
+                'TOKEN':ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    answerid:api.pageParam.id,
+                    uid:ygtuserinfo.id
+                },
+            }
+        }, function(data, err) {
+            console.log(JSON.stringify(data));
+
+            if (data) {
+                $('.middle .ex .introduce img').attr('src',data.data.pic);
+                $('.middle .ex .tecname').html(data.data.username);
+                // $('.middle .ex .tec').html(api.pageParam.listtitle+'学员');
+                $('.middle .ex .title').html(api.pageParam.questiontitle);
+                $('.middle .ex .content').html(data.data.answers)
+                var listhtml = ''
+                answerid = data.data.id;
+                com();
+            } else {
+                console.log('接口错误信息getchatlist：');
+                console.log(JSON.stringify(err));
+            }
+        });
+    }
+
+    function comment() {
+        api.openWin({
+            name: 'comment',
+            url: './comment.html',
+            pageParam: {
+                name: 'Answerdetails',
+                id:answerid
+            },
+            bgColor: 'rgba(0,0,0,0)',
+            animation: {
+                type: 'none'
+            }
+        });
+    }
+
+    function com() {
+        api.ajax({
+            url: wtkurl +'classroomlist/getComments',
+            method: 'post',
+            headers: {
+                'TOKEN':ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    answerid:answerid,
+                    uid:ygtuserinfo.id,
+                    page:page,
+                    pagesize:pagesize
+                },
+            }
+        }, function(data, err) {
+            console.log('pinglun')
+            console.log(JSON.stringify(data.data));
+            var conmmlist = data.data;
+            var listhtml ='';
+            $('.loading').hide();
+            if (conmmlist != '') {
+                for (var i = 0; i < conmmlist.length; i++) {
+                    listhtml += '<div class="Answerdetails">'+'<h5><img src="'+data.data[i].avatar+'" />&ensp;'+'&emsp;<span class="tec">'+data.data[i].nickname+'</span></h5>'
+                                +'<p class="intro">'+data.data[i].content+'</p>'+'<p class="tr">'+timestampToTime(data.data[i].create_time)+'</p>'+'</div>'
+                }
+                $('.commlist').append(listhtml);
+                if (conmmlist.length == 10) {
+                    loading = true;
+                }else{
+                    var html2 = ' ';
+                    html2 += "<div class='lasttitle'>已无更多数据</div>";
+                    $('.commlist').append(html2);
+                    loading = false;
+                }
+            } else {
+                console.log('接口错误信息getchatlist：');
+                console.log(JSON.stringify(err));
+            }
+        });
+    }
+</script>
+
+</html>

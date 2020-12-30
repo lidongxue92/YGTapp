@@ -1,0 +1,279 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>医管通APP</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" href="../../css/base.css">
+    <link rel="stylesheet" href="../../css/ygtcommon.css">
+    <link rel="stylesheet" href="../../css/my/listlog.css">
+<body >
+    <header class="top" id="header">
+        <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span class="title">收益明细</span>
+        </h1>
+    </header>
+    <div class="middle">
+      <h5>
+          <span class="tab active" datatype='1'>课程收益</span>
+          <em>|</em>
+          <span class="tab" datatype='2'>直播间会员</span>
+          <em>|</em>
+          <span class="tab" datatype='3'>打赏抽成</span>
+      </h5>
+        <div class="datalist">
+            <h5 class="title">您还没有直播课程哦~</h5>
+            <ul class="list"></ul>
+            <!-- <li>
+                <h5>老年服务机构的风险管理老年服务机构的风险管理老年服务机构的风险管理老年服务机构的风险管理</h5>
+                <p>开始时间：2018.10.09 12.26</p>
+                <p>所得金额：</p>
+            </li> -->
+        </div>
+    </div>
+    <div class="loading">
+        <span>
+            <img src="../../img/loading.gif" />
+        </span>
+    </div>
+</body>
+<script src="../../js/lib/jquery-2.1.4.js"></script><script src="../../js/common.js"></script>
+<script type="application/javascript" src="../../script/api.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    var page = 1;
+    var pagesize = 10;
+    var loading = false;
+    var isover = false;
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        var header = $api.byId('header');
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+        api.addEventListener({
+            name:'scrolltobottom',
+            extra:{
+                threshold:0            //设置距离底部多少距离时触发，默认值为0，数字类型
+            }
+        }, function(ret, err){
+            if(!loading && !isover){
+                page++
+                if ($('.active').attr('datatype') == 1) {
+                  loaddata();
+                }else if($('.active').attr('datatype') == 2){
+                  getTicketList();
+                }else if($('.active').attr('datatype') == 3){
+                  getRewardClass();
+                }
+           }
+        });
+        //  禁止左右滑动
+        $api.fixStatusBar(header);
+        $('.loading').show();
+        loaddata();
+    };
+  // 课程收益
+    function loaddata() {
+        loading = true;
+        api.ajax({
+            url: wtkurl +'myhome/income',
+            method: 'post',
+            headers: {
+                'TOKEN': ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    uid: ygtuserinfo.id,
+                    page:page,
+                    pagesize:pagesize
+                }
+            }
+        }, function(data, err) {
+            $('.loading').hide();
+            console.log(JSON.stringify(data));
+            console.log(JSON.stringify(err));
+            if (data.data == null) {
+                $('.middle .datalist .title').css('display','block')
+            }else{
+                var incomelist = data.data.incomelist;
+                //var incomelist = data.data;
+                $('.middle .datalist .title').css('display','none')
+                var listhtml ='';
+                if (incomelist.length >0) {
+                    for (var i = 0; i < incomelist.length; i++) {
+                        listhtml += '<li onclick="classlog(' + incomelist[i].info.id +','+incomelist[i].object_type+');"><h5>'+incomelist[i].info.name+'</h5>'
+                        if (incomelist[i].info.object_type !=2) {
+                          listhtml += '<p>开始时间：'+incomelist[i].info.update_time+'</p>';
+                        }
+                        var all =incomelist[i].entercut;
+                        allcharge = Math.round(all*100)/100;
+                        listhtml += '<p>所得金额:'+allcharge+'</p></li>';
+                    }
+                    $('.list').append(listhtml);
+                    if (incomelist.length < 10) {
+                        var html2 = ' ';
+                        html2 += "<div class='lasttitle'>已无更多数据</div>";
+                        $('.list').append(html2);
+                        isover = true;
+                    }
+                }else {
+                  var html2 = ' ';
+                  html2 += "<div class='lasttitle'>已无更多数据</div>";
+                  $('.list').append(html2);
+                  isover = true;
+                }
+            }
+            loading = false;
+        });
+    }
+    // 直播间会员
+    function getTicketList() {
+        loading = true;
+        api.ajax({
+            url: wtkurl +'myhome/getTicketList',
+            method: 'post',
+            headers: {
+                'TOKEN': ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    uid: ygtuserinfo.id,
+                    page:page,
+                    pagesize:pagesize
+                }
+            }
+        }, function(data, err) {
+            $('.loading').hide();
+            console.log(JSON.stringify(data));
+            console.log(JSON.stringify(err));
+            if (data.data.incomelist == '') {
+                $('.middle .datalist .title').css('display','block')
+            }else{
+                var incomelist = data.data;
+                $('.middle .datalist .title').css('display','none')
+                var listhtml ='';
+                if (incomelist.length >0) {
+                    for (var i = 0; i < incomelist.length; i++) {
+                        listhtml += '<li><h5>'+incomelist[i].object_name+'</h5>'
+                        listhtml += '<p>开始时间：'+incomelist[i].create_time+'</p>';
+                        var all =incomelist[i].enteramount;
+                        allcharge = Math.round(all*100)/100;
+                        listhtml += '<p>所得金额:'+allcharge+'<span class="right">'+incomelist[i].username+'</span></p></li>';
+                    }
+                    $('.list').append(listhtml);
+                    if (incomelist.length < 10) {
+                        var html2 = ' ';
+                        html2 += "<div class='lasttitle'>已无更多数据</div>";
+                        $('.list').append(html2);
+                        isover = true;
+                    }
+                }else {
+                  var html2 = ' ';
+                  html2 += "<div class='lasttitle'>已无更多数据</div>";
+                  $('.list').append(html2);
+                  isover = true;
+                }
+            }
+            loading = false;
+        });
+    }
+
+    // 打赏抽成
+    function getRewardClass() {
+        loading = true;
+        api.ajax({
+            url: wtkurl +'myhome/getRewardClass',
+            method: 'post',
+            headers: {
+                'TOKEN': ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    uid: ygtuserinfo.id,
+                    page:page,
+                    pagesize:pagesize
+                }
+            }
+        }, function(data, err) {
+            $('.loading').hide();
+            console.log(JSON.stringify(data));
+            console.log(JSON.stringify(err));
+            if (data.data.incomelist == '') {
+                $('.middle .datalist .title').css('display','block')
+            }else{
+                var incomelist = data.data;
+                $('.middle .datalist .title').css('display','none')
+                var listhtml ='';
+                if (incomelist.length >0) {
+                    for (var i = 0; i < incomelist.length; i++) {
+                      if(incomelist[i].list_fee != 0){
+                        listhtml += '<li><h5>'+incomelist[i].object_name+'</h5>'
+                        listhtml += '<p>开始时间：'+incomelist[i].create_time+'</p>';
+                        var all =incomelist[i].list_fee;
+                        allcharge = Math.round(all*100)/10000;
+                        listhtml += '<p>'+incomelist[i].username+'<span class="right">所得金额:'+allcharge+'元</span></p></li>';
+                      }
+                    }
+                    $('.list').append(listhtml);
+                    if (incomelist.length < 10) {
+                        var html2 = ' ';
+                        html2 += "<div class='lasttitle'>已无更多数据</div>";
+                        $('.list').append(html2);
+                        isover = true;
+                    }
+                }else {
+                  var html2 = ' ';
+                  html2 += "<div class='lasttitle'>已无更多数据</div>";
+                  $('.list').append(html2);
+                  isover = true;
+                }
+            }
+            loading = false;
+        });
+    }
+    //明细
+    function classlog(id,object_type) {
+        api.openWin({
+            name: 'classlog',
+            url: './classlog.html',
+            pageParam: {
+                id: id,
+                object_type:object_type
+            },
+            bgColor: 'rgba(0,0,0,0)',
+            animation: {
+                type: 'none'
+            }
+        })
+    }
+
+    $('.tab').click(function () {
+        $('.tab').removeClass('active');
+        $(this).addClass('active');0
+        $('.list').html(' ');
+        $('.loading').show();
+        page = 1;
+        if ($('.active').attr('datatype') == 1) {
+          loaddata();
+        }else if($('.active').attr('datatype') == 2){
+          getTicketList();
+        }else if($('.active').attr('datatype') == 3){
+          getRewardClass();
+        }
+
+    })
+</script>
+
+</html>

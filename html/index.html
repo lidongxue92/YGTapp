@@ -1,0 +1,375 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Hello APP</title>
+    <link rel="stylesheet" type="text/css" href="./css/api.css" />
+    <link rel="stylesheet" type="text/css" href="./css/base.css" />
+
+    <link rel="stylesheet" type="text/css" href="./css/ygtcommon.css" />
+    <link rel="stylesheet" type="text/css" href="./css/swder.css" />
+
+    <script src="./js/lib/jquery2.js"></script>
+    <style type="text/css">
+        body{position: relative;}
+        #audio{position: absolute;top: 0;left: 0;display: none;}
+        .middletab{white-space: nowrap;position: relative;top: 75px;padding:5px 10px;height:30px;background: #fff;line-height: 30px;}
+        .middletab .searchbg{width: calc(100% - 55px);background: #eee;border-radius: 30px;height: 30px;display: inline-block;padding-left: 35px;color: #666;line-height: 30px;font-size: 12px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;padding-right: 15px;}
+        .middletab .search{position: absolute;left: 25px;width: 15px;top: 13px;}
+        .middletab .sweep{margin-left: 10px;display: inline-block;height: 30px;line-height: 30px;vertical-align: top;}
+        /* x xs */
+        @media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+           .middletab{top: 90px;}
+        }
+        /* xr */
+      @media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) {
+          .middletab{top: 90px;}
+      }
+      /* xs max */
+      @media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) {
+          .middletab{top: 90px;}
+      }
+    </style>
+
+
+    <body>
+        <!-- 头部 -->
+        <header class="top" id="header">
+            <h1>
+                <span class="title">医管通</span>
+            </h1>
+        </header>
+        <div class="middletab" id="middletab">
+            <img class='search' src="./img/search.png">
+            <span class="searchbg"  onclick="search();">请输入搜索关键词</span>
+            <!-- <span class="sweep" onclick="sweep()">扫一扫</span> -->
+        </div>
+        <section id="section">
+
+        </section>
+
+
+        <!-- 底部按钮切换 -->
+         <footer class="foot" id="footer">
+            <span class="tab" tapmode onclick="live();">
+                  <img src='./img/shangke-3.png'/>
+                  <p>频道</p>
+            </span>
+            <span class="tab" tapmode>
+                  <img src='./img/faxian-2.png'/>
+                  <p  class='c-2577e3'>发现</p>
+            </span>
+            <span class="tab" tapmode onclick="study();">
+                <img src='./img/yigou-3.png'/>
+                <p>学习</p>
+            </span>
+            <span class="tab" tapmode onclick="my();">
+                <img src='./img/wode-3.png'/>
+                <p>我的</p>
+            </span>
+        </footer>
+        <div id="audio">
+            <audio id="" src=""></audio>
+            <div id="audiolist"></div>
+        </div>
+    </body>
+    <script src="./js/lib/jquery-2.1.4.js"></script>
+    <script src="./js/common.js"></script>
+    <script src="./js/jquery-weui.js"></script>
+    <script src="./js/swiper.min.js" charset='utf-8'></script>
+    <script type="text/javascript" src="./script/api.js"></script>
+    <script type="text/javascript">
+        $api.setStorage('apihost', 'http://trade.ygt.cm');
+        var apihost = 'http://member.ygt.cm';
+        var ygtuserinfo = '';
+        var myswiper = '';
+        var systemtype='';
+        var iswxpay = 0;
+        var toph = 0;
+        var bottomh = 0;
+        var srcstr = '';
+        var audiourl = '';
+        apiready = function() {
+            api.addEventListener({
+                name:'offline'
+            }, function(ret, err){
+                alert('断网了');
+                $api.setStorage('offline', 1);
+            });
+            api.addEventListener({
+                name:'online'
+            }, function(ret, err){
+                $api.rmStorage('offline');
+
+            });
+            // 设置状态栏
+            api.setStatusBarStyle({
+                style: 'dark',
+            });
+            var header = $api.byId('header');
+            $api.fixStatusBar(header);
+            systemtype = api.systemType;
+            $api.setStorage('systemtype', systemtype);
+            // 问题分类
+            var knowtablist = new Array('质量安全','医务管理','护理管理','运营管理','市场营销','优质服务','财务/成本','后勤管理','人力资源','流程再造','信息化管理','其他')
+            $api.setStorage('knowtablist', knowtablist);
+            console.log(systemtype);
+            //  禁止左右滑动
+            api.setWinAttr({
+                slidBackEnabled: false
+            });
+            toph = $api.offset($api.byId('header')).h+$api.offset($api.byId('middletab')).h+10;
+            bottomh = $api.offset($api.byId('footer')).h;
+            ygtuserinfo = $api.getStorage('ygtuserinfo');
+            checklogin();
+            if (userinfo != undefined) {
+                api.openFrame({
+                    name: 'indexframe',
+                    url: './pages/indexframe.html',
+                    rect: {
+                        marginLeft:0,    //相对父 window 左外边距的距离
+                        marginTop:toph,    //相对父 window 上外边距的距离
+                        marginBottom:bottomh,    //相对父 window 下外边距的距离
+                        marginRight:0
+                    },
+                    pageParam: {
+                        typeid: 0
+                    },
+                    bounces: true,
+                    vScrollBarEnabled: false,
+                    hScrollBarEnabled: false
+                });
+            }
+            api.addEventListener({
+                name:'viewappear'
+            }, function(ret, err){
+                ygtuserinfo = $api.getStorage('ygtuserinfo');
+                checklogin();
+                if (userinfo != undefined) {
+                    api.openFrame({
+                        name: 'indexframe',
+                        url: './pages/indexframe.html',
+                        rect: {
+                            marginLeft:0,    //相对父 window 左外边距的距离
+                            marginTop:toph,    //相对父 window 上外边距的距离
+                            marginBottom:bottomh,    //相对父 window 下外边距的距离
+                            marginRight:0
+                        },
+                        pageParam: {
+                            typeid: 0
+                        },
+                        bounces: true,
+                        vScrollBarEnabled: false,
+                        hScrollBarEnabled: false
+                    });
+                }
+            });
+        };
+
+        function checklogin() {
+            userinfo = $api.getStorage('ygtuserinfo');
+            if (!userinfo || !userinfo.id) {
+                api.openWin({
+                    name: 'login',
+                    url: './login.html',
+                    animation: {
+                        type: 'none'
+                    }
+                });
+            } else {
+                console.log(JSON.stringify(userinfo)+'sssss');
+                api.ajax({
+                    url: memberurl +'user/index',
+                    method: 'post',
+                    headers: {
+                        'TOKEN': userinfo.token
+                    },
+                    data: {
+                        values: {
+                            uid: userinfo.user_id
+                        }
+                    }
+                }, function(ret, err) {
+                    if (ret) {
+
+                        iswxpay = ret.data.iswxpay;
+                    } else {
+
+                    }
+                    $api.setStorage('iswxpay', iswxpay);
+
+
+                });
+            }
+        }
+
+        //底部直播课
+        function Livebroadcast() {;
+          if (ygtuserinfo.id == -1) {
+              api.openWin({
+                  name: 'login',
+                  url: './login.html',
+                  animation: {
+                      type: 'none'
+                  }
+              });
+          }else{
+            api.openWin({
+                name: 'livebroadcast',
+                url: './pages/livebroadcast.html',
+                pageParam: {
+                    name: 'test'
+                },
+                bgColor: 'rgba(0,0,0,0)',
+                reload:true,
+                animation: {
+                    type: 'none'
+                }
+            })
+          }
+        }
+        //公开课查看更多
+        function openclass() {
+          if (ygtuserinfo.id == -1 ) {
+              api.openWin({
+                  name: 'login',
+                  url: './login.html',
+                  animation: {
+                      type: 'none'
+                  }
+              });
+          }else{
+            api.openWin({
+                name: 'openclass',
+                url: './pages/openclass.html',
+                pageParam: {
+                    name: 'test'
+                },
+                reload:true,
+                bgColor: 'rgba(0,0,0,0)',
+                animation: {
+                    type: 'none'
+                }
+            })
+          }
+        }
+        //底部我的
+        function my() {
+          if (ygtuserinfo.id == -1 ) {
+              api.openWin({
+                  name: 'login',
+                  url: './login.html',
+                  animation: {
+                      type: 'none'
+                  }
+              });
+          }else{
+            api.openWin({
+                name: 'my',
+                url: './pages/my/my.html',
+                pageParam: {
+                    name: 'test'
+                },
+                bgColor: 'rgba(0,0,0,0)',
+                animation: {
+                    type: 'none'
+                }
+            })
+          }
+        }
+
+        //底部学习
+        function study() {
+          if (ygtuserinfo.id == -1 ) {
+              api.openWin({
+                  name: 'login',
+                  url: './login.html',
+                  animation: {
+                      type: 'none'
+                  }
+              });
+          }else {
+            api.openWin({
+                name: 'study',
+                url: './pages/study.html',
+                pageParam: {
+                    name: 'test'
+                },
+                bgColor: 'rgba(0,0,0,0)',
+                animation: {
+                    type: 'none'
+                }
+            })
+          }
+
+        }
+
+        //底部频道
+        function live() {
+          if (ygtuserinfo.id == -1 ) {
+              api.openWin({
+                  name: 'login',
+                  url: './login.html',
+                  animation: {
+                      type: 'none'
+                  }
+              });
+          }else{
+            api.openWin({
+                name: 'live',
+                url: './pages/channel/live.html',
+                pageParam: {
+                    name: ''
+                },
+                bgColor: 'rgba(0,0,0,0)',
+                animation: {
+                    type: 'none'
+                }
+            })
+          }
+        }
+
+        //搜索
+        function search() {
+          if (ygtuserinfo.id == -1) {
+              api.openWin({
+                  name: 'login',
+                  url: './login.html',
+                  animation: {
+                      type: 'none'
+                  }
+              });
+          }else{
+            api.openWin({
+                name: 'search',
+                url: './pages/search.html',
+                pageParam: {
+                    name: 'test'
+                },
+                bgColor: 'rgba(0,0,0,0)',
+                animation: {
+                    type: 'none'
+                }
+            })
+          }
+        }
+
+        //扫一扫
+        function sweep() {
+            var FNScanner = api.require('FNScanner');
+            FNScanner.open({
+                autorotation: true
+            }, function(ret, err) {
+                if (ret) {
+                    alert(JSON.stringify(ret));
+                } else {
+                    alert(JSON.stringify(err));
+                }
+            });
+        }
+    </script>
+
+</html>

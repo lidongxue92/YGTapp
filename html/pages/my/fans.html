@@ -1,0 +1,114 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>粉丝管理</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" href="../../css/base.css">
+    <link rel="stylesheet" href="../../css/ygtcommon.css">
+    <link rel="stylesheet" href="../../css/my/fans.css">
+<body >
+    <header class="top" id="header">
+        <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span class="title">粉丝管理</span>
+        </h1>
+    </header>
+    <div class="middle" id="middle">
+        <div class="bgimg">
+            <p class="people"></p>
+            <p class="title">当前粉丝数(人)</p>
+            <!-- <div class="profit">
+                <div class="left">
+                    <p>0</p>
+                    <span>当日新增粉丝数</span>
+                </div>
+                <div class="right">
+                    <p>0</p>
+                    <span>当日取消粉丝数</span>
+                </div>
+            </div> -->
+        </div>
+        <div class="Datatoday">
+            <!-- <span class="title selected" onclick="openList(this)">新增粉丝</span>
+            <span class="title" onclick="openList(this)">取关粉丝</span> -->
+
+        </div>
+    </div>
+</body>
+<script src="../../js/lib/jquery-2.1.4.js"></script><script src="../../js/common.js"></script>
+<script type="application/javascript" src="../../script/api.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+        //  禁止左右滑动
+        $api.fixStatusBar(header);
+
+        toph = $api.offset($api.byId('header')).h + $api.offset($api.byId('middle')).h;
+       api.openFrame({
+           name: 'fansdetail',
+           url: 'fansdetail.html',
+           rect: {
+               marginLeft:0,    //相对父 window 左外边距的距离
+               marginTop:toph,    //相对父 window 上外边距的距离
+               marginBottom:0,    //相对父 window 下外边距的距离
+               marginRight:0
+           },
+           pageParam: {
+           },
+           bounces: true,
+           vScrollBarEnabled: false,
+           hScrollBarEnabled: false
+       });
+        api.addEventListener({name: 'viewappear'}, function(ret, err){
+               loaddata();
+         })
+    };
+
+
+    function loaddata() {
+        api.ajax({
+            url: wtkurl +'classroomlist/getFans',
+            method: 'post',
+            headers: {
+                'TOKEN': ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    uid: ygtuserinfo.id
+                }
+            }
+        }, function(data, err) {
+            //alert(JSON.stringify(data));
+            $('.people').html(data.data.total)
+            console.log(JSON.stringify(err))
+        });
+    }
+
+
+
+    function openList(obj) {
+    $api.removeCls($api.dom('.selected'), 'selected');
+        $(".Datatoday .title").removeClass('selected')
+        $api.addCls(obj, 'selected');
+    }
+
+</script>
+
+</html>

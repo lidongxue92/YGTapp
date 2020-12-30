@@ -1,0 +1,23 @@
+.top h1 .allive{position: absolute;right: 10px;font-size: 12px;}
+.top img{width: 80px;float: left;margin-left: 20px;}
+#allive{position: relative;top: 80px;height: 40px;background: #fff;padding: 10px;line-height: 40px;font-size: 14px;}
+#allive img{width: 10px;position: absolute;top: 20px;right:10px}
+@media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+  #allive {
+      top: 100px;
+  }
+
+}
+/* xr */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) {
+  #allive{
+      top: 100px;
+  }
+
+}
+/* xs max */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) {
+  #allive{
+      top: 100px;
+  }
+}

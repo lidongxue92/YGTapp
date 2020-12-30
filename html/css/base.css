@@ -1,0 +1,459 @@
+@font-face {
+    font-family: 'iconfont';
+    /* project id 125610 */
+    src: url('./iconfont/iconfont.eot');
+    /* IE9*/
+    src: url('./iconfont/iconfont.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+    url('./iconfont/iconfont.woff') format('woff'), /* chrome銆乫irefox */
+    url('./iconfont/iconfont.ttf') format('truetype'), /* chrome銆乫irefox銆乷pera銆丼afari, Android, iOS 4.2+*/
+    url('./iconfont/iconfont.svg#iconfont') format('svg');
+    /* iOS 4.1- */
+}
+
+.iconfont {
+    font-family: "iconfont" !important;
+    font-size: 16px;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-stroke-width: 0.2px;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+    text-decoration: none;
+    color: #666;
+}
+
+a:hover {
+    color: #333;
+}
+
+ul, dl, dt, dd, p {
+    padding: 0;
+    margin: 0;
+}
+
+li {
+    list-style: none;
+}
+
+em {
+    font-style: normal;
+}
+
+img, input {
+    vertical-align: middle;
+}
+
+button, textarea, input[type="text"], input[type="tel"], input[type="submit"], input[type="button"] , input[type="number"]{
+    -webkit-appearance: none;
+    appearance: none;
+    outline: none;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    border-radius: 0;
+}
+
+* {
+    word-wrap: break-word;
+    word-break: break-all;
+}
+
+.pa {
+    position: absolute;
+}
+
+.pr {
+    position: relative;
+}
+
+.clear {
+    clear: both;
+}
+
+.fb {
+    font-weight: bold;
+}
+
+.hide {
+    display: none;
+}
+
+.br {
+    border-radius: 100% !important;
+}
+
+
+/* 宽度 */
+
+.wrap {
+    width: 1200px;
+    overflow: hidden;
+}
+
+.w100 {
+    width: 100%;
+    overflow: hidden;
+}
+
+.side-940 {
+    width: 940px;
+    overflow: hidden;
+}
+
+.side-880 {
+    width: 880px;
+    overflow: hidden;
+}
+
+.side-300 {
+    width: 300px;
+    overflow: hidden;
+}
+
+.side-240 {
+    width: 240px;
+    overflow: hidden;
+}
+
+.side-200 {
+    width: 200px;
+    overflow: hidden;
+}
+
+.side-220 {
+    width: 220px;
+}
+
+
+/* 浮动位置 */
+
+.fl {
+    float: left;
+}
+
+.fr {
+    float: right;
+}
+
+.center {
+    margin: 0 auto;
+}
+
+.oh {
+    overflow: hidden;
+}
+
+.tc {
+    text-align: center;
+}
+
+
+/*边距*/
+
+.mt5 {
+    margin-top: 5px;
+}
+
+.ml5 {
+    margin-left: 5px;
+}
+
+.mt10 {
+    margin-top: 10px;
+}
+
+.ml10 {
+    margin-left: 10px;
+}
+
+.mt15 {
+    margin-top: 15px;
+}
+
+.ml15 {
+    margin-left: 15px;
+}
+
+.mt20 {
+    margin-top: 20px;
+}
+
+.ml20 {
+    margin-left: 20px;
+}
+
+.mt25 {
+    margin-top: 25px;
+}
+
+.ml25 {
+    margin-left: 25px;
+}
+
+.mt30 {
+    margin-top: 30px;
+}
+
+.ml30 {
+    margin-left: 30px;
+}
+
+.p30 {
+    padding: 30px;
+}
+
+.p20 {
+    padding: 20px;
+}
+
+
+/* 字体/字号 */
+
+.font-st {
+    font-family: arial, "宋体", sans-serif, tahoma;
+}
+
+.fs12 {
+    font-size: 12px;
+}
+
+.fs14 {
+    font-size: 14px;
+}
+
+.fs16 {
+    font-size: 16px;
+}
+
+.fs18 {
+    font-size: 18px;
+}
+
+.fs20 {
+    font-size: 20px;
+}
+
+.fs22 {
+    font-size: 22px;
+}
+
+.fs24 {
+    font-size: 24px;
+}
+
+.fs26 {
+    font-size: 26px;
+}
+
+.fs30 {
+    font-size: 30px;
+}
+
+
+/*色彩*/
+
+.col-fff, .col-fff a {
+    color: #fff;
+}
+
+.col-999, .col-999 a {
+    color: #999;
+}
+
+.col-666, .col-666 a {
+    color: #666;
+}
+
+.col-333, .col-333 a {
+    color: #333;
+}
+
+.col-257, .col-257 a {
+    color: #2577e3;
+}
+
+.col-ff9, .col-ff9 a {
+    color: #ff9913;
+}
+
+.col-ff0, .col-ff0 a {
+    color: #FF0000;
+}
+
+.col-e3e, .col-e3e a {
+    color: #e3e3e3;
+}
+
+.col-30b, .col-30b a {
+    color: #30bfaa;
+}
+
+.col-b1d, .col-b1d a {
+    color: #b1d1e8;
+}
+
+.bg-fff {
+    background-color: #ffffff;
+}
+
+.bg-f4f {
+    background-color: #f4f4f4;
+}
+
+.bg-ddd {
+    background-color: #dddddd;
+}
+
+.bg-257 {
+    background-color: #2577E3;
+}
+
+.bg-f35 {
+    background-color: #f35454;
+}
+
+.bg-ff9 {
+    background-color: #ff9913;
+}
+
+.bg-d92 {
+    background-color: #d9251c;
+}
+
+.bg-64c {
+    background-color: #64c731;
+}
+
+.bg-00b {
+    background-color: #00b4ff;
+}
+
+
+/*******共用头部*********/
+
+.wtkheader {
+    background: #fff;
+    height: 90px;
+}
+
+.wtkheader .logo {
+    margin: 20px 0;
+}
+
+.wtkheader .logo img {
+    height: 50px;
+}
+
+.wtkheader .whcont .entrance {
+    height: 55px;
+    margin-top: 35px;
+}
+
+.wtkheader .whcont .entrance li {
+    float: left;
+    margin-left: 10px;
+}
+
+.wtkheader .whcont .entrance li a {
+    display: block;
+    padding: 0 20px;
+    text-align: center;
+}
+
+.wtkheader .whcont .entrance li a .iconfont {
+    font-size: 20px;
+    color: #999;
+}
+
+.wtkheader .whcont .entrance li a em {
+    display: block;
+    width: 100%;
+    color: #333;
+}
+
+.wtkheader .whcont .entrance li.cur a .iconfont, .wtkheader .whcont .entrance li.cur a em {
+    color: #2577e3;
+}
+
+.modhed {
+    background: url(../img/head.png);
+    background-position: center;
+    background-repeat: repeat-x;
+}
+
+.modhed .name {
+    display: block;
+    font-size: 16px;
+    color: #666;
+    background: #efefef;
+    padding: 0 5px;
+    margin-left: 10px;
+    float: left;
+}
+
+
+/**************移动设备适配（768-1200）******************/
+
+@media screen and (min-width: 768px) and (max-width: 1200px) {
+    body {
+        width: 100%;
+    }
+    .wrap {
+        width: 768px;
+    }
+    .side-880 {
+        width: 500px;
+        overflow: hidden;
+    }
+    .side-300 {
+        width: 230px;
+        overflow: hidden;
+    }
+}
+
+
+/**************移动设备适配（<768）******************/
+
+@media screen and (max-width: 768px) {
+    html, body, .wrap {
+        width: 100%;
+    }
+    body {
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        padding-top: 0;
+    }
+    .wtkheader .logo img {
+        height: 25px;
+    }
+    .wtkheader {
+        height: 45px;
+    }
+    .wtkheader .logo {
+        width: 100%;
+        text-align: center;
+        margin: 10px 0;
+    }
+    .wtkheader .whcont .entrance {
+        position: fixed;
+        width: 100%;
+        height: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 9;
+        background: #fff;
+        margin: 0;
+        border-top: 1px solid #ddd;
+    }
+    .wtkheader .whcont .entrance li {
+        width: 50%;
+        padding: 0;
+        margin: 0;
+    }
+    .wtkheader .whcont .entrance li a {
+        padding: 5px 0;
+    }
+    .side-880, .side-300 {
+        width: 100%;
+    }
+}

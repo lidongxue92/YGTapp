@@ -1,0 +1,340 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>医管通APP</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" href="../../css/base.css">
+    <link rel="stylesheet" href="../../css/ygtcommon.css">
+    <meta name="viewport" />
+    <link rel="stylesheet" href="../../css/my/teacher.css">
+<body >
+    <header class="top" id="header">
+        <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span class="title">我是网师</span>
+        </h1>
+    </header>
+    <div class="middle">
+        <div class="headpic">
+            <img class="head"  src=""/>
+            <div class="left">
+                <p id='nicknamep'></p>
+                <span class="Settled" onclick="Settled();">立即入驻</span>
+                <span class="Settled going" >审核中</span>
+                <p class="personal success"><img src="../../img/personal.png">&emsp;个人入驻</p>
+            </div>
+        </div>
+        <div class="list">
+            <div  onclick="member();">
+                <img src="../../img/personal1.png">
+                <p>个人信息</p>
+            </div>
+            <div class="success" onclick="profit();">
+                <img src="../../img/Settlement.png">
+                <p>结算管理</p>
+            </div>
+            <div class="success" onclick="Netincome();">
+                <img src="../../img/order.png">
+                <p>订单管理</p>
+            </div>
+            <div onclick="Reward();">
+                <img src="../../img/reward.png">
+                <p>打赏管理</p>
+            </div>
+            <div class="success" onclick="fans()">
+                <img src="../../img/fans.png">
+                <p>粉丝管理</p>
+            </div>
+            <div onclick="task()">
+                <img src="../../img/task.png">
+                <p>作业管理</p>
+            </div>
+        </div>
+        <div class="Datatoday">
+            <h5 class="title">我的群 <span class="grop" onclick="Establish();">创建群</span></h5>
+            <div id="Tolist"></div>
+            <!-- <div class="livelist">
+                <img src="../../img/1.png" />
+                <div>
+                    <h5>医管通护理频道</h5>
+                </div>
+            </div>
+            <div class="livelist">
+                <img src="../../img/1.png" />
+                <div>
+                    <h5>医管通护理频道</h5>
+                </div>
+            </div> -->
+        </div>
+    </div>
+</body>
+<script src="../../js/lib/jquery-2.1.4.js"></script><script src="../../js/common.js"></script>
+<script type="application/javascript" src="../../script/api.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    var teacheris =1 ;
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+        //  禁止左右滑动
+        $api.fixStatusBar(header);
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+        if (ygtuserinfo.avatar != '') {
+            $('.head').attr('src', ygtuserinfo.avatar);
+        } else {
+            $('.head').attr('src', '../../img/noavatar.png');
+        }
+
+        $('#nicknamep').html(ygtuserinfo.nickname);
+        api.addEventListener({name: 'viewappear'}, function(ret, err){
+            api.ajax({
+                url: wtkurl +'classroomlist/getteacher',
+                method: 'post',
+                headers: {
+                    'TOKEN': ygtuserinfo.token
+                },
+                data: {
+                    values: {
+                        uid: ygtuserinfo.id
+                    }
+                }
+            }, function(ret, err) {
+                console.log(JSON.stringify(ret)+'是否是网师');
+                console.log(JSON.stringify(err));
+                $('.middle .list div').css('display','inline-block')
+                if (ret.code == 0) {
+                    $('.middle .headpic .left .Settled').css('display','block')
+                    $('.middle .headpic .left .Settled').html('立即入驻')
+                    $('.middle .Datatoday').css('display','none')
+                    $('.middle .list .success').css('display','none')
+                    $('.middle .headpic .left .going').css('display','none')
+                    $('.middle .headpic .left .personal').css('display','none')
+                }else{
+                    if (ret.data.status == 0) {
+                        $('.middle .headpic .left .Settled').css('display','none')
+                        $('.middle .headpic .left .personal').css('display','none')
+                        $('.middle .headpic .left .going').css('display','block')
+                        $('.middle .list .success').css('display','inline-block')
+                        $('.middle .Datatoday').css('display','none')
+                        $('.middle .headpic .left .Settled').html('审核中')
+                    }else if(ret.data.status == 1){
+                        $('.middle .headpic .left .going').css('display','none')
+                        $('.middle .headpic .left .Settled').css('display','none')
+                        $('.middle .headpic .left .personal').css('display','inline-block')
+                        $('.middle .list .success').css('display','inline-block')
+                        $('.middle .Datatoday').css('display','block')
+
+                    }else if (ret.data.status == 2) {
+                        $('.middle .headpic .left .Settled').css('display','block')
+                        $('.middle .headpic .left .Settled').html('审核失败，重新申请')
+                        $('.middle .Datatoday').css('display','none')
+                        $('.middle .list .success').css('display','none')
+                        $('.middle .headpic .left .going').css('display','none')
+                        $('.middle .headpic .left .personal').css('display','none')
+                        teacheris = 2;
+                        $api.setStorage('teacherid', ret.data.id);
+                    }else if (ret.data.status == -1) {
+                        $('.middle .headpic .left .Settled').css('display','block')
+                        $('.middle .headpic .left .Settled').html('立即入驻')
+                        $('.middle .Datatoday').css('display','none')
+                        $('.middle .list .success').css('display','none')
+                        $('.middle .headpic .left .going').css('display','none')
+                        $('.middle .headpic .left .personal').css('display','none')
+                        teacheris = 2;
+                        $api.setStorage('teacherid', ret.data.id);
+                    }else{
+                        $('.middle .headpic .left .Settled').css('display','none')
+                        $('.middle .headpic .left .personal').css('display','none')
+                        $('.middle .Datatoday').css('display','block')
+                        $('.middle .headpic .left .going').css('display','block')
+                        $('.middle .list .success').css('display','inline-block')
+                    }
+                    api.closeToWin({
+                        name: 'teacher'
+                    });
+
+                }
+                $api.setStorage('teacheris', teacheris);
+
+            });
+         })
+        loaddata();
+
+    };
+
+    //
+    function loaddata() {
+        api.ajax({
+            url: wtkurl +'classroomlist/getLists',
+            method: 'post',
+            headers: {
+                'TOKEN': ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    uid: ygtuserinfo.id
+                }
+            }
+        }, function(data, err) {
+            console.log(JSON.stringify(data));
+            console.log(JSON.stringify(err))
+            if (data.code != 0) {
+                var list = data.data;
+                var listhtml =''
+                if (list !='') {
+                    for (var i = 0; i < list.length; i++) {
+                        listhtml += '<div class="livelist" onclick="livedetail('+list[i].id+')">'+'<img src="' + list[i].pic + '">'+'<div><h5>'+list[i].title+'</h5></div></div>'
+                    }
+                    $('#Tolist').append(listhtml);
+                }
+            }
+        });
+    }
+    //入驻
+    function Settled() {
+        api.openWin({
+            name: 'settled',
+            url: './settled.html',
+            pageParam: {
+                name: 'test'
+            },
+            bgColor: 'rgba(0,0,0,0)',
+            animation: {
+                type: 'none'
+            }
+        })
+    }
+    //个人信息
+
+    function member() {
+        api.openWin({
+            name: 'member',
+            url: './member.html',
+            bgColor: 'rgba(0,0,0,0)',
+            animation: {
+                type: 'none'
+            }
+        })
+    }
+    //订单管理
+    function Netincome() {
+        api.openWin({
+            name: 'netincome',
+            url: './netincome.html',
+            pageParam: {
+                name: 'test'
+            },
+            bgColor: 'rgba(0,0,0,0)',
+            animation: {
+                type: 'none'
+            }
+        })
+    }
+
+    //结算管理
+    function profit() {
+        api.openWin({
+            name: 'profit',
+            url: './profit.html',
+            pageParam: {
+                name: 'test'
+            },
+            bgColor: 'rgba(0,0,0,0)',
+            animation: {
+                type: 'none'
+            }
+        })
+    }
+
+    //打赏管理
+    function Reward() {
+        api.openWin({
+            name: 'reward',
+            url: './reward.html',
+            pageParam: {
+                name: 'test'
+            },
+            bgColor: 'rgba(0,0,0,0)',
+            animation: {
+                type: 'none'
+            }
+        })
+    }
+
+    //粉丝管理
+    function fans() {
+        api.openWin({
+            name: 'fans',
+            url: './fans.html',
+            pageParam: {
+                name: 'test'
+            },
+            bgColor: 'rgba(0,0,0,0)',
+            animation: {
+                type: 'none'
+            }
+        })
+    }
+    //作业管理
+
+    function task() {
+        api.openWin({
+            name: 'task',
+            url: './task.html',
+            pageParam: {
+                name: 'test'
+            },
+            bgColor: 'rgba(0,0,0,0)',
+            animation: {
+                type: 'none'
+            }
+        })
+    }
+
+    //创建直播间
+    function Establish() {
+        api.openWin({
+            name: 'establish',
+            url: './establish.html',
+            pageParam: {
+                name: 'test'
+            },
+            bgColor: 'rgba(0,0,0,0)',
+            animation: {
+                type: 'none'
+            }
+        })
+    }
+
+    //直播间详情跳转
+    function livedetail(id) {
+        api.openWin({
+            name: 'livedetail',
+            url: '../channel/livedetail.html',
+            pageParam: {
+                id: id
+            },
+            animation:{
+              type:'none'
+            }
+        });
+
+    }
+</script>
+
+</html>

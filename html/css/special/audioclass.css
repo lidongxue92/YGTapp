@@ -1,0 +1,7 @@
+body{width: 100%;height: 100%;}
+    #audioplay{opacity: 0;position: absolute;}
+    /*#audio .audio{width: 200px;}*/
+    #title{color: #fff;}
+    #audio .classlist .toptitle{line-height: 30px;background: #f8f8f8;position: fixed;width: 100%;border-bottom: 1px solid #eee;padding-left: 10px;z-index: 11;height: 40px;padding-top: 10px;font-size: 13px;}
+    #audio .titleshow{height: 50px;}
+    .task{position: fixed;bottom: 30%;border-radius: 50%;width: 50px;height: 50px;background: #ffca80;color: #fff;text-align: center;line-height: 50px;right: 10px;font-size: 16px;z-index: 1111;}

@@ -1,0 +1,11 @@
+body{height: 100%;text-align: center;background: #f8f8f8;}
+.top{padding-top: 25px;}
+p{padding: 0 15px;font-size: 1rem;line-height: 25px;color: #333;}
+.mt20{margin-top: 20px;}
+section{margin-top: 75px;background: #fff;padding-top: 20px}
+section img{width: 14rem;margin-top: 1rem;}
+footer{position: fixed;bottom: 4rem;width: 100%;text-align: center;}
+@media screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+    .top{padding-top: 45px;}
+    section{margin-top: 95px;}
+}

@@ -1,0 +1,6 @@
+/*主体内容样式*/
+.Datatoday .livelist{display: flex;padding: 5%;color: #999;border-bottom: 1px solid #eee;}
+.Datatoday .livelist div{margin-left: 15px;}
+.Datatoday .livelist div h5{font-size: 12px;color: #333;font-weight: normal;margin-top: 10px;}
+.Datatoday div img{width: 40px;border-radius: 50%;height: 40px;}
+.lasttitle{text-align: center;color: #999;margin-top: 10px;}

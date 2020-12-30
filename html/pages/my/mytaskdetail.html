@@ -1,0 +1,255 @@
+ <!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>我的作业列表</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" href="../../css/base.css">
+    <link rel="stylesheet" href="../../css/ygtcommon.css">
+    <link rel="stylesheet" href="../../css/my/mytaskdetail.css">
+    <style type ="text/css">
+
+
+   </style>
+
+
+<body >
+    <header class="top" id="header">
+      <h1>
+          <span class="back" onclick="api.closeWin();"></span>
+          <span class="title">作业详情</span>
+      </h1>
+    </header>
+    <div class="work middle">
+        <div class="worktitle"></div>
+        <ul class="dec">
+            <!-- <li class="single" dataval="B">
+                <p>1、（单选题）深刻的可视角度思考就是打开的数据库数据</p>
+                <p class="answer" seclectval="A">
+                    <span class="radio" ><b class="seclected"></b></span>A、数据库数据库是大家看到
+                </p>
+                <p class="answer"  seclectval="B">
+                    <span class="radio"><b class="seclected"></b></span>B、数据库数据家看到
+                </p>
+                <p class="answer" seclectval="C">
+                    <span class="radio" ><b class="seclected"></b></span>C、数据库数是大家看到
+                </p>
+                <span class="writeanswer"></span>
+                <p class="red">回答错误<span>正确答案 B</span></p>
+                <p class="green">回答正确</p>
+            </li>
+            <li class="check" dataval="AB">
+                <p>2、（多选题）深刻的可视角度思考就是打开的数据库数据</p>
+                <p class="answer" seclectval="A">
+                    <span class="radio"><b class="seclected"></b></span>A、数据库数据库是大家看到
+                </p>
+                <p class="answer" seclectval="B">
+                    <span class="radio" ><b class="seclected"></b></span>B、数据库数据家看到
+                </p>
+                <p class="answer" seclectval="C">
+                    <span class="radio" ><b class="seclected"></b></span>C、数据库数是大家看到
+                </p>
+                <span class="writeanswer"></span>
+                <p class="red">回答错误<span>正确答案 AB</span></p>
+                <p class="green">回答正确</p>
+            </li>
+            <li class="single" dataval="B">
+                <p>3、（判断题）深刻的可视角度思考就是打开的数据库数据</p>
+                <p class="answer" seclectval="A">
+                    <span class="radio" ><b class="seclected"></b></span>A、False
+                </p>
+                <p class="answer"  seclectval="B">
+                    <span class="radio"><b class="seclected"></b></span>B、True
+                </p>
+                <span class="writeanswer"></span>
+                <p class="red">回答错误<span>正确答案 B</span></p>
+                <p class="green">回答正确</p>
+            </li> -->
+        </ul>
+   </div>
+    <div class="loading">
+        <span>
+            <img src="../../img/loading.gif" />
+        </span>
+    </div>
+</body>
+<script src="../../js/lib/jquery-2.1.4.js"></script><script src="../../js/common.js"></script>
+<script type="application/javascript" src="../../script/api.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    var page = 1;
+    var pagesize = 10;
+    var loading = false;
+    var isover = false;
+    var creattime = '';
+    var isloading = false;
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+        $('.loading').show();
+        //  禁止左右滑动
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+        if (api.pageParam.dataid == 1) {
+          homeworkbefore();
+        }else{
+          homeworkafter();
+        }
+
+    };
+    function homeworkbefore() {
+        loading = true;
+        api.ajax({
+            url: wtkurl +'classroomlist/getAnswerById',
+            method: 'post',
+            headers: {
+                'TOKEN': ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    uid: ygtuserinfo.id,
+                    answerid:api.pageParam.id
+                }
+            }
+        }, function(ret, err) {
+            console.log(JSON.stringify(ret));
+            $('.loading').hide();
+            var listhtml = '';
+            if (ret.data != '') {
+                var question = ret.data;
+                var questionlist = ''
+                listhtml += '<li><p class="question">'+question.atitle+'</p>'
+                // listhtml +='<p class="note">'+data.data.answers+'<p>'
+                listhtml +='<p class="myanswer">答：'+question.answers+'<p>'
+                listhtml +='<p class="username">'+question.username+'&ensp;'+question.update_time.split(' ')[0]+'<p>'
+                listhtml +='</li>';
+              $('.dec').append(listhtml);
+            }
+            console.log(JSON.stringify(err))
+
+        });
+    }
+
+    function homeworkafter() {
+      api.ajax({
+          url: wtkurl +'task/myTaskInfo',
+          method: 'post',
+          headers: {
+              'TOKEN': ygtuserinfo.token
+          },
+          data: {
+              values: {
+                  uid: ygtuserinfo.id,
+                  taskid:api.pageParam.id
+              }
+          }
+      }, function(data, err) {
+        console.log(JSON.stringify(data));
+        console.log(JSON.stringify(err));
+          $('.loading').hide();
+          var worktitle = '';
+          if (data.msg == '没有该试卷') {
+            $('.work').html('试卷还没作答哦~')
+          }else{
+            $(document).attr("title",data.data.taskinfo.title);
+             worktitle+= '<h5>'+data.data.taskinfo.title+'</h5><i class="score">'+data.data.taskinfo.myscore+'分</i>';
+            $('.worktitle').html(worktitle)
+            var questionhtml = '';
+            var questionlist = data.data.questionlist;
+            if (questionlist.length > 0) {
+              for (var i = 0; i < questionlist.length; i++) {
+                  if (questionlist[i].type == 1) {
+                      questionhtml += '<li class="single" dataval="'+questionlist[i].answer+'" questionid="'+questionlist[i].id+'">(单选题)'
+                  }else if (questionlist[i].type == 2) {
+                    questionhtml += '<li class="check" dataval="'+questionlist[i].answer+'" questionid="'+questionlist[i].id+'">(多选题)'
+                  }else{
+                    questionhtml += '<li class="single" dataval="'+questionlist[i].answer+'" questionid="'+questionlist[i].id+'">(判断题)'
+                  }
+                  if (questionlist[i].thumb !='') {
+                    questionhtml +='<p>'+(i+1)+'、'+questionlist[i].question+'('+questionlist[i].score+'分)<img src="'+questionlist[i].thumb+'"></p>'
+                  }else{
+                    questionhtml +='<p>'+(i+1)+'、'+questionlist[i].question+'('+questionlist[i].score+'分)</p>'
+                  }
+                  var choselist = questionlist[i].choselist;
+                  var myanswer = (questionlist[i].myanswer).split('');
+                  console.log(myanswer)
+                  if (choselist) {
+                    for (var a = 0; a < questionlist[i].choselist.length; a++) {
+                      if (myanswer.length > 0 ) {
+                        if (questionlist[i].type == 2 ) {
+                          if (myanswer.includes(choselist[a].choseid)) {
+                            questionhtml += '<p class="answer active" seclectval="'+choselist[a].choseid+'">'
+                            questionhtml += '<span class="radio" ><b class="seclected"></b></span>'+choselist[a].choseid+'、'+choselist[a].chose
+                            questionhtml +='</p>'
+                          }else{
+                            questionhtml += '<p class="answer " seclectval="'+choselist[a].choseid+'">'
+                            questionhtml += '<span class="radio" ><b class="seclected"></b></span>'+choselist[a].choseid+'、'+choselist[a].chose
+                            questionhtml +='</p>'
+                          }
+                        }else{
+                          if (myanswer== choselist[a].choseid) {
+                            questionhtml += '<p class="answer active" seclectval="'+choselist[a].choseid+'">'
+                            questionhtml += '<span class="radio" ><b class="seclected"></b></span>'+choselist[a].choseid+'、'+choselist[a].chose
+                            questionhtml +='</p>'
+                          }else{
+                            questionhtml += '<p class="answer " seclectval="'+choselist[a].choseid+'">'
+                            questionhtml += '<span class="radio" ><b class="seclected"></b></span>'+choselist[a].choseid+'、'+choselist[a].chose
+                            questionhtml +='</p>'
+                          }
+                        }
+                      }else{
+                        questionhtml += '<p class="answer " seclectval="'+choselist[a].choseid+'">'
+                        questionhtml += '<span class="radio" ><b class="seclected"></b></span>'+choselist[a].choseid+'、'+choselist[a].chose
+                        questionhtml +='</p>'
+                      }
+                    }
+                  }else{
+                    if (questionlist[i].myanswer == 'T') {
+                      questionhtml += '<p class="answer active" seclectval="T">'+'<span class="radio" ><b class="seclected"></b></span>A、True</p>'
+                        questionhtml += '<p class="answer "  seclectval="F">'+'<span class="radio"><b class="seclected"></b></span>B、False</p>'
+                    }else if (questionlist[i].myanswer == 'F') {
+                      questionhtml += '<p class="answer " seclectval="T">'+'<span class="radio" ><b class="seclected"></b></span>A、True</p>'
+                        questionhtml += '<p class="answer active"  seclectval="F">'+'<span class="radio"><b class="seclected"></b></span>B、False</p>'
+                    }else{
+                      questionhtml += '<p class="answer " seclectval="T">'+'<span class="radio" ><b class="seclected"></b></span>A、True</p>'
+                        questionhtml += '<p class="answer "  seclectval="F">'+'<span class="radio"><b class="seclected"></b></span>B、False</p>'
+                    }
+                  }
+                if (questionlist[i].myanswer == questionlist[i].answer) {
+                  console.log('zhengque')
+                  questionhtml +='<p class="green" score ="'+questionlist[i].score+'">回答正确<img src="../../img/green.png"></p>'
+                }else{
+                  if (questionlist[i].type == 3) {
+                    if (questionlist[i].answer =='T') {
+                      questionhtml +='<p class="red"><span>正确答案:True</span><img src="../../img/red.png"></p>'
+                    }else{
+                      questionhtml +='<p class="red"><span>正确答案:Flase</span><img src="../../img/red.png"></p>'
+                    }
+                  }else{
+                    questionhtml +='<p class="red"><span>正确答案:'+questionlist[i].answer+'</span><img src="../../img/red.png"></p>'
+                  }
+                }
+            }
+              $('.dec').append(questionhtml);
+          }
+        }
+          console.log(JSON.stringify(err))
+
+      })
+    }
+</script>
+
+</html>

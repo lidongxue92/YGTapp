@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>关于我们</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/ygtcommon.css" />
+    <link rel="stylesheet" href="../css/index/money.css">
+</head>
+
+<body>
+    <header class="top" id="header">
+        <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span class="title">我的账户</span>
+        </h1>
+    </header>
+    <section class="section">
+        <div class="balancemoney">
+            <p class="balance">0.00</p>
+            <P>账户余额</P>
+        </div>
+        <div class="mt10 Recharge">
+            <h5>充值牛贝</h5>
+            <ul>
+                <li class="active">
+                    <p class="big">6牛贝</p>
+                    <p>6元</p>
+                </li>
+                <li>
+                    <p class="big">68牛贝</p>
+                    <p>68元</p>
+                </li>
+                <li>
+                    <p class="big">98牛贝</p>
+                    <p>98元</p>
+                </li>
+                <li>
+                    <p class="big">198牛贝</p>
+                    <p>198元</p>
+                </li>
+                <li>
+                    <p class="big">298牛贝</p>
+                    <p>298元</p>
+                </li>
+                <li>
+                    <p class="big">618牛贝</p>
+                    <p>618元</p>
+                </li>
+            </ul>
+        </div>
+        <div class="mt10 word">
+            <p>1.牛币可用于直接购买医管通APP内虚拟内容（包括在线课程等）；</p>
+            <p>2.牛币仅限在iOS系统消费，无法在其他系统使用；</p>
+            <p>3.牛币为虚拟币，充值后不会过期，但无法提现或转赠他人；</p>
+            <p>4.充值中有任何疑问，请联系客服（微信号：ygt030）；</p>
+        </div>
+    </section>
+    <footer>
+        <span class="charge">充值</span>
+    </footer>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+apiready = function() {
+  //  禁止左右滑动
+  api.setWinAttr({
+      slidBackEnabled : false
+  });
+  //  禁止左右滑动
+};
+</script>
+
+</html>

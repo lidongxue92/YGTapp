@@ -1,0 +1,198 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>医管通APP</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/ygtcommon.css">
+    <link rel="stylesheet" href="../css/index/homeworkframe.css">
+<body >
+    <div class="middle">
+        <div class="nodata">
+            <img src="../img/homework.png" />
+            <p>还没有布置作业哦~</p>
+            <span class="Establish" onclick="Custom()">创建作业</span>
+        </div>
+        <div class="Datatoday">
+            <!-- <div class="list">
+                <div class="livelist">
+                    <img src="../img/1.png" />
+                    <div class='user'>
+                        <h5>医管通小助手</h5>
+                    </div>
+                </div>
+                <div class="work">
+                    <h5>怎么能正确的学习</h5>
+                    <p>课程你附加费看结果放客服发看看是方法</p>
+                </div>
+            </div> -->
+        </div>
+    </div>
+    <div class="loading">
+        <span>
+            <img src="../img/loading.gif" />
+        </span>
+    </div>
+</body>
+<script src="../js/lib/jquery-2.1.4.js"></script><script src="../js/common.js"></script>
+<script type="application/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    var page = 1;
+    var pagesize = 10;
+    var loading = false;
+    var isover = false;
+    var disabl = false;
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+        //  禁止左右滑动
+        $api.fixStatusBar(header);
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+
+        if ($api.getStorage('liveuserid') == 2) {
+           $('.Establish').css('display','none');
+        }
+         api.setRefreshHeaderInfo({
+              bgColor: '#fefefe',
+              textColor: '#999',
+              textDown: '下拉刷新...',
+              textUp: '松开刷新...',
+             //  textLoading:'<img src="widget://img/loading.gif" />',
+              showTime:false
+          }, function(ret, err) {
+              //在这里从服务器加载数据，加载完成后调用api.refreshHeaderLoadDone()方法恢复组件到默认状态
+              if (!loading) {
+                $('.Datatoday').html('');
+                  page = 1;
+                  isover = false;
+                 api.refreshHeaderLoading();
+                 loaddata();
+              }
+         });
+         api.addEventListener({
+             name:'scrolltobottom',
+             extra:{
+                 threshold:0            //设置距离底部多少距离时触发，默认值为0，数字类型
+             }
+         }, function(ret, err){
+             if (loading || isover) {return;}
+
+             page++; //页数
+             loaddata();
+         });
+          $('.loading').show();
+         loaddata();
+    };
+
+    function timestampToTime(timestamp) {
+        var date = new Date(timestamp * 1000);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+        Y = date.getFullYear() + '-';
+        M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+        D = date.getDate() + ' ';
+        h = date.getHours() + ':';
+        m = (date.getMinutes() < 10 ? '0'+(date.getMinutes()) : date.getMinutes()) + ':';
+        s = (date.getSeconds() < 10 ? '0'+(date.getSeconds()) : date.getSeconds());
+        return Y+M+D+h+m+s;
+    }
+    function loaddata() {
+       loading = true;
+        api.ajax({
+            url: wtkurl +'classroomlist/getClassroomTasks',
+            method: 'post',
+            headers: {
+                'TOKEN': ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    uid: ygtuserinfo.id,
+                    listid:$api.getStorage('homeworkid')
+                }
+            }
+        }, function(data, err) {
+            console.log(JSON.stringify(data));
+            var listhtml = '';
+            if (data.data != '') {
+
+                $('.nodata').css('display','none');
+                $('.Datatoday').css('display','block')
+                for (var i = 0; i < data.data.length; i++) {
+                    listhtml +='<div class="list" onclick="Exercises('+data.data[i].classroom_id+')"><div class="livelist">'+'<img src="'+$api.getStorage('liveheadpic')+'" />'+'<div class="user">'+'<h5>'+data.data[i].classroom_name+
+                            '</h5><p>'+timestampToTime(data.data[i].create_time)+'</p>'+'</div></div>'+'<div class="work">'+'<h5>'+data.data[i].question+'</h5>'+'<p>'+data.data[i].note+'</p>'+'</div></div>'
+                }
+                $('.Datatoday').append(listhtml);
+                $('.loading').hide();
+            }else{
+                $('.loading').hide();
+                $('.nodata').css('display','block');
+                $('.Datatoday').css('display','none')
+            }
+            if (data.data.length < 10) {
+                var html2 = ' ';
+                html2 += "<div class='lasttitle'>已无更多数据</div>";
+                $('.Datatoday').append(html2)
+                isover = true;
+            }
+            loading = false;
+             api.refreshHeaderLoadDone();
+            console.log(JSON.stringify(err))
+
+        });
+    }
+
+    //询问
+    function confim() {
+        api.confirm({
+        title: '',
+        msg: '是否取消布置此作业',
+        buttons: ['确定', '取消']
+        }, function(ret, err) {
+            var index = ret.buttonIndex;
+        });
+    }
+    //新建作业
+    function Custom() {
+        api.openWin({
+            name: 'custom',
+            url: './custom.html',
+            pageParam: {
+                name: 'test'
+            },
+            bgColor: 'rgba(0,0,0,0)',
+            animation: {
+                type: 'none'
+            }
+        })
+    }
+
+    //作业
+      function Exercises(id) {
+          api.openWin({
+              name: 'exercises',
+              url: './exercises.html',
+              pageParam: {
+                  id: id
+              },
+              animation: {
+                  type: 'none'
+              }
+          });
+      }
+</script>
+
+</html>

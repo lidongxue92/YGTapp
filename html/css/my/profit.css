@@ -1,0 +1,11 @@
+.middle{text-align: center;margin-top: 100px;}
+.bgimg{background: url(../../img/profitimg.jpg);width: 200px;height: 200px;background-size: 100%;margin: 0 auto;margin-top: 40px;}
+.bgimg .title{position: relative;top: 50px;color:#666;font-size:14px;}
+.bgimg .money{position: relative;top:60px;font-size:28px;}
+.bgimg a{margin-top: 80px;display: inline-block;font-size:12px;color:#4a90e2;}
+.profit{border-top: 1px solid #eee;margin-top: 20px;display: flex;}
+.profit div{display: inline-block;width: 50%;padding: 5px 0;}
+.profit div p{line-height: 25px;font-size:13px;color:#999;}
+.profit div .money{font-size:16px;color:#333;}
+.profit .left{border-right: 1px solid #eee;}
+.witharawallog{border-top: 1px solid #eee;line-height: 50px;color:#4a90e2;font-size: 16px;}

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>直播间</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/base.css" />
+
+    <link rel="stylesheet" type="text/css" href="../../css/ygtcommon.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/swder.css" />
+</head>
+<style type ="text/css">
+</style>
+<body ontouchstart>
+    <header id='header' class="top">
+        <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span  class="title">全部直播间</span>
+        </h1>
+    </header>
+    <!--主要内容  -->
+    <section>
+
+    </section>
+    <!-- 底部按钮切换 -->
+     <footer class="foot" id="footer">
+        <span class="tab" tapmode>
+              <img src='../../img/shangke-2.png'/>
+              <p class='c-2577e3'>上课</p>
+        </span>
+        <span class="tab" tapmode onclick="index();">
+              <img src='../../img/faxian-3.png'/>
+              <p  >发现</p>
+        </span>
+        <span class="tab" tapmode onclick="study();">
+            <img src='../../img/yigou-3.png'/>
+            <p>学习</p>
+        </span>
+        <span class="tab" tapmode onclick="my();">
+            <img src='../../img/wode-3.png'/>
+            <p>我的</p>
+        </span>
+    </footer>
+    <script type="application/javascript" src="../../js/lib/fastclick.js"></script>
+    <script type="text/javascript" src="../../script/api.js"></script>
+    <script type="text/javascript">
+        var apihost = $api.getStorage('apihost');
+        if (apihost == undefined || apihost == '') {
+            apihost = 'http://member.ygt.cm';
+            $api.setStorage('apihost', apihost);
+        }
+        apiready = function() {
+            var header = $api.byId('header');
+            $api.fixStatusBar(header);
+            //  禁止左右滑动
+            api.setWinAttr({
+                slidBackEnabled : false
+            });
+            //  禁止左右滑动
+
+            // 上拉刷新 滚动加载
+             toph = $api.offset($api.byId('header')).h ;
+             bottomh = $api.offset($api.byId('footer')).h;
+            api.openFrame({
+                name: 'allliveframe',
+                url: 'allliveframe.html',
+                rect: {
+                    marginLeft:0,    //相对父 window 左外边距的距离
+                    marginTop:toph,    //相对父 window 上外边距的距离
+                    marginBottom:bottomh,    //相对父 window 下外边距的距离
+                    marginRight:0
+                },
+                pageParam: {
+                },
+                bounces: true,
+                vScrollBarEnabled: false,
+                hScrollBarEnabled: false
+            });
+
+            // 上拉刷新 滚动加载
+        }
+        //首页
+        function index() {
+            api.addEventListener({
+                name:'viewdisappear'
+            }, function(ret, err){
+               api.closeWin();
+            });
+            api.openWin({
+                name: 'root',
+                url: '../../index.html',
+                pageParam: {
+                    name: 'test'
+                },
+                bgColor: 'rgba(0,0,0,0)',
+                animation: {
+                    type: 'none'
+                }
+            })
+        }
+        //地步上课
+        function study() {
+            api.addEventListener({
+                name:'viewdisappear'
+            }, function(ret, err){
+               api.closeWin();
+            });
+            api.openWin({
+                name: 'study',
+                url: '../study.html',
+                pageParam: {
+                    name: 'test'
+                },
+                bgColor: 'rgba(0,0,0,0)',
+                animation: {
+                    type: 'none'
+                }
+            })
+        }
+        //底部我的
+        function my() {
+            api.addEventListener({
+                name:'viewdisappear'
+            }, function(ret, err){
+               api.closeWin();
+            });
+            api.openWin({
+                name: 'my',
+                url: '../my/my.html',
+                pageParam: {
+                    name: 'test'
+                },
+                bgColor: 'rgba(0,0,0,0)',
+                animation: {
+                    type: 'none'
+                }
+            })
+
+        }
+    </script>
+</body>
+
+</html>

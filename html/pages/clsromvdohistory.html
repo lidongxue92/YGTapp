@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>直播间回顾</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/ygtcommon.css">
+    <link rel="stylesheet" href="../css/index/clsromvdohistory.css">
+    <script type="text/javascript" src="../js/jweixin.js"></script>
+    <script type="text/javascript" src="../script/api.js"></script>
+</head>
+<style type="text/css">
+
+</style>
+
+<body ontouchstart>
+    <header class="top" id="header" >
+          <h1>
+              <span class="back" onclick="goback();"></span>
+              <span class="title" id="title">直播间</span>
+              <span class="share" id="share"></span>
+          </h1>
+
+    </header>
+    <div class="swiper-container">
+
+    </div>
+    <section>
+        <h5><span>PPT课件</span> <span onclick="classroomvide();">直播模式</span></h5>
+        <img class="collection" src="../img/Collection.png">
+        <div id="img"></div>
+    </section>
+    <div class='sharetoast'>
+        <h5>邀请好友一起来听课吧~</h5>
+        <ul>
+            <li id='share_friend' onclick="sharefriend();">
+                  <a href="javascript:void(0)" id="shareFriends">
+                      <img src="../img/frend.png" />
+                      <p>微信好友</p>
+                  </a>
+              </li>
+              <li id="share" onclick="sharefriends();">
+                  <a href="javascript:void(0)" id="shareCFriends">
+                      <img src="../img/frends.png" />
+                      <p>朋友圈</p>
+                  </a>
+              </li>
+              <li id="share" onclick="poster();">
+                  <a href="javascript:void(0)" id="Invitation">
+                      <img src="../img/Invitation.png" />
+                      <p>邀请卡</p>
+                  </a>
+              </li>
+        </ul>
+        <p id='opentool'>取消</p>
+    </div>
+    <div class="loading">
+        <span>
+            <img src="../img/loading.gif" />
+        </span>
+    </div>
+    <script src="../js/lib/jquery-2.1.4.js"></script><script src="../js/common.js"></script>
+    <script src="../js/jquery-weui.js"></script>
+    <script src="../js/swiper.min.js" charset='utf-8'></script>
+    <script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    var sharetitle = '';
+    var sharedesc = '';
+    var shareicon = '';
+    var shareurl ='';
+    var coverImg = '';
+    var toph = '';
+    var baiduPlayer = '';
+    var isseekto = 0;
+    apiready = function() {
+        // 设置状态栏
+        baiduPlayer  = api.require('baiduPlayer');
+        baiduPlayer .setAccessKey({
+            accessKey: "5586c18e460986bf749c11371bdbfc18"
+        })
+        baiduPlayer.init({
+          ttf: "widget://res/UKIJTor.ttf",
+          logo:"widget://res/cklogo.png",
+          fullBtnPlan : 1
+        });
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled: false
+        });
+        loaddata();
+        // 点击返回
+        api.addEventListener({
+            name: 'keyback'
+        }, function(ret, err) {
+          baiduPlayer.unfull();
+        });
+        // 窗口打开
+        api.addEventListener({
+            name:'viewappear'
+        }, function(ret, err){
+            var time = new Date().getTime();
+            timebegin= Math.floor(time/1000);
+        });
+        $(".loading").show();
+        // 应用进入后台
+        api.addEventListener({
+            name:'pause'
+        }, function(ret, err){
+          baiduPlayer.getCurrentPosition(function(ret) {
+              var position = Math.floor(ret.position);
+              var oldposition = $api.getStorage('curposition');
+
+              if (oldposition == undefined) {
+                  oldposition = {};
+              }
+              oldposition[api.pageParam.id] = position;
+              $api.setStorage('curposition', oldposition);
+          });
+        });
+        // 应用重新回来
+        api.addEventListener({
+            name:'resume'
+        }, function(ret, err){
+          curposition = $api.getStorage('curposition');
+          if (curposition != undefined && curposition[api.pageParam.id] != undefined) {
+            setTimeout(function(){
+              baiduPlayer.seekTo({
+                process : curposition[api.pageParam.id]
+              },function(ret, err) {
+                isseekto = 1;
+              });
+            },500);
+          }
+        });
+        baiduPlayer.addEventListener({
+            name:'play'
+        }, function(ret, err){
+          curposition = $api.getStorage('curposition');
+          console.log('播放时间')
+          if (curposition != undefined && curposition[api.pageParam.id] != undefined && isseekto !=1) {
+            setTimeout(function(){
+              baiduPlayer.seekTo({
+                process : curposition[api.pageParam.id]
+              },function(ret, err) {
+                isseekto = 1;
+              });
+            },1000);
+          }
+        });
+    };
+        // 控制播放
+        function video(videopath) {
+            var toph = $api.offset($api.byId('header')).h
+            baiduPlayer.play({
+                rect: {
+                    x: 0,
+                    y: toph,
+                    w: api.frameWidth,
+                    h: 200
+                },
+                url: videopath,
+                title:' ',
+                isBackBtn:false,
+                isTopView:true,
+                isFullBtn:true,
+                autoPlay: true,
+                fixed: false,
+                autorotation:false,
+                isShowProcessView:true,
+                isShowTimeLable:true
+            }, function(ret, err) {
+                if (ret) {
+                    console.log(JSON.stringify(ret));
+                    api.setStatusBarStyle({
+                        style: 'dark',
+                    });
+                } else {
+                    alert(JSON.stringify(err));
+                }
+            });
+        }
+
+        function loaddata() {
+            var classroomid = api.pageParam.id;
+            console.log('这是视频id' + classroomid);
+            api.ajax({
+                    url: wtkurl +'classroom/getinfo',
+                    method: 'post',
+                    headers: {
+                        'TOKEN': ygtuserinfo.token
+                    },
+                    data: {
+                        values: {
+                            classroomid: classroomid,
+                            uid: ygtuserinfo.id
+                        }
+                    }
+                },
+                function(data, err) {
+                    console.log(JSON.stringify(data) + '直播的数据');
+                    //console.log(JSON.stringify(err));
+                    $(".loading").hide();
+                    if (data) {
+                        if (data.code == 1) {
+                            time = data.time;
+                            $("#title").html(data.data.info.name);
+                            videoid = $api.getStorage('videoid');
+                            position = $api.getStorage('position');
+                            curposition = $api.getStorage('curposition');
+                            video(data.data.info.videourl);
+                            // 判断是否记录播放时间，有跳转到指定播放时间
+                            // if (curposition != undefined && curposition[api.pageParam.id] != undefined) {
+                            //   setTimeout(function(){
+                            //     baiduPlayer.seekTo({
+                            //       process : curposition[api.pageParam.id]
+                            //     },function(ret, err) {
+                            //       //alert(JSON.stringify(ret));
+                            //       isseekto = 1;
+                            //     });
+                            //   },500);
+                            // }
+                            // 分享信息
+                            sharetitle = data.data.titles.title;
+                            sharedesc = data.data.titles.description;
+                            shareurl = data.data.titles.shareurl;
+                            var shareimg = data.data.titles.shareimg;
+                            img = shareimg.split('?')[0];
+                            shareicon = img;
+                            // 处理swip图片
+                            var photos = data.data.photos;
+                            var plen = photos.length;
+                            var phtml = '';
+
+                            if (plen > 0) {
+                                for (var i = 0; i < plen; i++) {
+                                    phtml += '<img src="' + photos[i]['photo'] + '" alt="" class="swiper-lazy" />'
+                                }
+                                $('#img').html(phtml);
+                            }else {
+                                $('#img').html('<div style="width:100%;text-align:center;">暂无课件</div>');
+                            }
+
+                            if (data.data.info.isfree == 1) {
+                              inter =  setInterval(function() {
+                                  baiduPlayer.getCurrentPosition(function(ret){
+                                      if (ret.currentPosition  > (data.data.info.freeseconds)*1000) {
+                                        baiduPlayer.pause();
+                                        clearInterval(inter);
+                                        api.alert({
+                                            title: '提示',
+                                            msg: '试听课程已结束，请返回引导页购买课程',
+                                        }, function(ret, err){
+                                            if( ret ){
+                                              api.closeWin()
+                                            }else{
+                                                 alert( JSON.stringify( err ) );
+                                            }
+                                        });
+                                      }
+                                  });
+                                }, 1000);
+                              }
+                        }
+                    }else{
+                        if (err.statusCode == 401) {
+                            api.openFrame({
+                                name: 'loginframe',
+                                url: './loginframe.html',
+                                rect: {
+                                    marginLeft:0,    //相对父 window 左外边距的距离
+                                    marginTop:0,    //相对父 window 上外边距的距离
+                                    marginBottom:0,    //相对父 window 下外边距的距离
+                                    marginRight:0
+                                },
+                                pageParam: {
+
+                                },
+                                bounces: true,
+                                vScrollBarEnabled: false,
+                                hScrollBarEnabled: false
+                            });
+                        }
+                    }
+                });
+        }
+        //跳转页面
+        function classroom() {
+            var id = api.pageParam.id;
+            audioElm.pause();
+            api.openWin({
+                name: 'classroom',
+                url: './classroom.html',
+                pageParam: {
+                    id: id
+                }
+            })
+        };
+        //分享
+        $('#share').bind('click', function(e) {
+
+            $('#bg').show();
+            $(".sharetoast").addClass('sh');
+        });
+        //分享关闭
+        $('#opentool').bind('click', function(e) {
+            $('#bg').hide();
+            $(".sharetoast").removeClass('sh');
+        });
+
+        $('#bg').bind('click', function(e) {
+            $('#bg').hide();
+            $(".sharetoast").removeClass('sh');
+            $('#bg').hide();
+        });
+
+        //分享朋友
+        function sharefriend() {
+            var wx = api.require('wx');
+            wx.shareWebpage({
+                apiKey: '',
+                scene: 'session',
+                title: sharetitle,
+                description: sharedesc,
+                thumb: 'widget://img/shareicon.png', //http://img1.wtk.so/2016/08/19/57b6dbc29e7cc.png
+                contentUrl: shareurl
+            }, function(ret, err) {
+                if (ret.status) {
+                    alert('分享成功');
+                    $('#bg').hide();
+                    $(".sharetoast").removeClass('sh')
+                } else {
+                    alert('分享失败');
+                    console.log(JSON.stringify(err));
+                }
+            });
+        }
+
+        //分享朋友圈
+        function sharefriends() {
+            var wx = api.require('wx');
+            wx.shareWebpage({
+                apiKey: '',
+                scene: 'timeline',
+                title: sharetitle,
+                description: sharedesc,
+                thumb: 'widget://img/shareicon.png',
+                contentUrl: shareurl
+            }, function(ret, err) {
+                if (ret.status) {
+                    alert('分享成功');
+                    $('#bg').hide();
+                    $(".sharetoast").removeClass('sh')
+                } else {
+                    alert('分享失败');
+                    console.log(JSON.stringify(err));
+                }
+            });
+        }
+        //邀请卡
+        function poster() {
+            classroomid = api.pageParam.id;
+            api.openWin({
+                name: 'poster',
+                url: './poster.html',
+                pageParam: {
+                    id: classroomid,
+                    objecttype:1
+                },
+                animation: {
+                    type: 'none'
+                }
+            });
+        }
+
+        //返回
+        function goback() {
+          // 记录视频播放时间
+          baiduPlayer.getCurrentPosition(function(ret) {
+              var position = Math.floor(ret.currentPosition);
+              var oldposition = $api.getStorage('curposition');
+
+              if (oldposition == undefined) {
+                  oldposition = {};
+              }
+              oldposition[api.pageParam.id] = position;
+              $api.setStorage('curposition', oldposition);
+
+          });
+           var time = new Date().getTime();
+           timend= Math.floor(time/1000);
+           var timelog = (timend)-(timebegin);
+           classroomid = api.pageParam.id;
+           api.ajax({
+               url: wtkurl +'classroom/setlog',
+               method: 'post',
+               headers: {
+                   'TOKEN':ygtuserinfo.token
+               },
+               data: {
+                   values: {
+                       classroomid:classroomid,
+                       specialid:0,
+                       timelength:timelog,
+                       uid:ygtuserinfo.id
+                   }
+               }
+           },function(ret, err){
+               console.log(JSON.stringify(ret));
+               console.log(JSON.stringify(err));
+               if (ret) {
+                   console.log( JSON.stringify( ret ));
+                   api.closeWin();
+               } else {
+                   console.log( JSON.stringify( err ) );
+               }
+           });
+
+        }
+
+
+        function classroomvide() {
+            api.addEventListener({
+                name:'viewdisappear'
+            }, function(ret, err){
+               api.closeWin({
+                   name: 'clsromvdohistory'
+               });
+
+            });
+            api.openWin({
+                name: 'classroomvide',
+                url: './classroomvide.html',
+                pageParam: {
+                    id: api.pageParam.id
+                },
+                animation: {
+                    type: 'none'
+                }
+            });
+        }
+
+        // 点击收藏
+      $(".collection").click(function () {
+        api.ajax({
+            url: wtkurl +'classroom/dofavorite',
+            method: 'post',
+            headers:{
+                'TOKEN':ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    'objectid':classroomid,
+                    'type':infotype,
+                    objecttype:1,
+                    uid:ygtuserinfo.id
+                }
+            }
+        },function(ret, err){
+            if (ret.code == 1) {
+                $api.toast('提示',ret.msg,'2000');
+                $(".collection").attr('src','../img/Collectionend.png')
+            } else {
+                alert('收藏失败');
+                console.log( JSON.stringify( err ) );
+            }
+        });
+      })
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,34 @@
+.middle{text-align: center;margin-top: 70px;background: #ff9913;min-height: 120px;position: relative;}
+.middle .titlebonus{font-size: 14px;color: #fff;position: relative;top:20px;font-weight: normal;}
+.top .right{float: right;font-size: 14px;margin-right: 15px;}
+.middle .money{position: relative;top:30px;font-size:28px;color: #fff}
+.productlist{margin-top: 10px;padding: 3%;}
+.productlist .tablist{font-size: 14px;font-weight: normal;color: #666;margin-bottom: 10px;}
+.productlist .tablist .sec{float: right;}
+.productlist .tablist .tab{display: inline-block;padding: 0 5px;}
+.productlist .tablist .active{color: #ff9913}
+
+.productlist .list{display: flex;margin-bottom: 10px;border-top: 1px solid #ddd;padding-top: 10px;}
+.productlist .list:first-child{border-top: 0；}
+.productlist .list .leftimg{width: 35%;height: 70px;border-radius: 5px;}
+.productlist .list .decright{margin-left: 3%;width: 59%;}
+.productlist .list .decright h5{font-size: 16px;font-weight: normal;text-overflow: ellipsis;overflow: hidden;width: 100%;white-space: nowrap;color: #333;font-weight: 500;margin-bottom: 5px;}
+.productlist .list .decright p{margin-top: 5px;text-overflow: ellipsis;width: 100%;overflow: hidden;white-space: nowrap;}
+.productlist .list .decright .smeta{width: 100%;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+.productlist .list .decright .share{color: #ff9913;}
+.productlist .list .decright .share .postershare{float: right;margin-right: 10px;}
+.productactive{position: fixed;width: 94%;top: 60px;background: #fff;z-index: 11;}
+.productactive .tablist{position: fixed;width: 95%;height: 30px;background: #fff;}
+.productactive .list{margin-top: 30px;}
+.lasttitle{text-align: center;color: #999;margin-top: 10px;margin-bottom: 20px;}
+@media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+   .middle{margin-top: 90px;}
+}
+/* xr */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) {
+    .middle{margin-top: 90px;}
+}
+/* xs max */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) {
+    .middle{margin-top: 90px;}
+}

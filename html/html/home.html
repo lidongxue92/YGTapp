@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>首页</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" type="text/css" href="../res/css/light7.min.css">
+    <link rel="stylesheet" type="text/css" href="../res/icon/iconfont.css">
+    <script src="../res/icon/iconfont.js" type="text/javascript"></script>
+    <link href="../res/styleApp.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="../res/css/light7-swiper.min.css" type="text/css">
+    <script type="text/javascript" src="../script/api.js"></script>
+    <style type="text/css">
+          .item-media img{ width: 40px;  }
+          #useraddeditform .list-block .item-title.label{width: 25% !important;}
+    </style>
+</head>
+
+<body ><!--class="theme-dark" 开启夜间模式，tabbar-hidden隐藏菜单  -->
+  <div style="height: 100%;background-color: #fff;z-index: 20;position: absolute;display:none;width:100%;" class="qidongyediv">
+	 <div class="qydongyeimg" style="height: 85%; background-color:#3399FF; background-image:(); background-size:100%; background-position:center;" ></div>
+		<div><center class="qydongyeorg">北京新启科技</center></div>
+	</div>
+   <!--界面菜单-->
+<nav  class="menu bar bar-tab flex-wrap flex-vertical" id="appbottommenu">
+    <a class="tab-item no-transition replace" href="#xuexi" id="xuexi_m">
+        <span class="icon iconfont icon-icon"></span>
+        <span class="tab-label">学习</span>
+    </a>
+    <a class="tab-item no-transition replace" href="#ziliao" id="ziliao_m">
+        <span class="icon iconfont icon-file"></span>
+        <span class="tab-label">资料</span>
+    </a>
+    <a class="tab-item no-transition replace" href="#stuInfo" id="stuInfo_m" >
+        <span class="icon iconfont icon-05lianxiren"></span>
+        <span class="tab-label">个人</span>
+    </a>
+</nav>
+
+<div class="page-group">
+  <!--单个界面，如果多个界面page-current代表默认显示的-->
+
+  <!---学习页面开始----->
+  <div class="page xuexi page-current" id="xuexi">
+  <div class="content">
+    <div class="swiper-container swiper-ad" data-space-between='10' data-pagination='.swiper-pagination' data-autoplay="5000" style="height: 160px; background-color:#fff;">
+      <div class="swiper-wrapper" id="appad">
+        <!--<div class="swiper-slide"><div class="swiper-zoom-container"><img src="framework/img/banner1.png" alt=""></div></div>-->
+        <div class="swiper-slide"><div class="swiper-zoom-container"><img src="../res/img/banner2.png" alt="" style="min-height: 160px;"></div></div>
+      </div>
+       <!-- Add Arrows -->
+      <div class="swiper-button-next" style="display:none;"></div>
+      <div class="swiper-button-prev" style="display:none;"></div>
+      <!-- Add Pagination -->
+      <div class="swiper-pagination" style="display:none;"></div>
+  </div>
+  <div class="swiper-container swiper-gonggao" id="swiper-gonggao" style="height: 1.3rem; background-color: #F0EFF4; color: #AAAAAA; font-size: .7rem; line-height: 1.3rem;padding:0 0.5rem; display:none;">
+            <div  style=" float:left;"><i class="iconfont icon-zhinengyunying" style="color:Red;"></i></div>
+            <div class="swiper-wrapper" id="noticeCont" style="padding-left: 25px;display: block;">
+
+            </div>
+        </div>
+     <div class="home_head" >
+        <div class="top">
+            <div class="soso"><input type="text" placeholder="请输入课程关键词" name="" id="publicCourseName">
+            <a href="#course"> <i class="iconfont"onclick="goPublicCourse()">&#xe63b;</i></a></div>
+            <div class="xiaoxi" onclick="saomiao()" style="background-color: rgba(0,0,0,0.4);border-radius: 5px;"><i class="iconfont">&#xe750;</i></div>
+        </div>
+
+        <div class="popup popup-gonggao">
+          <div class="content-block">
+            <h4 style="text-align:center;">公告详情 <i class="iconfont icon-cuowu close-popup" style=" float:right;color: rgb(8, 148, 236);"></i></h4>
+            <p id="noticeDetailCont"></p>
+          </div>
+        </div>
+        <div class="clear"></div>
+        <div class="head_top_menu" id="indexmenulist" style=" display:none;">
+            <a href="#"><i class="iconfont">&#xe725;</i>首页</a>
+            <a href="#"><i class="iconfont">&#xe651;</i>任务</a>
+            <a href="#"><i class="iconfont">&#xe653;</i>知识库</a>
+            <a href="#"><i class="iconfont">&#xe681;</i>课件录制</a>
+             <a href="#"><i class="iconfont">&#xe725;</i>首页</a>
+            <a href="#"><i class="iconfont">&#xe651;</i>任务</a>
+            <a href="#"><i class="iconfont">&#xe653;</i>知识库</a>
+            <a href="#"><i class="iconfont">&#xe681;</i>课件录制</a>
+        </div>
+</div>
+
+
+
+    <div class="lishi" style=" display:none;">
+      <span style="font-size: 0.8rem;display: block; margin-bottom: 5px;"><i class="iconfont">&#xe64e;</i> 学习历史</span>
+      <div style="overflow-x: auto;">
+      <div style="width: 700px; " id="historyStudy">
+          <!--学习历史-->
+          <div class="clear"></div>
+      </div>
+      </div>
+    </div>
+    <div class="list-block media-list" style="margin: .5rem 0;">
+        <span style="font-size: 0.8rem;display: block; margin-bottom: 5px;margin-left: 0.5rem;"><i class="iconfont  icon-renwu1"></i>我的任务</span>
+      <ul id="userpeixunlist" style="padding-bottom: 40px;">
+
+      <!--循环任务列表-->
+       <!-- <li>
+          <a href="/examples/light7-mall/detail" class="item-link item-content">
+            <div class="item-media"><img src="/images/train/fengmian000.gif" width="200"></div>
+            <div class="item-inner">
+              <div class="item-title-row">
+                <div class="item-title">任务名称</div>
+              </div>
+
+              <div class="item-text"><div style="width: 100%; height: 3px; border-radius: 3px;  background-color: #999;margin-top: 1rem;">
+                <div style="width: 80%; height: 3px; background-color: #f00b0d"></div>
+              </div></div>
+              <div class="item-subtitle">共xx个章节</div>
+            </div>
+          </a>
+        </li>-->
+        <!--循环任务列表结束-->
+      </ul>
+    </div>
+<div class="tixing" style=" display:none;">
+<img src="framework/img/tixingtitle.gif" style="width: 100%">
+<ul class="tixingdiv" id="tixingTask">
+         <!--提醒-->
+         <!--/images/home_renwunull.png-->
+</ul>
+</div>
+
+  </div>
+  </div>
+  <!--任务开始----->
+ <div class="page renwu" id="renwu">
+  <!--界面标题-->
+  <header class="bar bar-nav" id="renwuheader">
+            <!-- <a class="button button-link button-nav pull-left back" href="home.html#xuexi">
+                  <i class="iconfont icon-shangyiye2"></i>
+                  返回
+              </a>
+              <span class="button button-link button-nav pull-right back" id="renwushuaxin">
+                    <i class="iconfont icon-shuaxin3" style="font-size:18px;"></i>
+                </span> -->
+          <h1 class="title">任务</h1>
+    </header>
+    <div class="bar bar-header-secondary">
+              <div class="searchbar">
+                <a class="searchbar-cancel">取消</a>
+                <div class="search-input">
+                  <label class="icon" for="search"><i class="iconfont icon-sousuo"></i></label>
+                  <input type="search" id='search' placeholder='输入关键字...'/>
+                </div>
+              </div>
+            </div>
+
+    <!--界面内容-->
+  <div class="content renwu pull-to-ref../resh-content"><!--pull-to-ref../resh-content"可下拉刷新-->
+       <div class="buttons-tab" style="    overflow-y: auto;">
+         <a href="#tab1" class="tab-link active button" id="renwu_all">全部</a>
+         <a href="#tab1" class="tab-link button" id="renwu_jxz">进行中 </a>
+         <a href="#tab1" class="tab-link button" id="renwu_wks">未开始 </a>
+         <a href="#tab1" class="tab-link button" id="renwu_ywce">已完成</a>
+         <a href="#tab1" class="tab-link button" id="renwu_ygq">已过期</a>
+         <a href="#tab1" class="tab-link button" id="renwu_gh">规划</a>
+      </div>
+
+     <div class="tabs" style=" margin-bottom:2.4rem;">
+        <div id="tab1" class="tab active">
+        <div class="list-block" style="margin: -0.1rem 0;">
+          <ul class="renwulist">
+            <!--等待追加_全部-->
+          </ul>
+        </div>
+        <!--分页-->
+        <div id="stagePageIndex"  style=" display:none;">1</div>
+        <div id="stageLoadMore" style="margin-bottom: 3rem; text-align: center; margin-top: 1rem;  ">点击加载更多</div>
+       </div>
+  </div>
+</div>
+</div>
+<!--任务首页结束-->
+<!--问卷开始-->
+ <div class="page questionnaire" id="questionnaire">
+  <!--界面标题-->
+  <header class="bar bar-nav">
+           <a class="button button-link button-nav pull-left back">
+                  <i class="iconfont icon-shangyiye2"></i>
+                  返回
+              </a>
+          <h1 style='position: absolute;display: block;width: 100%;padding: 0;margin: 0 -.5rem;font-size: .85rem;font-weight: 500;line-height: 2.2rem;color: #3d4145;text-align: center;white-space: nowrap;'>问卷</h1>
+    </header>
+    <div class="bar bar-header-secondary">
+              <div class="searchbar">
+                <a class="searchbar-cancel">取消</a>
+                <div class="search-input">
+                  <label class="icon" for="search"><i class="iconfont icon-sousuo"></i></label>
+                  <input type="search" id='questionnaireText' placeholder='输入关键字...'/>
+                </div>
+              </div>
+            </div>
+
+    <!--界面内容-->
+  <div class="content questionnaire pull-to-refresh-content"><!--pull-to-refresh-content"可下拉刷新-->
+      <!-- 默认的下拉刷新层 -->
+        <div class="pull-to-refresh-layer">
+            <div class="preloader"></div>
+            <div class="pull-to-refresh-arrow"></div>
+       </div>
+     <div class="tabs" style=" margin-bottom:2.4rem;">
+        <div class="tab active">
+        <div class="list-block" style="margin: -0.1rem 0;">
+          <ul class="questionnairelist">
+            <!--等待追加_全部-->
+          </ul>
+        </div>
+        <!--分页-->
+        <div id="questionnaireIndex"  style=" display:none;">1</div>
+        <div id="questionnaireLoadMore" style="margin-bottom: 3rem; text-align: center; margin-top: 1rem; display:none;  ">点击加载更多</div>
+       </div>
+  </div>
+</div>
+</div>
+<!--问卷结束-->
+<!--文件首页开始-->
+<div class="page ziliao" id="ziliao">
+
+     <!--界面标题-->
+  <header class="bar bar-nav">
+          <a class="icon pull-left" id="zhiliaoback" style="display:none;"><i class="iconfont icon-shangyiye2"></i></a>
+          <a class="icon iconfont icon-jia pull-left create-actions" id="zhiliaoadd" style="display:none;"></a>
+          <span class="icon iconfont pull-right" id="zhiliaoshuaxin"><i class="iconfont icon-shuaxin3"></i></span>
+          <a class="icon iconfont icon-jia pull-left ios-is-show" id="ios-create"></a>
+          <h1 class="title">资料</h1>
+    </header>
+
+<div class="bar bar-header-secondary" style="background: #39f;color: white;line-height: 2.2rem;text-align: center;">
+   <div class="row">
+      <div class="col-33" id="wenjian_paixu"><i class="iconfont icon-paixuicon"></i> 名称</div>
+      <div class="col-33" id="lable_color" onclick="openTag()"><i class="iconfont icon-xueyuanpinglun"></i> 标签</div>
+      <div class="col-33" id="wxAdd" > <a class="icon iconfont icon-jia create-actions" id="zhiliaoadd" style=" color:#FFF;font-size: 16px;">添加</a></div>
+      <div class="col-33" onclick="showSoInupt(1)"><i class="iconfont icon-sousuo-sousuo"></i> 搜索</div>
+    </div>
+</div>
+<div class="bar bar-header-secondary theme-dark" style="line-height: 2.2rem;text-align: center;display:none; " id="deleteblock">
+  <div class="row">
+      <div class="col-50" id="renamefile"><span class="iconfont icon-iconzhongmingming-06"></span> 重命名</div>
+      <div class="col-50" id="deletefile"><span class="icon icon-remove"></span> 删除</div>
+  </div>
+</div>
+<div class="bar bar-header-secondary" style="display:none;" id="SosoShow">
+              <div class="searchbar searchbar-active">
+                <a class="searchbar-cancel" onclick="showSoInupt(2)">取消</a>
+                <div class="search-input">
+                  <label class="icon" for="search"><i class="iconfont icon-sousuo"></i></label>
+                  <input type="search" id="searchFileName" placeholder="回车发起搜索" autofocus="autofocus" >
+                </div>
+              </div>
+</div>
+    <!--界面内容-->
+  <div class="content ziliao pull-to-ref../resh-content infinite-scroll infinite-scroll-bottom" >
+  <!--pull-to-ref../resh-content"可下拉刷新,infinite-scroll可无限滚动（分页异步加载）-->
+
+        <div class="list-block" style="margin-top: -0.1rem;">
+          <ul class="ios-is-show"><li>
+            <!--苹果使用的上传插件-->
+            <input type="file" id="fileIosId"/></li></ul>
+          <ul id="filelist">
+
+            <!--开始追加-->
+
+          </ul>
+          <!--分页加载器，加载提示符,注意需要程序验证下，大于一屏幕数据量再显示-->
+        <!--<div class="infinite-scroll-preloader" >
+          <div class="preloader"></div>
+        </div>-->
+        </div>
+       <div id="filepage" style=" display:none;">1</div>
+       <div id="loadMore" style=" margin-bottom: 3.0rem;text-align: center;margin-top: -1.0rem;" >点击加载更多</div>
+  </div>
+
+</div>
+<!--文件首页结束-->
+<!--个人资料开始-->
+<div class="page geren" id="stuInfo">
+    <div class="content">
+   <div class="content-block" style="margin:0;background-color: #39f; color: #fff; padding: 20px 0; text-align: center;">
+      <img src="../res/img/avatar.png" style='width: 4.2rem;  border-radius:50%; border:1px #fff solid; ' id="userimg" onerror="javascript:this.src='../res/img/avatar.png'">
+                  <div class="item-title-row">
+                    <div class="item-title" ><!--<span id="uname" style="font-size: 1.3rem" >未登录</span>-->
+                      <div id="usersex">
+                      <!--拼接-->
+                      </div>
+                    </div>
+                  </div>
+            <div class="item-subtitle"  id="orgname"> </div>
+    </div>
+
+
+    <div class="row text-center" style="background: white;border-left: 0;border-right: 0; padding-left: 0.5%">
+            <div  style="width: 33%; float: left; padding: 0.2rem; margin-left: 0.5%">
+              <h3 style="margin: 0;margin-top: 0.3rem; font-size: 1.2rem" id="totleStudyTime">0</h3>
+              <div class="color-gray" style="font-size: 0.5rem">总学时长(分钟)</div>
+            </div>
+            <div  style="width: 33%;float: left;padding: 0.2rem">
+              <h3 style="margin: 0;margin-top: 0.3rem;font-size: 1.2rem"  id="totleStudyCourse">0</h3>
+              <div class="color-gray" style="font-size: 0.5rem">学习课程数</div>
+            </div>
+            <div style="width: 33%;float: left;padding: 0.2rem">
+              <h3 style="margin: 0;margin-top: 0.3rem;font-size: 1.2rem" id="totleExam">0</h3>
+              <div class="color-gray" style="font-size: 0.5rem">考试次数</div>
+            </div>
+
+     </div>
+
+     <div class="list-block list navul" style="margin: 1rem auto;">
+        <ul>
+         <li><a class="item-content item-link" href="geren/info.html">
+            <div class="item-media"><i class="icon iconfont icon-jilu3"></i></div>
+            <div class="item-inner">
+              <div class="item-title">修改个人信息</div>
+            </div>
+          </a></li>
+        </ul>
+      </div>
+
+    <div class="list-block list navul" style="margin: 1rem auto;">
+       <ul>
+         <li><a class="item-content item-link" onclick="openDownManager()">
+            <div class="item-media"><i class="icon iconfont icon-xiazai"></i></div>
+            <div class="item-inner">
+              <div class="item-title">离线缓存</div>
+            </div>
+          </a></li>
+       </ul>
+     </div>
+
+    <div class="list-block list navul" style="margin: 1rem auto;">
+        <ul>
+        <li><a class="item-content item-link" href="geren/lishi.html#history">
+            <div class="item-media"><i class="icon iconfont icon-jilu"></i></div>
+            <div class="item-inner">
+              <div class="item-title">历史考试</div>
+            </div>
+          </a></li>
+         <li><a class="item-content item-link" href="geren/shoucang.html#collection">
+            <div class="item-media"><i class="icon iconfont icon-huijijiayuanshoucangicon01"></i></div>
+            <div class="item-inner">
+              <div class="item-title">收藏课程</div>
+            </div>
+          </a></li>
+           <li class="yejianmoshi">
+                <div class="item-content">
+                   <div class="item-media"><i class="icon iconfont icon-banyuanxuankuang"></i></div>
+                  <div class="item-inner">
+                    <div class="item-title label" >夜间模式</div>
+                    <div class="item-input" style="float: right;width: initial;">
+                      <label class="label-switch">
+                        <input type="checkbox" id="dark-switch">
+                        <div class="checkbox"></div>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </li>
+        </ul>
+      </div>
+
+
+    <div class="content-block">
+        <a href="../ypylogin.html" class="button button-big button-fill button-danger external" id="exitLogin">退出登录</a>
+      </div>
+  </div>
+
+</div>
+<!--个人资料结束-->
+
+
+<!-- 公开课 -->
+    <!--下拉列表框-->
+    <div class="popover corseSort" id="corseSort" style="top: 40px;left: 14px;">
+        <div class="popover-angle no-top"></div>
+        <div class="popover-inner">
+            <div class="list-block">
+                <ul>
+                    <li><a href="#" class="list-button item-link" onClick="publicCourseSort(3,'综合排序')">综合排序</a></li>
+                    <li><a href="#" class="list-button item-link" onClick="publicCourseSort(2,'学习人数')">学习人数</a></li>
+                    <li><a href="#" class="list-button item-link" onClick="publicCourseSort(1,'最新发布')">最新发布</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!--单个界面，如果多个界面page-current代表默认显示的 公开课开始-->
+    <div class="page course" id="course">
+        <header class="bar bar-nav">
+          <a class="button button-link button-nav pull-left back" href="/app/home.html#xuexi">
+                    <span class="iconfont icon-shangyiye2"></span>
+                    返回
+          </a>
+            <h1 class="title">公开课</h1>
+        </header>
+        <!-- 条件区域 -->
+        <div class="bar bar-header-secondary">
+            <div class="row" style="height: 2.2rem; line-height: 2.2rem;">
+                <div class="col-40 open-popover" data-popover=".corseSort"><span id="publicCourseText">综合排序</span>
+                    <i class="iconfont icon-paixu2"></i></div>
+                <!--picker切换排序 http://www.light7.cn/components/#picker-->
+                <div class="col-60">
+                    <a class="button button-link button-nav  open-panel" data-panel="#panel-right-shaixuan"
+                        style="text-align: right;"><span class="iconfont icon-shaixuan"></span>
+                        <span id="fenleiming">
+                            全部
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!--界面内容-->
+        <div class="content" id="courseContent">
+            <!--拼接html-->
+            <div class="row">
+            </div>
+        </div>
+
+    </div>
+<!-- 公开课结束 -->
+
+<!---问答列表------>
+<div class="page interlocution" id="interlocution" style=" background:#fff;">
+       <!--界面标题-->
+       <header class="bar bar-nav">
+           <h1 class="title">问答</h1>
+       </header>
+       <div class="bar bar-header-secondary" style="display:none;">
+           <div class="searchbar">
+           <a class="searchbar-cancel">取消</a>
+           <div class="search-input">
+               <label class="icon icon-search" for="search"></label>
+               <input type="search" id='SpectailColnumTxt' placeholder='输入关键字...'/>
+           </div>
+           </div>
+        </div>
+        <div class="bar bar-header-secondary" style="line-height: 2.2rem;">
+          <div  style=" float:left;">
+               <span onclick="setParentId()" style="color: #39f;">全部</span>
+              <span class="sp_knowname"></span>
+              <i class="iconfont open-popover" data-popover="#knowledgeSort" style="font-size: small;">&#xec52;</i>
+          </div>
+        </div>
+   <!---界面内容--->
+ <div class="content interlocution pull-to-refresh-content">
+     <!---默认的下拉刷新层--->
+       <div class="pull-to-refresh-layer">
+           <div class="preloader"></div>
+           <div class="pull-to-refresh-arrow"></div>
+      </div>
+
+    <div style=" margin-bottom:2.4rem;">
+       <div id="SpectailColnum">
+       <div class="list-block" style="margin: -0.1rem 0;">
+
+       </div>
+       <!---分页--->
+       <div id="SpectailColnumIndex"  style=" display:none;">1</div>
+       <div id="SpectailColnumLoadMore" style="margin-bottom: 3rem; text-align: center; margin-top: 1rem; display:none;  ">点击加载更多</div>
+      </div>
+ </div>
+</div>
+
+   </div>
+
+   <!---分类列表框--->
+   <div class="popover" id="knowledgeSort" style="top: 40px;left: 14px;">
+       <div class="popover-angle no-top"></div>
+       <div class="popover-inner">
+           <div class="list-block">
+               <ul style="max-height: 20rem;">
+                   <li><a href="#" class="list-button item-link close-popover" data-popover="#knowledgeSort" >暂无数据</a></li>
+               </ul>
+           </div>
+       </div>
+   </div>
+  <!---问答列表结束---->
+
+
+
+<!---荣誉列表Start---->
+ <div class="page honor" id="honor">
+        <!--界面标题-->
+        <header class="bar bar-nav">
+            <!--<a class="button button-link button-nav pull-left back" href="/app/home.html#renwu">
+                      <span class="icon icon-left"></span>
+                      返回
+                  </a>-->
+            <h1 class="title">荣誉</h1>
+        </header>
+        <!--界面内容-->
+        <div class="content">
+                <div class="honorlist" style="margin-bottom: 3rem;">
+                  <!--<div class="card facebook-card">
+                    <div class="card-content"><img src="/images/huzhang/huizhang6.png" width="50%"  style="margin:0 auto;"><div class="jibie ng-binding" >共3级</div></div>
+                    <div class="card-footer no-border">
+                      <a class="link">菜鸟荣誉</a>
+                      <a class="link"></a>
+                      <a class="link"><i class="iconfont" style="color:#39f; margin-right:5px;">&#xe76a;</i> 获得者：50人</a>
+                    </div>
+                  </div>-->
+              </div>
+              <!--分页-->
+            <div id="honorIndex"  style=" display:none;">1</div>
+            <div id="honorLoadMore" style="margin-bottom: 3rem; text-align: center; margin-top: 1rem; display:none;float: left;color: #39f;">点击加载更多</div>
+        </div>
+    </div>
+    <!---荣誉列表End---->
+</div>
+
+
+
+
+<!--标签选择器-->
+<div class="popup popup-tag">
+      <header class="bar bar-nav">
+        <span class="pull-right"><i class="icon iconfont icon-wrong close-popup"></i></span>
+        <h1 class="title">请选择筛选标签</h1>
+      </header>
+      <div class="content">
+      <ul class="biaoqian">
+                  <li  >
+                            <div class="knowledgebiaoqianyuan">
+                                <svg class="icon" aria-hidden="true" ><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-biaoqianhongse"></use></svg>
+                                </div>
+                                <div  title="红色" class="ng-binding" data="01c9cfcb-ffec-4778-be6f-31e633czo33a">红色</div>
+                                <div class="biaoqianname">
+                                    <!--<svg class="icon" aria-hidden="true"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-zhongmingming"></use></svg>
+                                        重命名</span>-->
+                                </div  >
+                        </li>
+                  <li  >
+                            <div class="knowledgebiaoqianyuan">
+                                <svg class="icon" aria-hidden="true" ><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-biaoqianchengse"></use></svg>
+
+                            </div>
+                            <div title="橙色"  class="ng-binding" data="01c9cfcb-ffec-4778-abcd-31e6321zo33b">橙色</div>
+                            <div class="biaoqianname">
+                                </div>
+                        </li><li  >
+                            <div class="knowledgebiaoqianyuan">
+                                <svg class="icon" aria-hidden="true" ><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-biaoqianhuangsese"></use></svg>
+
+                            </div>
+                            <div title="黄色" class="ng-binding" data="01c9cfcb-ffec-3208-abcd-31e633czo33c">黄色</div>
+                            <div class="biaoqianname">
+
+                                </div>
+
+                        </li><li  >
+                            <div class="knowledgebiaoqianyuan">
+                                <svg class="icon" aria-hidden="true"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-biaoqianlvse"></use></svg>
+                            </div>
+                            <div  title="绿色"  class="ng-binding" data="01c1259cb-ffec-4778-abcd-31e633czo33d">绿色</div>
+                            <div class="biaoqianname">
+
+                                <span >
+                                    <!--<svg class="icon" aria-hidden="true"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-zhongmingming"></use></svg>
+                                    重命名</span>--></div>
+
+                        </li><li >
+                            <div class="knowledgebiaoqianyuan">
+                                <svg class="icon" aria-hidden="true" ><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-biaoqianlanse"></use></svg>
+                            </div>
+                            <div  title="蓝色" class="ng-binding" data="05bae156-9d94-482b-a120-86e694e40abe">蓝色</div>
+                            <div class="biaoqianname">
+
+                                </div>
+
+                        </li><li >
+                            <div class="knowledgebiaoqianyuan">
+                                <svg class="icon" aria-hidden="true" ><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-biaoqianzise"></use></svg>
+                            </div>
+                            <div title="紫色"  class="ng-binding" data="078cbeeb-f78f-312e-9de0-9efe1ee766af">紫色</div>
+                            <div class="biaoqianname">
+
+                                </div>
+
+                        </li><li >
+                            <div class="knowledgebiaoqianyuan">
+                                <svg class="icon" aria-hidden="true" ><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-biaoqianhuise"></use></svg>
+                            </div>
+                            <div title="灰色" class="ng-binding" data="08283666-15b4-4135-b0aa-3ecfdeed6e7g">灰色</div>
+                            <div class="biaoqianname">
+
+                                </div>
+
+                        </li>
+                        <li >
+                            <div class="knowledgebiaoqianyuan">
+                                <svg class="icon" aria-hidden="true" ><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-biaoqiantoumingquanbu"></use></svg>
+                            </div>
+                            <div title="全部" class="ng-binding" data="0">全部标签</div>
+                        </li>
+                        <li>
+                            <div class="knowledgebiaoqianyuan">
+                                <svg class="icon" aria-hidden="true">
+                                    <use xlink:href="#icon-guanbi"></use>
+                                </svg>
+                            </div>
+                            <div title="取消" class="ng-binding" data="1">取消筛选</div>
+                        </li>
+         </ul>
+      </div>
+  </div>
+<!--文件上传模块开始-->
+ <div class="popup popup-file" data-popup="popup-file" id="popup-file">
+      <!--文件上传的head-->
+      <header class="bar bar-nav">
+        <span class="pull-right" id="popup-file-close"><i class="icon iconfont icon-wrong"></i></span>
+        <h1 class="title">文件上传列表</h1>
+      </header>
+      <!--context-->
+      <div class="content" style=" background:#EEE;">
+        <div class="item-content" style="position: fixed;bottom: 0px;padding: 0px;left: 4px;width: 98%;">
+           <a href="#" class="button button-big button-fill" onClick="openUploadFile()" id="uploadFileText">选择上传文件</a>
+           <div id="uploadInfoBtn" style="display:none;"></div>
+           <div class="fileMsg" style="display:none;"><span class="icon icon-right"></span><span class="fileMsg fileMsgTxt"></span></div>
+        </div>
+        <!--文件历史上传列表-->
+        <div class="list-block" style="margin-top:0px;">
+            <ul class="file-head">
+               <li class=" file-head-li card-header item-content list-group-title" style="position: fixed;text-align: center;width: 100%;top: 43px;color: #fff;background: #131313;border-top: 1px solid #ccc;">
+                    <div style="text-align: center;width:35%">名称</div>
+                    <div style="text-align: center;width:15%">大小</div>
+                    <div style="text-align: center;width:20%">目录</div>
+                    <div style="text-align: center;width:25%">进度</div>
+                    <div style="text-align: center;width:5%"><span id="closeFileupload" onclick="closeFilePanel('资料')">+</span></div>
+                </li>
+            </ul>
+            <ul id="htmlUploadListBody" style="top:40px;">
+                <li class="card-header item-content" style="display:none;">
+                    <div style="text-align: center;width:35%">名称</div>
+                    <div style="text-align: center;width:15%">大小</div>
+                    <div style="text-align: center;width:20%">目录</div>
+                    <div style="text-align: center;width:25%">进度</div>
+                    <div style="text-align: center;width:5%"></div>
+                </li>
+            </ul>
+        </div>
+      </div>
+ </div>
+ <!--文件上传模块结束-->
+
+
+<!--系统第二部分， popup, panel 等放在这里 -->
+     <div class="panel-overlay">
+     </div>
+     <div class="panel panel-right  panel-reveal " id="panel-right-shaixuan" style="background-color: #eee;
+         color: #3d4145; z-index: 9999;">
+         <div class="content">
+             <div class="content-padded">
+                 <header class="bar bar-nav" style="display: none;">
+        <h1 class="title">课程筛选</h1>
+    </header>
+                 <div class="search-input">
+                     <label class="icon icon-search" for="search">
+                     </label>
+                     <input type="search" id="publicCourseNameParams" placeholder="请输入关键词...">
+                 </div>
+                 <p>
+                     知识分类筛选：</p>
+                 <m id="knowList">
+                    <p><!--单项选择-->
+                     <span class="shaixuan active">第一级分类</span>
+                      <span class="shaixuan">一级</span>
+                      <span class="shaixuan">一级</span>
+                      <span class="shaixuan">一级</span>
+                      <span class="shaixuan">一级</span>
+                      <span class="shaixuan">一级</span>
+                        <span class="shaixuan">一级</span>
+                      <span class="shaixuan">一级</span>
+                    </p>
+                    <p><!--单项选择-->
+                      选中第一类目名称：<br />
+
+                     <span class="shaixuan">二级</span>
+                      <span class="shaixuan">二级</span>
+                      <span class="shaixuan">二级</span>
+                      <span class="shaixuan">二级</span>
+                      <span class="shaixuan">二级</span>
+                        <span class="shaixuan">二级</span>
+                      <span class="shaixuan">二级</span>
+                    </p>
+                 </m>
+                 <p>
+                     课程类型筛选：</p>
+                 <p id="publicType">
+                     <!--多项选择-->
+                     <!-- 初始化追加 -->
+                 </p>
+             </div>
+         </div>
+         <div style="position: fixed; bottom: 0; width: 100%;">
+             <a href="#" onClick="getPublicCourse(true)" class="button button-fill button-big button-danger close-panel">完成</a>
+         </div>
+     </div>
+
+<script type='text/javascript' src='../res/zepto.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='../res/js/light7.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='../res/js/i18n/cn.min.js'></script>
+<script src="../res/js/jquery-1.10.2.min.js" type="text/javascript"></script>
+<link href="../res/webuploader/css/webuploader.css" rel="stylesheet" type="text/css" />
+<script src="../res/webuploader/js/webuploader.min.js" type="text/javascript"></script>
+
+<!--pdf预览-->
+<script src="../res/pdf2/pdf.js" type="text/javascript"></script>
+<script src="../res/icon/iconfont.js" type="text/javascript"></script>
+<script type='text/javascript' src='../res/js/light7-swiper.min.js' charset='utf-8'></script>
+
+<script type="text/javascript">
+var winapi = {};
+var downloadManager;//下载插件对象
+apiready = function(){
+  winapi = api;
+  downloadManager = api.require('downloadManager');
+  var locationHref = window.location.toString();
+  api.setStatusBarStyle({
+      style: '#000'
+  });
+
+  api.addEventListener({
+      name: 'keyback'
+  }, function(ret, err) {
+      //alert('按了返回键');.
+      return;
+  });
+};
+
+//打开离线缓存列表
+function openDownManager(){
+
+  downloadManager.openManagerView({
+      title: '离线缓存'
+  }, function(ret, err) {
+      if (ret) {
+          //打开预览文件
+          //downloadManager.closeManagerView();//关闭窗口
+          //var jieguo =JSON.stringify(ret);
+          if(ret.hasOwnProperty('event'))//关闭窗口时
+          {
+             //$.toast('关闭窗口时');
+          }
+          else
+          {
+              //打开文件时候触发
+              var title = ret.savePath.substring(ret.savePath.lastIndexOf('/')+1,ret.savePath.lastIndexOf('.'));
+              api.openWin({
+                  name: 'kaishi',
+                  url: "../html/res/CachePreview.html",
+                  pageParam: {
+                      title:title,
+                      downid:ret.id,
+                      VideoInfo:JSON.stringify(ret)
+                  }
+              });
+          }
+      } else {
+          //alert();
+          $.toast('正在打开');
+      }
+  });
+}
+//下载文件
+//downfile({url: 'http://app.newstartsoft.com/live/tks_v1.mp4',savePath: 'cacheDir://xxx.mp4',iconPath:'http://www.newstartsoft.com/Content/New/img/video_bj.jpg',cache: true,allowResume: true,title: '教程',networkTypes: 'all'})
+function downfile(fileobj, course){
+downloadManager.enqueue(fileobj, function(ret, err) {
+    if (ret) {
+        if(parseInt(ret.id) > 0){
+          $.toast('开始下载');
+          if(course != "" && course != null && course != "null" && JSON.stringify(course) != "{}"){
+            course.downid = ret.id;
+            var cacheinfo = GetlocalStorage("APPCourseCacheList");
+            if(cacheinfo != "" && cacheinfo != null && cacheinfo && "null"){
+              cacheinfo.push(course);
+            }else {
+              cacheinfo = [];
+              cacheinfo.push(course);
+            }
+            SetlocalStorage("APPCourseCacheList", JSON.stringify(cacheinfo));
+          }
+        }else {
+          $.toast('下载错误:' + ret.id);
+        }
+    } else {
+        $.toast('下载错误'+JSON.stringify(err));
+    }
+});
+}
+//扫描二维码
+function saomiao(){
+  api.showProgress({
+    title: '正在解析二维码',
+    text: '正在拼命处理中',
+    modal: false
+  });
+  var FNScanner = api.require('FNScanner');
+  FNScanner.open({
+      autorotation: true
+  }, function(ret, err) {
+      if (ret) {
+          api.hideProgress();
+          if(ret.eventType == "success"){
+            //alert(ret.eventType);
+            if(sysUserInfo != null){
+              var content = ret.content;
+              var flag = GetParam(content, "f");
+              if(flag == "l"){  //解释一下，这是字母L，不是数字1,
+                var roomid = GetParam(content, "r");
+                var liveserver = GetParam(content, "l");
+                var liveurl = "../livepush/livep.html?roomid=" + roomid;
+                if(liveserver != ""){
+                   liveurl += "&liveserver=" + liveserver;
+                }
+                api.openWin({
+                    name: 'live',
+                    url:liveurl
+                });
+
+              }else{
+                $.alert("扫描内容错误");
+              }
+            }else {
+              $.alert("请先登录！", function() {
+                window.location.href = "ypylogin.html";
+                return;
+              });
+            }
+
+          }
+      } else {
+          alert("扫码失败，请重试");
+      }
+  });
+}
+function GetParam(paramUrl, paramName) {
+  var reg = new RegExp("(^|&)" + paramName.toLowerCase() + "=([^&]*)(&|$)", "i");
+  var r = paramUrl.substr(1).match(reg);
+  if (r != null) return unescape(r[2]); return "";
+}
+</script>
+<script type='text/javascript' src="../res/Function4.0.js"  async="async"></script>
+<script type='text/javascript' src="../res/AppStudy.js"></script>
+<script type="text/javascript" src="../ckt/swiper.min.js"></script>
+<script type="text/javascript" src="../ckt/upload.js" async="async"></script>
+<script type="text/javascript" src="../ckt/weixin.js" async="async"></script>
+<script type='text/javascript' src="../res/config.js" ></script>
+<script type='text/javascript' src="../res/home.js"  async="async"></script>
+<script type='text/javascript' src="../res/jisupeixun.js" ></script>
+<script type='text/javascript' src="../html/honor/honor.js" ></script>
+<script type='text/javascript' src="../html/interlocution/interlocution.js" ></script>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>作业管理</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" href="../../css/base.css">
+    <link rel="stylesheet" href="../../css/ygtcommon.css">
+    <link rel="stylesheet" href="../../css/my/taskframebefore.css">
+<body >
+      <div class="Datatoday">
+          <!-- <div class="livelist" onclick="taskdetail()">
+              <img src="../../img/1.png" />
+              <div>
+                  <h5>医管通护理频道</h5>
+                  <p>1个作业</p>
+                  <img src="../../img/back_right.png" />
+              </div>
+          </div> -->
+          <!-- <div class="homeafter" onclick="taskdetail('+data.data[i].id+')">
+            <h5>'+data.data[i].title+</h5>
+              <p>+data.data[i].update_time+'</p>
+              <p class="scroe">总分：'+data.data[i].score+'</p>
+              <img src="../../img/back_right.png">
+            </div> -->
+      </div>
+  <div class="loading">
+      <span>
+          <img src="../../img/loading.gif" />
+      </span>
+  </div>
+</body>
+<script src="../../js/lib/jquery-2.1.4.js"></script><script src="../../js/common.js"></script>
+<script type="application/javascript" src="../../script/api.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    var page = 1;
+    var pagesize = 10;
+    var loading = false;
+    var isover = false;
+    var creattime = '';
+    var isloading = false;
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+        //  禁止左右滑动
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+        api.setRefreshHeaderInfo({
+             bgColor: '#fefefe',
+             textColor: '#999',
+             textDown: '下拉刷新...',
+             textUp: '松开刷新...',
+            //  textLoading:'<img src="widget://img/loading.gif" />',
+             showTime:false
+         }, function(ret, err) {
+             //在这里从服务器加载数据，加载完成后调用api.refreshHeaderLoadDone()方法恢复组件到默认状态
+             if (!loading) {
+                 isover = false;
+               $('.Datatoday').html('');
+               api.refreshHeaderLoading();
+               loaddata();
+             }
+         });
+
+         api.addEventListener({
+             name:'scrolltobottom',
+             extra:{
+                 threshold:0            //设置距离底部多少距离时触发，默认值为0，数字类型
+             }
+         }, function(ret, err){
+             if (loading || isover) {
+                 return;
+             }
+             page++; //页数
+             loaddata();
+         });
+         $('.loading').show();
+        loaddata();
+    };
+
+    // 课前作业
+    function loaddata() {
+        api.ajax({
+            url: wtkurl +'classroomlist/getTasks',
+            method: 'post',
+            headers: {
+                'TOKEN': ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    uid: ygtuserinfo.id
+                }
+            }
+        }, function(data, err) {
+            console.log(JSON.stringify(data));
+            console.log(JSON.stringify(err))
+            $('.loading').hide();
+            var html2 = ' ';
+            if (data.data !='') {
+                var listhtml = '';
+                for (var i = 0; i < data.data.length; i++) {
+                    listhtml +='<div class="livelist" onclick="taskdetail('+data.data[i].id+')">'+
+                                '<img src="'+data.data[i].pic+'" />'+'<div><h5>'+data.data[i].title+'</h5>'+
+                                '<p>'+data.data[i].count+'个作业</p>'+'</div></div>'
+                }
+                $('.Datatoday').append(listhtml)
+                if (data.data.length < 10) {
+                  html2 += "<div class='lasttitle'>已无更多数据</div>";
+                  $('.Datatoday').append(html2)
+                  isover = true;
+              }
+              loading = false;
+              api.refreshHeaderLoadDone()
+          }else{
+              html2 += "<div class='lasttitle'>已无更多数据</div>";
+              $('.Datatoday').append(html2)
+              isover = true;
+              loading = false;
+              $('.loading').hide();
+              api.refreshHeaderLoadDone()
+          }
+        });
+    }
+    //作业详情
+    function taskdetail(id) {
+        api.openWin({
+            name: 'taskdetailbefore',
+            url: './taskdetailbefore.html',
+            pageParam: {
+                id:id
+            },
+            bgColor: 'rgba(0,0,0,0)',
+            animation: {
+                type: 'none'
+            }
+        })
+    }
+
+
+</script>
+
+</html>

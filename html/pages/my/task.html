@@ -1,0 +1,141 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>作业管理</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" href="../../css/base.css">
+    <link rel="stylesheet" href="../../css/ygtcommon.css">
+    <link rel="stylesheet" href="../../css/my/task.css">
+<body >
+    <header class="top" id="header">
+        <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span class="title">作业管理</span>
+        </h1>
+    </header>
+    <div class="middle">
+        <h5 id='title'><span class="tab active" dataid ="1">课前作业</span><span class="tab" dataid ="2">课后作业</span></h5>
+        <div class="Datatoday">
+            <!-- <div class="livelist" onclick="taskdetail()">
+                <img src="../../img/1.png" />
+                <div>
+                    <h5>医管通护理频道</h5>
+                    <p>1个作业</p>
+                    <img src="../../img/back_right.png" />
+                </div>
+            </div> -->
+            <!-- <div class="homeafter" onclick="taskdetail('+data.data[i].id+')">
+              <h5>'+data.data[i].title+</h5>
+                <p>+data.data[i].update_time+'</p>
+                <p class="scroe">总分：'+data.data[i].score+'</p>
+                <img src="../../img/back_right.png">
+              </div> -->
+        </div>
+    </div>
+    <div class="loading">
+        <span>
+            <img src="../../img/loading.gif" />
+        </span>
+    </div>
+</body>
+<script src="../../js/lib/jquery-2.1.4.js"></script><script src="../../js/common.js"></script>
+<script type="application/javascript" src="../../script/api.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    var isloading = false;
+    var page = 1;
+    var pagesize = 10;
+    var toph ='';
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+        //  禁止左右滑动
+        $api.fixStatusBar(header);
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+        toph = $api.offset($api.byId('header')).h+$api.offset($api.byId('title')).h+10;
+        api.openFrame({
+            name: 'taskframebefore',
+            url: './taskframebefore.html',
+            rect: {
+                marginLeft:0,    //相对父 window 左外边距的距离
+                marginTop:toph,    //相对父 window 上外边距的距离
+                marginBottom:0,    //相对父 window 下外边距的距离
+                marginRight:0
+            },
+            pageParam: {
+                name: 'test'
+            },
+            bounces: true,
+            vScrollBarEnabled: false,
+            hScrollBarEnabled: false
+        });
+    };
+
+
+    $('.tab').click(function () {
+        $('.tab').removeClass('active');
+        $(this).addClass('active');
+        dataid = $(this).attr('dataid');
+        if (dataid == 1) {
+          api.closeFrame({
+              name: 'taskframeafter'
+          });
+          api.openFrame({
+              name: 'taskframebefore',
+              url: './taskframebefore.html',
+              rect: {
+                  marginLeft:0,    //相对父 window 左外边距的距离
+                  marginTop:toph,    //相对父 window 上外边距的距离
+                  marginBottom:0,    //相对父 window 下外边距的距离
+                  marginRight:0
+              },
+              pageParam: {
+                  name: 'test'
+              },
+              bounces: true,
+              vScrollBarEnabled: false,
+              hScrollBarEnabled: false
+          });
+        }else{
+          api.closeFrame({
+              name: 'taskframebefore'
+          });
+          api.openFrame({
+              name: 'taskframeafter',
+              url: './taskframeafter.html',
+              rect: {
+                  marginLeft:0,    //相对父 window 左外边距的距离
+                  marginTop:toph,    //相对父 window 上外边距的距离
+                  marginBottom:0,    //相对父 window 下外边距的距离
+                  marginRight:0
+              },
+              pageParam: {
+                  name: 'test'
+              },
+              bounces: true,
+              vScrollBarEnabled: false,
+              hScrollBarEnabled: false
+          });
+        }
+    })
+
+
+
+</script>
+
+</html>

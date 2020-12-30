@@ -1,0 +1,8 @@
+body{width: auto;}
+.middle{margin-top: 80px;}
+.middle div{border-radius: 5px;background: #fff;padding: 10px;}
+.middle div img{width: 50px;height: 50px;border-radius: 50%;}
+.middle div .bth{display: inline-block;padding: 3px 5px;color: #fff;background: #ff9913;border-radius: 30px;margin-right: 10px;font-size: 12px;}
+@media screen and (min-width: 375px) {
+    .middle{margin-top: 100px;}
+}

@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>直播列表Frame</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/ygtcommon.css" />
+    <link rel="stylesheet" href="../css/index/wordframe.css">
+</head>
+
+<body>
+    <div id="Tolist" data-url='Livebroadcast'>
+        <div class="list" onclick="worddetail();">
+            <img src="../img/classroom.jpg" />
+            <div class="right">
+                <h5 class="title">88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888</h5>
+                <p>医管通微课堂</p>
+                <p>
+                    <span class="time">9-03 14:00</span>
+                    <span class="Browsing"><img src="../img/eyes.png" /> 657</span>
+                    <span class="free">免费</span>
+                </p>
+            </div>
+        </div>
+        <div class='lasttitle'>已无更多数据</div>
+    </div>
+    <div class="loading">
+        <span>
+            <img src="../img/loading.gif" />
+        </span>
+    </div>
+</body>
+<script src="../js/lib/jquery-2.1.4.js"></script><script src="../js/common.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = '';
+    var page = 1;
+    var pagesize = 4;
+    var loading = false;
+    var systemtype = '';
+    var iswxpay = $api.getStorage('iswxpay');
+    var calsstitle = '';
+    apiready = function() {
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+        systemtype = api.systemType;
+
+        $(".loading").hide();
+        api.setRefreshHeaderInfo({
+            bgColor: '#fefefe',
+            textColor: '#999',
+            textDown: '下拉刷新...',
+            textUp: '松开刷新...',
+            showTime: false
+        }, function(ret, err) {
+            page = 1;
+            $api.html($api.byId('Tolist'), '');
+            api.refreshHeaderLoading();
+            if (loading) loading = false;
+            //setTimeout('api.refreshHeaderLoadDone()', '500'); //api.refreshHeaderLoadDone();
+        });
+    }
+    function loadData() {
+        // 首页直播间数据
+        api.ajax({
+            url: wtkurl +'classroom/getClassroomList',
+            method: 'post',
+            headers: {},
+            data: {
+                values: {
+                    page: page,
+                    pagesize: '10',
+                    typeid: api.pageParam.typeid
+                }
+            }
+        }, function(ret, err) {
+            console.log(JSON.stringify(ret));
+            console.log(JSON.stringify(err));
+            if (ret) {
+                $(".loading").hide();
+                if (ret.code == 1) {
+                    var len = ret.data.result.length;
+                    var html = '';
+                    for (var i = 0; i < len; i++) {
+                        if (ret.data.result[i]['style'] != 1) {
+                            // 需要密码收费
+                            html += '<div class="list" tapmode onclick="openguide(' + ret.data.result[i]['id'] + ');" >';
+                        } else if (ret.data.result[i]['type'] != 1) {
+                            // 视频
+                            if (ret.data.result[i]['begintime'] == '回顾') {
+                                html += '<div class="list" tapmode onclick="openvideohistory('+ret.data.result[i]['id']+');">';
+                            }else {
+                                html += '<div class="list" tapmode onclick="openvideo('+ret.data.result[i]['id']+');">';
+                            }
+
+                        } else if (ret.data.result[i]['style'] == 1 && ret.data.result[i]['begintime'] == '回顾') {
+                            //不收费回顾
+                            html += '<div class="list" tapmode onclick="classroomhistory(' + ret.data.result[i]['id'] + ');" >';
+                        } else {
+                            html += '<div class="list" tapmode onclick="classroom(' + ret.data.result[i]['id'] + ');" >';
+                        }
+                        html += '<img src="' + ret.data.result[i]['thumb'] + '" />' +
+                            '<div class="right">' +
+                            '<h5 class="title" id="title">' + ret.data.result[i]['name'] + '</h5>' +
+                            '<p >' + ret.data.result[i]['listtitle'] + '</p>'
+                        if (ret.data.result[i]['begintime'] == '回顾') {
+                            html += '<p>'
+                        } else {
+                            html += '<p>' + '<span class="time">' + ret.data.result[i]['begintime'] + '</span>';
+                        }
+                        var count = ret.data.counts[ret.data.result[i]['id']];
+                        if (count > 300) {
+                            html += '<span class="Browsing">' + count + ' 人在学</span>';
+                        }
+                        if (ret.data.result[i]['style'] == 1) {
+                            html += '<span class="free">免费</span></p>';
+                        } else if (ret.data.result[i]['style'] == 2) {
+                            html += '<span class="free">密码</span></p>';
+                        } else {
+                            if (ret.data.result[i]['limitpaying'] == 1) {
+                                html += '<span style="float:right;"><b  class="freetime">￥' + ret.data.result[i]['price'] + '</b><b class="freebth">限免</b></span></p>';
+                            } else {
+                                html += '<span class="free">￥' + ret.data.result[i]['price'] + '</span></p>';
+                            }
+                        }
+                        html += '</div>' +
+                            '</div>';
+                    }
+                    $api.append($api.byId('Tolist'), html);
+                    if (len < 10) {
+                        var html2 = '';
+                        html2 += "<div class='lasttitle'>暂无更多课程</div>";
+                        $api.append($api.byId('Tolist'), html2);
+                        loading = true;
+                    }
+                }
+            }
+            api.refreshHeaderLoadDone();
+        });
+    }
+
+    //跳转
+    function audioto() {
+        var audioid = $api.getStorage('audioid');
+
+        if (audioid) {
+           id = audioid;
+       }else{
+           id = 2774;
+       }
+       var url = $('#Tolist').attr('data-url')
+       $api.setStorage('url', url);
+        api.openWin({
+          name: 'audioclass',
+          url: './audioclass.html',
+          pageParam: {name: 'test',id:audioid},
+          bgColor: 'rgba(0,0,0,0)',
+          animation:{
+              type:"movein",                //动画类型（详见动画类型常量）
+              subType:"from_bottom",       //动画子类型（详见动画子类型常量）
+              duration:300
+          }
+        })
+    }
+    //直播页面详情跳转
+    function classroom(id) {
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+        if (ygtuserinfo.id == -1) {
+            api.openWin({
+                name: 'loginframe',
+                url: '../loginframe.html',
+                animation: {
+                    type: 'none'
+                }
+            });
+
+        } else {
+            api.openWin({
+                name: 'classroom',
+                url: './classroom.html',
+                pageParam: {
+                    id: id
+                }
+            })
+        }
+    }
+
+    function openguide(id) {
+        api.openWin({
+            name: 'guide',
+            url: './guide.html',
+            pageParam: {
+                name: 'test',
+                id: id
+            }
+        });
+    }
+
+    function classroomhistory(id) {
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+        if (ygtuserinfo.id == -1) {
+            api.openWin({
+                name: 'loginframe',
+                url: '../loginframe.html',
+                animation: {
+                    type: 'none'
+                }
+            });
+
+        } else {
+            api.openWin({
+                name: 'classroomhistory',
+                url: './classroomhistory.html',
+                pageParam: {
+                    id: id
+                }
+            });
+        }
+
+    }
+
+    // 打开视频
+    function openvideo(id) {
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+        if (ygtuserinfo.id == -1) {
+            api.openWin({
+                name: 'loginframe',
+                url: '../loginframe.html',
+                animation: {
+                    type: 'none'
+                }
+            });
+
+        }else {
+            api.openWin({
+                name: 'classroomvide',
+                url: './classroomvide.html',
+                pageParam: {
+                    id: id
+                }
+            });
+        }
+
+    }
+
+    // 打开回顾视频
+    function openvideohistory(id) {
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+        if (ygtuserinfo.id == -1) {
+            api.openWin({
+                name: 'loginframe',
+                url: '../loginframe.html',
+                animation: {
+                    type: 'none'
+                }
+            });
+
+        }else {
+            api.openWin({
+                name: 'clsromvdohistory',
+                url: './clsromvdohistory.html',
+                pageParam: {
+                    id: id
+                }
+            });
+        }
+
+    }
+
+    function worddetail() {
+        var pdfReader = api.require('pdfReader');
+        pdfReader.openView({
+            rect:{
+              x:0,
+              y:0,
+              w:'200',
+              h:'200'
+            },
+            path:'http://www.pdf.com/test.pdf',
+            fixedOn:api.frameName,
+            fixed:true
+        },function(ret){
+            //alert(JSON.stringify(ret));
+        });
+    }
+</script>
+
+</html>

@@ -1,0 +1,140 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>医管通APP</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" href="../../css/base.css">
+    <link rel="stylesheet" href="../../css/ygtcommon.css">
+    <link rel="stylesheet" href="../../css/my/residence.css">
+<body >
+    <header class="top" id="header">
+        <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span class="title">选择入驻类型</span>
+        </h1>
+    </header>
+    <div class="middle">
+        <div class="status">
+            <span class="circle"></span>
+            <span class="line op"></span>
+            <span class="circle op"></span>
+            <span class="line op"></span>
+            <span class="circle op"></span>
+        </div>
+        <div class="dec">
+            <h5>教学领域</h5>
+            <select id="study">
+            </select>
+            <img class="icon" src="../img/back_right.png" />
+        </div>
+        <!-- <div class="auxiliary">
+            <h5 onclick="select();"><img src="../img/add1.png" />&emsp;添加辅助教学领域</h5>
+            <div class="select">
+                <select id="study1">
+                        <<option value=""></option>
+                </select>
+                <img class="icon" src="../img/back_right.png" />
+            </div>
+        </div> -->
+        <div class="introduction">
+            <h5>个人介绍</h5>
+            <textarea maxlength="200"></textarea>
+        </div>
+    </div>
+    <button onclick="identity();" class="gonext">下一步</button>
+</body>
+<script src="../../js/lib/jquery-2.1.4.js"></script><script src="../../js/common.js"></script>
+<script type="application/javascript" src="../../script/api.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+        //  禁止左右滑动
+        $api.fixStatusBar(header);
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+        api.addEventListener({name: 'viewappear'}, function(ret, err){
+               loaddata();
+         })
+    };
+
+
+    function loaddata() {
+        api.ajax({
+            url: wtkurl +'classroomlist/getTeachtype',
+            method: 'post',
+            headers: {
+                'TOKEN': ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    uid: ygtuserinfo.id
+                }
+            }
+        }, function(data, err) {
+            // alert(JSON.stringify(data));
+            var optionhtml = ''
+
+            for (var i = 0; i < data.data.length; i++) {
+                optionhtml +='<option value="'+data.data[i].id+'">'+data.data[i].name+'</option>'
+            }
+            $('#study').append(optionhtml)
+            $('#study1').append(optionhtml)
+            console.log(JSON.stringify(err))
+        });
+    }
+
+    //下拉
+    function select() {
+        $(".select").slideToggle(200);
+    }
+
+    //下一步
+    function identity() {
+         var flied = $("#study option:selected").val();
+          $api.setStorage('flied', flied);
+         var introduce = $(".introduction textarea").val();
+         if (introduce != '') {
+             $api.setStorage('introduce', introduce);
+         }else{
+             $api.setStorage('introduce', '');
+         }
+
+        // alert($("#study option:selected").val())
+        if (study != '') {
+            api.addEventListener({
+                name:'viewdisappear'
+            }, function(ret, err){
+               api.closeWin();
+            });
+            api.openWin({
+                name: 'identity',
+                url: './identity.html',
+                pageParam: {
+                    name: 'test'
+                },
+                bgColor: 'rgba(0,0,0,0)',
+                animation: {
+                    type: 'none'
+                }
+            })
+        }
+    }
+</script>
+
+</html>

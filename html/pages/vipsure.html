@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>问答详情</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/ygtcommon.css" />
+    <link rel="stylesheet" href="../css/index/vipsure.css">
+</head>
+
+<body>
+    <header id='header' class="top">
+        <h1>
+          <img onclick="api.closeWin()"  src="../img/back_light.png">
+          <span  class="title">会员详情</span>
+      </h1>
+    </header>
+    <div class="vipdetail">
+        <div class="topcard" onclick="yearordersure()">
+            <h5>学习进步“每一天”</h5>
+            <!-- <p class="price">1998元 <span >￥365/年</span></p> -->
+            <p class="price"> <span>￥1998/年</span></p>
+        </div>
+        <!-- 中间内容 -->
+        <div class="middlemsg">
+            <p>年费会员，4重特权，为您的职业生涯保驾护航</p>
+            <!-- <h5>7天免费体验会员期内购买年卡，额外加赠2个月会员。</h5> -->
+        </div>
+        <div class="middlelist">
+            <ul>
+                <li>
+                    <h5>300+</h5>
+                    <p>在线课程</p>
+                </li>
+                <li>
+                    <h5>200+</h5>
+                    <p>行业大咖、专家在线授课</p>
+                </li>
+                <li>
+                    <h5>14+</h5>
+                    <p>财务/绩效/护理/评审/后勤…</p>
+                </li>
+            </ul>
+        </div>
+        <div class="middledec">
+            <ul>
+                <li>
+                    <h5><span>丰富视频课程：</span>医管通频道、精品课频道双会员视频库打通，一个会员看遍所有栏目（嘉基、医美等自费频道除外）。</h5>
+                    <p>（台湾嘉义基督教医院频道、韩国macroCNS频道等为自费频道）</p>
+                </li>
+                <li>
+                    <h5><span>医管通精选文库</span>发现医管价值，挖掘行业精彩。医管通会员可定期免费下载医管通提供的精选行业报告、分析、模板等资料。</h5>
+                </li>
+                <li>
+                    <h5><span>在线提问：</span>为您职业保驾护航，在医院管理过程中遇到的问题不再“无解”。</h5>
+                    <p>（成为医管通APP会员，可在APP的咨询留言板提问或留言给专业的医院管理咨询师哦！讲师定期整理回复您的疑惑！）</p>
+                </li>
+                <li>
+                    <h5><span>专享直播：</span>医管通APP会员，可参加专业咨询师定期开设的直播互动课，对医管常见问题及热点，直播详解！学习同行经验，避开医管路上的“坑”。</h5>
+                </li>
+                <li style="background: transparent;">
+                    <h5><span>注：购买医管通会员后，请关注“医管通学院”微信公众号(hmwisdom)以便获得最新课程更新通知。<span></h5>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="card">
+        <span class="season" onclick="seasonordersure()">季卡799元</span>
+        <span class="year" onclick="yearordersure()">年卡1998元</span>
+    </div>
+</body>
+<script src="../js/lib/jquery-2.1.4.js"></script>
+<script src="../js/common.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    var psfurl = '';
+    var pdfname = ''
+    var salesinfo = '';
+    var ispersoninfo = '';
+    var issevenvip = '';
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled: false
+        });
+        //alert($api.getStorage('activeid'))
+        api.addEventListener({
+            name: 'viewappear'
+        }, function(ret, err) {
+            getpice();
+        });
+
+    };
+    // 判断会员
+    function getpice() {
+        salesinfo = $api.getStorage('salesinfo');
+        let activeid = $api.getStorage('activeid');
+        // 判断是否填写资料
+        api.ajax({
+            url: wtkurl + 'myhome/getperson',
+            method: 'post',
+            headers: {
+                'TOKEN': ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    'uid': ygtuserinfo.id,
+                    'sales_id': activeid
+                }
+            }
+        }, function(ret, err) {
+          console.log(JSON.stringify(ret))
+            if (ret.data != '') {
+              ispersoninfo = ret.data;
+            }
+
+        })
+        let oldTime = parseInt(new Date().getTime() / 1000);
+        console.log(JSON.stringify(salesinfo))
+        // 检查是否会员
+        api.ajax({
+            url: wtkurl + 'classroom/checkvip',
+            method: 'post',
+            headers: {
+                'TOKEN': ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    'uid': ygtuserinfo.id
+                }
+            }
+        }, function(ret, err) {
+            console.log(JSON.stringify(ret))
+            // 是7天会员
+            if (ret.data.sevenvipinfo != '' && ret.data.sevenvipinfo.isend == 1) {
+                issevenvip = 1;
+                if (ret.data.sevenvipinfo.salesid == 0) {
+                    $('.price span').html('￥365/年');
+                    $('.card .year').html('年卡365元')
+                    $('.card .season').html('季卡148元')
+                } else {
+                    api.ajax({
+                        url: wtkurl + 'classroom/getVipsalesbyid',
+                        method: 'post',
+                        headers: {
+                            'TOKEN': ygtuserinfo.token
+                        },
+                        data: {
+                            values: {
+                                'uid': ygtuserinfo.id,
+                                'sales_id': ret.data.sevenvipinfo.salesid
+                            }
+                        }
+                    }, function(saleret, saleerr) {
+                        console.log(JSON.stringify(saleret))
+                        var activityearprice = saleret.data.price2;
+                        var activityseasonprice = saleret.data.price3;
+                        $api.setStorage('activityearprice', activityearprice);
+                        $api.setStorage('activityseasonprice', activityseasonprice);
+                        $('.price span').html('￥' + saleret.data.price2 + '/年');
+                        $('.card .year').html('年卡' + saleret.data.price2 + '元')
+                        $('.card .season').html('季卡' + saleret.data.price3 + '元')
+                    });
+                }
+            }else{
+                // 不是7天会员，检查双11活动
+                if (salesinfo != undefined && salesinfo.sales_type == 2) {
+                  // 双11活动期间
+                    if (salesinfo.begintime < oldTime && salesinfo.endtime > oldTime) {
+                        // 双11活动
+                        // 检查是否领取
+                        api.ajax({
+                            url: wtkurl + 'classroom/getMyVipsales',
+                            method: 'post',
+                            headers: {
+                                'TOKEN': ygtuserinfo.token
+                            },
+                            data: {
+                                values: {
+                                    'uid': ygtuserinfo.id,
+                                    'salesid': salesinfo.id
+                                }
+                            }
+                        }, function(mysaleret, mysaleerr) {
+                          if (mysaleret) {
+                            console.log(JSON.stringify(mysaleret))
+                              if (mysaleret.data == null) {
+                                // 没有领取就提示
+                                api.confirm({
+                                    title: '提示',
+                                    msg: salesinfo.descrition,
+                                    buttons: ['立即填写资料', '我知道了']
+                                }, function(ret1, err1) {
+                                    if (ret1.buttonIndex == 1) {
+                                        api.openWin({
+                                            name: 'personmsg',
+                                            url: './personmsg.html',
+                                        })
+                                    }
+                                });
+                              }else {
+                                api.ajax({
+                                    url: wtkurl + 'classroom/getVipsalesbyid',
+                                    method: 'post',
+                                    headers: {
+                                        'TOKEN': ygtuserinfo.token
+                                    },
+                                    data: {
+                                        values: {
+                                            'uid': ygtuserinfo.id,
+                                            'sales_id': mysaleret.data.salesid
+                                        }
+                                    }
+                                }, function(saleret, saleerr) {
+                                    console.log(JSON.stringify(saleret))
+                                    var activityearprice = saleret.data.price2;
+                                    var activityseasonprice = saleret.data.price3;
+                                    $api.setStorage('activityearprice', activityearprice);
+                                    $api.setStorage('activityseasonprice', activityseasonprice);
+                                    $('.price span').html('￥' + saleret.data.price2 + '/年');
+                                    $('.card .year').html('年卡' + saleret.data.price2 + '元')
+                                    $('.card .season').html('季卡' + saleret.data.price3 + '元')
+                                });
+
+                              }
+                          }
+                        });
+                    }
+                }
+            }
+        });
+
+
+
+
+    }
+    // 付款年
+    function yearordersure() {
+        if (ispersoninfo == null) {
+            // 没填写资料
+            if (salesinfo != null && salesinfo.sales_type == 1) {
+                api.confirm({
+                    title: '提示',
+                    msg: '请完善个人信息，以便系统记录您的会员识别信息。完善信息后，还可领取7天免费体验会员，更可享每天1元抢够限量年卡哦~',
+                    buttons: ['立即填写资料', '我知道了']
+                }, function(ret, err) {
+                    if (ret.buttonIndex == 1) {
+                        api.openWin({
+                            name: 'personmsg',
+                            url: './personmsg.html',
+                        })
+                    }
+                });
+            } else if (salesinfo != null && salesinfo.sales_type == 2) {
+                api.confirm({
+                    title: '提示',
+                    msg: '请完善个人信息，以便系统记录您的会员识别信息。完善信息后，还可享每天1元抢够限量年卡哦~',
+                    buttons: ['立即填写资料', '我知道了']
+                }, function(ret, err) {
+                    if (ret.buttonIndex == 1) {
+                        api.openWin({
+                            name: 'personmsg',
+                            url: './personmsg.html',
+                        })
+                    }
+                });
+            }else {
+              api.confirm({
+                  title: '提示',
+                  msg: '请完善个人信息，以便系统记录您的会员识别信息。完善信息后，还可享季/年卡，买一送一哦~',
+                  buttons: ['立即填写资料', '我知道了']
+              }, function(ret, err) {
+                  if (ret.buttonIndex == 1) {
+                      api.openWin({
+                          name: 'personmsg',
+                          url: './personmsg.html',
+                      })
+                  }
+              });
+          }
+        }else{
+          // 填写资料
+          if (issevenvip == 1) {
+            // 7天体验期
+            api.openWin({
+                name: 'ordersure',
+                url: './ordersure.html',
+                pageParam: {
+                    type: 'vip',
+                    viptypeid: 2,
+                },
+                animation: {
+                    type: 'none'
+                }
+            });
+          }else if (salesinfo != null && salesinfo.sales_type == 2) {
+            // 365全开
+            api.openWin({
+                name: 'ordersure',
+                url: './ordersure.html',
+                pageParam: {
+                    type: 'vip',
+                    viptypeid: 2,
+                },
+                animation: {
+                    type: 'none'
+                }
+            });
+          }else{
+            // 1998
+            api.alert({
+                title: '提示',
+                msg: '会员买一赠一活动进行中！现购买医管通会员季卡/年卡，双倍时间，超值服务！',
+                buttons: ['我知道了']
+            }, function(ret, err) {
+                if (ret.buttonIndex == 1) {
+                  api.openWin({
+                      name: 'ordersure',
+                      url: './ordersure.html',
+                      pageParam: {
+                          type: 'vip',
+                          viptypeid: 2,
+                      },
+                      animation: {
+                          type: 'none'
+                      }
+                  });
+                }
+            });
+          }
+        }
+    }
+    //付款季卡
+    function seasonordersure() {
+      if (ispersoninfo == null) {
+          // 没填写资料
+          if (salesinfo != null && salesinfo.sales_type == 1) {
+              api.confirm({
+                  title: '提示',
+                  msg: '请完善个人信息，以便系统记录您的会员识别信息。完善信息后，还可领取7天免费体验会员，更可享每天1元抢够限量年卡哦~',
+                  buttons: ['立即填写资料', '我知道了']
+              }, function(ret, err) {
+                  if (ret.buttonIndex == 1) {
+                      api.openWin({
+                          name: 'personmsg',
+                          url: './personmsg.html',
+                      })
+                  }
+              });
+          } else if (salesinfo != null && salesinfo.sales_type == 2) {
+              api.confirm({
+                  title: '提示',
+                  msg: '请完善个人信息，以便系统记录您的会员识别信息。完善信息后，还可享每天1元抢够限量年卡哦~',
+                  buttons: ['立即填写资料', '我知道了']
+              }, function(ret, err) {
+                  if (ret.buttonIndex == 1) {
+                      api.openWin({
+                          name: 'personmsg',
+                          url: './personmsg.html',
+                      })
+                  }
+              });
+          }else {
+            api.confirm({
+                title: '提示',
+                msg: '请完善个人信息，以便系统记录您的会员识别信息。完善信息后，还可享季/年卡，买一送一哦~',
+                buttons: ['立即填写资料', '我知道了']
+            }, function(ret, err) {
+                if (ret.buttonIndex == 1) {
+                    api.openWin({
+                        name: 'personmsg',
+                        url: './personmsg.html',
+                    })
+                }
+            });
+        }
+      }else{
+        if (issevenvip == 1) {
+          // 7天体验期
+          api.openWin({
+              name: 'ordersure',
+              url: './ordersure.html',
+              pageParam: {
+                  type: 'vip',
+                  viptypeid: 3,
+              },
+              animation: {
+                  type: 'none'
+              }
+          });
+        }else if (salesinfo != null && salesinfo.sales_type == 2) {
+          // 365全开
+          api.openWin({
+              name: 'ordersure',
+              url: './ordersure.html',
+              pageParam: {
+                  type: 'vip',
+                  viptypeid: 3,
+              },
+              animation: {
+                  type: 'none'
+              }
+          });
+        }else{
+          // 1998
+          api.alert({
+              title: '提示',
+              msg: '会员买一赠一活动进行中！现购买医管通会员季卡/年卡，双倍时间，超值服务！',
+              buttons: ['我知道了']
+          }, function(ret, err) {
+              if (ret.buttonIndex == 1) {
+                api.openWin({
+                    name: 'ordersure',
+                    url: './ordersure.html',
+                    pageParam: {
+                        type: 'vip',
+                        viptypeid: 3,
+                    },
+                    animation: {
+                        type: 'none'
+                    }
+                });
+              }
+          });
+        }
+      }
+    }
+</script>
+
+</html>

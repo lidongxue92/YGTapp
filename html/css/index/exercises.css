@@ -1,0 +1,39 @@
+body{width: auto;}
+.middle{margin-top: 70px;padding: 10px;color: #444}
+.middle .nodata{text-align: center;top: 50px;position: relative;}
+.middle .nodata img{width: 60px;}
+.middle .nodata p{color: #999;line-height: 30px;font-size: 12px;}
+.middle .nodata .Establish{display: inline-block;width: 80px;height: 25px;background: #ff9913;border-radius: 30px;color: #fff;line-height: 25px;}
+.middle .ex{box-shadow: 5px 5px 50px 5px #eee;padding:10px;padding-top: 20px;}
+.middle .ex .introduce{font-weight: normal;font-size: 14px;}
+.middle .ex .introduce img{width: 30px;height: 30px;border-radius: 50%;}
+.middle .ex .introduce .tec{display: inline-block;margin-left: 5px;height: 10px;padding: 4px 8px;color: #fff;background: #ff9913;text-align: center;line-height: 10px;border-radius: 30px;font-size: 10px;}
+.middle .ex .title{font-size: 16px;margin-top: 10px;letter-spacing: 1px}
+.middle .ex .infor{font-size: 15px;margin-top: 10px;}
+.middle .ex .information{color: #999;margin-top: 10px;font-size: 12px;}
+.middle .ex .content{line-height: 20px;font-size: 13px;margin-top: 10px;}
+.middle .ex .button{width: 90%;margin-left: 5%;;background: -webkit-linear-gradient(left, #ffca80 , #ff9913);height: 40px;line-height: 40px;text-align: center;border-radius: 5px;color: #fff;margin-top: 20px;margin-bottom: 20px;}
+.middle .answer{margin-top: 20px;background: #fff;}
+.middle .answer .titile{font-size: 15px;padding:10px;}
+.middle .answer .Answerdetails{border-bottom: 1px solid #eee;padding: 10px;}
+.middle .answer .Answerdetails h5{font-weight: normal;font-size: 13px;}
+.middle .answer .Answerdetails h5 img{width: 25px;height: 25px;border-radius: 50%;}
+.middle .answer .Answerdetails h5 span{color: #999;font-size: 12px;display: inline-block;width: calc(100% - 140px);overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+.middle .answer .Answerdetails h5 .username{display: inline-block;width: 70px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+.middle .answer .Answerdetails .anstitle{font-size: 16px;width: 95%;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;margin-top: 10px;font-weight: 600;}
+.middle .answer .Answerdetails .intro{text-overflow: ellipsis;letter-spacing:1px;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;overflow: hidden;line-height: 20px;margin-top: 5px;font-size: 15px;}
+.middle .answer .Answerdetails .tr{text-align: right;color: #999;margin-top: 5px;}
+.middle .answer .Answerdetails .tr span{display: inline-block;width: 3px;height: 3px;border-radius: 50%;background: #999;position: relative;top: -4px;margin: 0 5px;}
+@media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+  .middle{margin-top: 90px;}
+
+}
+/* xr */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) {
+  .middle{margin-top: 90px;}
+
+}
+/* xs max */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) {
+  .middle{margin-top: 90px;}
+}

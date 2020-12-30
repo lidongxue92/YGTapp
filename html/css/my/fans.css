@@ -1,0 +1,24 @@
+.middle{text-align: center;margin-top: 70px;}
+.bgimg{background:-webkit-gradient(linear, 0% 0%, 0% 100%,from(#ff9913), to(#ffca80 ));height: 120px;position: relative;}
+.bgimg .people{position: relative;top:30px;font-size:30px;color: #fff;height: 40px}
+.bgimg .title{position: relative;top: 20px;color:#fff;font-size:14px;margin-top: 10px;}
+.profit{display: flex;position: relative;top: 115px;height: 40px;}
+.profit div{width: 50%;color: #fff;position: relative;}
+.profit .left:after{content: '';width: 1px;height: 20px;background: #eee;position: absolute;left: 10px;left: 100%;top: 10px;}
+.profit div p{font-size: 18px;}
+.profit div span{font-size: 12px}
+.middle .Datatoday{background: #fff;color: #333;text-align: left;}
+
+@media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+  .middle{margin-top: 90px;}
+
+}
+/* xr */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) {
+  .middle{margin-top: 90px;}
+
+}
+/* xs max */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) {
+  .middle{margin-top: 90px;}
+}

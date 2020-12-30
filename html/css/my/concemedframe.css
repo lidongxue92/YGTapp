@@ -1,0 +1,49 @@
+/*主体内容样式*/
+.list {padding: 15px;color: #333;background: #fff;border-bottom: 1px solid #f1f1f1;display: flex;width: calc(100% - 30px);}
+.list .left{width: 38%;position: relative;}
+.list img {width: 100%;vertical-align: top;border-radius: 5px;overflow: hidden;height: 70px;}
+.list .right { display: inline-block; margin-left: 2%; width: 58%; position: relative; top: 0; }
+.list .right .title { color: #424242; font-weight: normal; font-size: 1.1rem; width: auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+word-wrap: normal; word-wrap: break-word; word-break: break-all; max-height: 36px; line-height: 18px; white-space: normal; display: -webkit-box;
+ -webkit-box-orient: vertical; -webkit-line-clamp: 2; padding: 0; margin: 0; }
+.list .right p { padding: 0; margin: 0; margin-top: 2px; }
+.list .right p span { display: inline-block; text-align: left; font-size: 0.8rem; }
+.list .right p .Browsing { font-weight: 500; color: #b8b8b8; }
+.list .right p .Browsing img { height: 13px; width: auto; position: relative; top: 0px; }
+.list .right p .free { color: #ff9913; font-size: 13px; font-weight: 900; float: right; }
+.list .right p span b { font-weight: normal; }
+.list .right p .freetime { position: relative; font-weight: normal; color: #999; font-size: 13px; font-weight: normal; }
+.list .right p .freetime:after { content: ''; display: inline-block; position: absolute; width: 100%; height: 1px; background: #999; left: 0; top: 50%; }
+.list .right p .freebth { background: #ff9913; color: #fff; padding: 3px 8px; border-radius: 5px; margin-left: 10px; color: #fff; }
+.list .lasttitle { text-align: center; color: #999; margin-top: 10px; margin-bottom: 20px; }
+
+/*知道*/
+.knowlist{color: #333;position: relative;width: calc(100% - 30px);padding: 15px;}
+.knowlist .topleft {position: relative;}
+.knowlist  img{width: 25px;height: 25px;border-radius: 50%;position: relative;top: 2px;}
+.knowlist  .right{display: inline-block;margin-left: 10px;position: relative;top: 0;vertical-align: top;width: calc(100% - 45px);color: #999}
+.knowlist .title{font-weight: normal;font-size: 1.1rem;width: auto;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;
+    word-wrap: normal;word-wrap: break-word;word-break: break-all;max-height: 60px;line-height: 20px;white-space: normal;display:
+    -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 3;padding: 0;margin: 0;position: relative;border-bottom:0;color: #333;margin-bottom: 3px;margin-top: 5px;}
+.knowlist  p{padding: 0;margin: 0;color: #999;}
+.knowlist  p .icon{display:inline-block;width: 3px;height:3px;background:#333;border-radius:50%;margin: 10px 5px;position:relative;top: 7px;}
+.knowlist .lasttitle{text-align: center;color: #999;margin-top: 10px;margin-bottom: 20px;margin-bottom:66px}
+
+/*文库*/
+.wenkulist{padding: 15px 15px 0 15px;color: #333;background: #fff;display: flex;position: relative;width: calc(100% - 30px)}
+.wenkulist .left{width: 20%;margin-right: 10px;position: relative;max-height: 120px;}
+.wenkulist .left img{width: 100%;height: auto;max-height: 120px;}
+.wenkulist .left .icon{position:absolute;left:-1px;top: 0px;width:14px!important;height: 15px;}
+.wenkulist:after{position: absolute;content: '';width: calc(100% - 70px);height: 1px;background: #f8f8f8;bottom: 0;right: 0;}
+.wenkulist .right{width: 79%}
+.wenkulist .right .title{font-weight: normal;font-size: 1.1rem;width: auto;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;
+    word-wrap: normal;word-wrap: break-word;word-break: break-all;max-height: 40px;line-height: 20px;white-space: normal;display:
+    -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 2;padding: 0;margin: 0;position: relative;border-bottom:0;color: #333;}
+.wenkulist .right p{padding: 0;margin: 0;line-height: 25px;color: #666}
+.wenkulist .right .mt{margin-top: 15px}
+.lasttitle{text-align: center;color: #999;margin-top: 10px;margin-bottom: 20px;margin-bottom:66px}
+@media screen and (min-width: 768px) {
+    .list img {
+        height: 100px;
+    }
+}

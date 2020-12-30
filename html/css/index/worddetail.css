@@ -1,0 +1,16 @@
+body{background: #fff;}
+h1{margin-top: 100px;}
+.lightbox{ position: fixed; top: 0px; left: 0px; height: 100%; width: 100%; z-index: 7; opacity: 0.8; display: block; background-color: rgb(0, 0, 0); }
+.pop{ position: absolute; overflow: hidden; left: -10px; width: 102%; z-index: 9; top: 0; }
+.footer{position: fixed;bottom: 0;line-height: 50px;padding-bottom: 10px;width: 100%;z-index: 11;border-top: 1px solid #eee;background: #fff;}
+.footer span{display: inline-block;width: 49%;text-align: center;line-height: 50px;}
+.footer span img{width: 20px;position: relative;top: 5px;margin-right: 5px;}
+/*分享*/
+.sharetoast{position: fixed;width: 100%;left: 0;background: #f4f4f4;z-index: 113;bottom: 0;padding-top: 20px;display:none;min-height: 180px;}
+.sh{display: block;}
+.sharetoast h5{color:#666;text-align: center;font-weight: normal;padding: 0;margin: 0;font-size: 1rem;}
+.sharetoast li{display:inline-block;padding: 0 20px;text-align: center;padding-bottom: 10px;margin-top: 20px;position: relative;}
+.sharetoast li p{margin-top: 10px;color: #999;}
+.sharetoast li img{width: 3rem;}
+.sharetoast li .msg{ width: 2.5rem; display: inline-block; height: 1.2rem; border-radius: 5px; position: absolute; right: -5px; top: -13px; font-size: 10px; line-height: 1.2rem; color: #fff; background: #d81e06; }
+.sharetoast #opentool{background: #fff;text-align: center;line-height: 50px;position: absolute;bottom: 0;width: 100%;}

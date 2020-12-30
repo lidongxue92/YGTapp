@@ -1,0 +1,173 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>医管通APP</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" href="../../css/base.css">
+    <link rel="stylesheet" href="../../css/ygtcommon.css">
+    <link rel="stylesheet" href="../../css/my/netincome.css">
+<body >
+    <header class="top" id="header">
+        <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span class="title">订单管理</span>
+        </h1>
+    </header>
+    <div class="middle">
+        <h5>
+            <span class="tab active" datatype='1'>单课</span>
+            <em>|</em>
+            <span class="tab" datatype='2'>系列课</span>
+            <em>|</em>
+            <span class="tab" datatype='3'>会员</span>
+        </h5>
+        <div class="datalist">
+            <ul class="list"></ul>
+            <!-- <li>
+                <h5>老年服务机构的风险管理老年服务机构的风险管理老年服务机构的风险管理老年服务机构的风险管理</h5>
+                <p class="clearfix"><span class="left">直播间会员价格</span><span class="right">雪</span></p>
+                <p>所得金额：5</p>
+            </li> -->
+        </div>
+    </div>
+    <div class="loading">
+        <span>
+            <img src="../../img/loading.gif" />
+        </span>
+    </div>
+</body>
+<script src="../../js/lib/jquery-2.1.4.js"></script><script src="../../js/common.js"></script>
+<script type="application/javascript" src="../../script/api.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    var page = 1;
+    var pagesize = 10;
+    var loading = false;
+    var isloading = false;
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        var header = $api.byId('header');
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+        //  禁止左右滑动
+        $api.fixStatusBar(header);
+
+        api.addEventListener({
+            name:'scrolltobottom',
+            extra:{
+                threshold:0            //设置距离底部多少距离时触发，默认值为0，数字类型
+            }
+        }, function(ret, err){
+            if (loading != true) {
+              if (isloading == false) {
+                page++; //页数
+                loaddata();
+              }
+
+            }
+
+        });
+        $('.loading').show();
+        loaddata();
+    };
+
+    function loaddata() {
+        // alert(page +'' + pagesize);
+        isloading =true;
+        type = $('.active').attr('datatype');
+        api.ajax({
+            url: wtkurl +'classroomlist/getOrders',
+            method: 'post',
+            headers: {
+                'TOKEN': ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    uid: ygtuserinfo.id,
+                    object_type:type,
+                    page:page,
+                    pagesize:pagesize
+                }
+            }
+        }, function(data, err) {
+            $('.loading').hide();
+            console.log(JSON.stringify(data));
+            console.log(JSON.stringify(err));
+            if (data.data != null) {
+                var incomelist = data.data;
+                var listhtml ='';
+                if (incomelist.length >0) {
+                    $('.list').css('text-align','left');
+                    for (var i = 0; i < incomelist.length; i++) {
+                        listhtml += '<li><h5>'+incomelist[i].object_name+'</h5>'
+                        if (incomelist[i].object_type ==1) {
+                          listhtml += '<p class="clearfix"><span class="left">微课</span>';
+                      }else if(incomelist[i].object_type ==2){
+                          listhtml += '<p class="clearfix"><span class="left">系列课</span>';
+                      }else{
+                          listhtml += '<p class="clearfix"><span class="left">直播间会员</span>';
+                      }
+                        listhtml +='<span class="right">'+incomelist[i].username+'</span><p>'
+                        listhtml += '<p>所得金额:'+incomelist[i].amount+'元<span class="right">'+incomelist[i].create_time+'</span>';
+                        // if (incomelist[i].pa) {
+                        //
+                        // }
+                        listhtml +='</p></li>'
+                    }
+                    $('.list').append(listhtml);
+                    if (incomelist.length < 10 ) {
+                        var html2 = ' ';
+                        html2 += "<div class='lasttitle'>已无更多数据</div>";
+                        $('.list').append(html2);
+                        loading = true
+                    }
+                }else {
+                   var html3 = '';
+                    if (page == 1) {
+                      html3 += "<div class='lasttitle'>还没有订单哦~</div>";
+                    }else{
+                        html3 += "<div class='lasttitle'>已无更多数据</div>";
+                    }
+                    $('.list').append(html3);
+                    loading = true
+
+                }
+            }else{
+              var html3 = '';
+               if (page == 1) {
+                 html3 += "<div class='lasttitle'>还没有订单哦~</div>";
+               }else{
+                   html3 += "<div class='lasttitle'>已无更多数据</div>";
+               }
+               $('.list').append(html3);
+               loading = true
+            }
+            isloading =false;
+        });
+    }
+
+    $('.tab').click(function () {
+        $('.tab').removeClass('active');
+        $(this).addClass('active');0
+        $('.list').html(' ');
+        $('.loading').show();
+        loading = false;
+        isloading =false;
+        page = 1;
+        loaddata();
+    })
+</script>
+
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>证书查询</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/ygtcommon.css" />
+    <style>
+
+        body{height: 100%;text-align: center;background: #f8f8f8;}
+        input, button, textarea:focus {
+            outline: none !important;
+            border:0;
+        }
+        .top{padding-top: 25px;}
+        p{padding: 0 15px;font-size: .9rem;line-height: 25px;color: #999;text-align: left;}
+        .mt20{margin-top: 20px;}
+        section{margin-top: 75px;background: #fff;padding-top: 20px}
+
+        .button{line-height: 40px;background: #ff9913;color: #fff;font-size: 15px;text-align: center;width: 90%;border-radius: 5px;}
+        .code{border: 0;border: 1px solid #ddd;width:calc(90% - 10px);;border-radius: 5px;line-height: 30px;margin-top: 20px;padding-left: 10px;}
+        .sub{margin-top: 20px;border: 0;border: 1px solid #ddd;width: 30%;text-align: center;line-height: 30px;margin-top: 20px;border-radius: 5px;}
+        .certificate{padding: 10px;}
+        .certificate img{width: 100%;}
+        footer{position: fixed;bottom: 4rem;width: 100%;text-align: center;}
+        @media screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+            .top{padding-top: 45px;}
+            section{margin-top: 95px;}
+        }
+    </style>
+</head>
+
+<body>
+    <header class="top" id="header">
+        <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span class="title">证书查询</span>
+        </h1>
+    </header>
+    <section>
+        <button class="button" onclick="sweepcode();">扫描二维码</button>
+
+        <input class="code" />
+
+        <button class="sub">提交查询</button>
+
+        <div class="certificate"></div>
+    </section>
+</body>
+<script src="../js/lib/jquery-2.1.4.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+    apiready = function() {
+      //  禁止左右滑动
+      api.setWinAttr({
+          slidBackEnabled : false
+      });
+      //  禁止左右滑动
+    };
+    function sweepcode() {
+        var FNScanner = api.require('FNScanner');
+        FNScanner.openScanner({
+            autorotation: true
+        }, function(ret, err) {
+            if (ret) {
+                // alert(JSON.stringify(ret));
+                $('.certificate').html(ret.content);
+            } else {
+                //alert(JSON.stringify(err));
+            }
+        });
+    }
+</script>
+
+</html>

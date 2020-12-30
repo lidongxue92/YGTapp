@@ -1,0 +1,29 @@
+.top{position: fixed;top: 0;background: #fff;text-align: center;width: 100%;border-bottom: 1px solid #fafafa;z-index: 17;padding-top: 25px;}
+.top h1{font-size:1.3rem;font-weight: normal;background: #fff;height: 50px;line-height: 50px;position: relative;padding: 0;margin: 0;}
+.top h1 .title{display: inline-block;width: 80%;font-weight: 500;overflow: hidden;text-overflow:ellipsis;white-space:nowrap;}
+.top h1 .back{position: absolute;width: 50px;height: 25px;display: inline-block;left: 10px;background:url('../../img/back_light.png');background-size: auto 100%;z-index: 5;background-repeat: no-repeat;top: 10px;}
+
+input,button,textarea:focus {
+    outline: none !important;
+    border: 0;
+}
+#pagecontent{margin-top: 65px;}
+#pagecontent label{line-height: 50px;height: 50px;display: block;position: relative;top: 20px;background: #fff;}
+#pagecontent input{width:calc(100% - 15px) ;border:0;padding-left: 15px;background: transparent;font-size: 1rem;}
+.bth{display: inline-block;width: 90%;height: 40px;line-height: 40px;background: #ff9913;border-radius: 30px;color: #fff;font-size: 14px;margin-top: 40px;text-align: center;margin-left: 5%;}
+@media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+  .top{padding-top: 45px;}
+  #pagecontent{margin-top: 85px;}
+
+}
+/* xr */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) {
+  .top{padding-top: 45px;}
+  #pagecontent{margin-top: 85px;}
+
+}
+/* xs max */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) {
+  .top{padding-top: 45px;}
+  #pagecontent{margin-top: 85px;}
+}

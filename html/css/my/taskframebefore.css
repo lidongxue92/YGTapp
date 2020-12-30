@@ -1,0 +1,6 @@
+.Datatoday{background: #fff;}
+.livelist{display: flex;padding: 5%;color: #999;background: #fff;color: #333;border-bottom: 1px solid #eee;}
+.livelist {margin-left: 15px;width: 100%;}
+.livelist h5{font-size: 16px;margin-top: 10px;font-weight: normal;}
+.livelist img{width: 60px;border-radius: 50%;height: 60px;margin-right: 10px;}
+.lasttitle { text-align: center; color: #999; margin-top: 20px; padding-bottom: 10px; background: #f8f8f8; }

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>直播列表Frame</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/ygtcommon.css" />
+    <link rel="stylesheet" href="../../css/channel/livedetailframe.css">
+</head>
+
+<body>
+    <div id="Tolist" data-url='Management'>
+        <!-- <div class="list">
+            <img src="../img/classroom.jpg" />
+            <div class="right">
+                <h5 class="title">88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888</h5>
+                <p>
+                    <span class="Selfsupport"><img src="../img/zy.png" /></span>
+                    <span class="address">上海市</span>
+                    <span class="time">2019-08-05</span>
+                </p>
+            </div>
+        </div>
+        <div class='lasttitle'>已无更多数据</div> -->
+    </div>
+    <div class="loading">
+        <span>
+            <img src="../../img/loading.gif" />
+        </span>
+    </div>
+</body>
+<script src="../../js/lib/jquery-2.1.4.js"></script>
+<script src="../../js/common.js"></script>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var page = 1;
+    var pagesize = 4;
+    var loading = false;
+    var isover = false;
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    var systemtype = '';
+    var iswxpay = $api.getStorage('iswxpay');
+    var calsstitle = '';
+    var isloading = false;
+    var classtypelist = $api.getStorage('classtypelist');
+    apiready = function() {
+        systemtype = api.systemType;
+        classtitle = $api.getStorage('classtitle');
+        listtitle = $api.getStorage('listtitle');
+        backImg = $api.getStorage('bakcimg');
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled: false
+        });
+        //  禁止左右滑动
+        api.setRefreshHeaderInfo({
+            bgColor: '#fefefe',
+            textColor: '#999',
+            textDown: '下拉刷新...',
+            textUp: '松开刷新...',
+            //  textLoading:'<img src="widget://img/loading.gif" />',
+            showTime: false
+        }, function(ret, err) {
+            //在这里从服务器加载数据，加载完成后调用api.refreshHeaderLoadDone()方法恢复组件到默认状态
+            if (!loading) {
+                isover = false;
+                page = 1;
+                $api.html($api.byId('Tolist'), '');
+                api.refreshHeaderLoading();
+                loadData(); //api.refreshHeaderLoadDone();
+            }
+
+        });
+        api.addEventListener({
+            name: 'scrolltobottom',
+            extra: {
+                threshold: 0 //设置距离底部多少距离时触发，默认值为0，数字类型
+            }
+        }, function(ret, err) {
+            if (loading || isover) {
+                return;
+            }
+            page++; //页数
+            loadData();
+        });
+        $(".loading").show();
+        loadData();
+    };
+
+
+    function loadData() {
+        //api.refreshHeaderLoadDone();
+        //var type = $('#headernav').find('.active').data('type');
+        var name = api.pageParam.name;
+        var liveuserid = api.pageParam.liveuserid;
+        if (!ygtuserinfo || !ygtuserinfo.id) {
+            return false;
+        }
+        listid = $api.getStorage('livelistid');
+        if (name == 1) {
+            loading = true;
+            api.ajax({
+                url: wtkurl + 'classroom/getClassroomByListid',
+                method: 'post',
+                headers: {
+                    'TOKEN': ygtuserinfo.token
+                },
+                data: {
+                    values: {
+                        uid: ygtuserinfo.id,
+                        listid: listid,
+                        page: page,
+                        pagesize: 10
+                    }
+                }
+            }, function(ret, err) {
+
+                console.log(JSON.stringify(ret));
+                // alert(JSON.stringify(err));
+                if (ret) {
+                    $(".loading").hide();
+                    if (ret.code == 1) {
+                        var len = ret.data.result.length;
+                        var html = '';
+                        for (var i = 0; i < len; i++) {
+                            html += '<div class="list" tapmode onclick="openguide(' + ret.data.result[i]['id'] + ');" >';
+                            if (ret.data.result[i].listid == 3509) {
+                                html += '<div class="left"><img src="' + ret.data.result[i]['thumb'] + '" /><img class="icon" src="../../img/Boutique.png"></div>'
+                            } else {
+                                html += '<div class="left"><img src="' + ret.data.result[i]['thumb'] + '" /></div>'
+                            }
+                            html += '<div class="right">' + '<h5 class="title" id="title">' + ret.data.result[i]['name'] + '</h5>'
+
+                            for (var a = 0; a < classtypelist.length; a++) {
+                                if (classtypelist[a].id == ret.data.result[i]['type_id']) {
+                                    html += '<p >' + classtypelist[a].name + '</p>'
+                                }
+                            }
+                            if (ret.data.result[i]['begintime'] == '回顾') {
+                                html += '<p>'
+                            } else {
+                                html += '<p>' + '<span class="time">' + ret.data.result[i]['begintime'] + '</span></p><p>';
+                            }
+                            var count = ret.data.counts[ret.data.result[i]['id']];
+                            if (liveuserid == 1) {
+                                html += '<span class="Browsing">' + count + ' 人在学</span>';
+                            } else {
+                                if (count > 300) {
+                                    html += '<span class="Browsing">' + count + ' 人在学</span>';
+                                }
+                            }
+                            if (ret.data.result[i]['style'] == 1) {
+                                html += '<span class="free">免费</span></p>';
+                            } else if (ret.data.result[i]['style'] == 2) {
+                                html += '<span class="free">密码</span></p>';
+                            } else {
+                                if (ret.data.result[i]['limitpaying'] == 1) {
+                                    html += '<span style="float:right;"><b  class="freetime">￥' + ret.data.result[i]['price'] + '</b><b class="freebth">限免</b></span></p>';
+                                } else {
+                                    if (viplist.includes(ret.data.result[i]['listid']) && $api.getStorage('isitamember') != undefined || $api.getStorage('isitsevenamember') != undefined) {
+                                        html += '<span style="float:right;"><b  class="freetime">￥' + ret.data.result[i]['price'] + '</b><b class="freebth" >会员免费</b></span></p>';
+                                    } else {
+                                        html += '<span class="free">￥' + ret.data.result[i]['price'] + '</span></p>';
+                                    }
+                                }
+                            }
+                            html += '</div>' +
+                                '</div>';
+                        }
+                        $api.append($api.byId('Tolist'), html);
+                        if (len < 10) {
+                            var html2 = ' ';
+                            html2 += "<div class='lasttitle'>暂无更多课程</div>";
+                            $api.append($api.byId('Tolist'), html2);
+                            isover = true;
+                        }
+                        loading = false;
+                        api.refreshHeaderLoadDone();
+                    };
+                }
+            });
+        } else {
+            loading = true;
+            api.ajax({
+                url: wtkurl + 'special/getClassroomByListid',
+                method: 'post',
+                headers: {
+                    'TOKEN': ygtuserinfo.token
+                },
+                data: {
+                    values: {
+                        uid: ygtuserinfo.id,
+                        listid: listid,
+                        page: page,
+                        pagesize: pagesize
+                    }
+                }
+            }, function(ret, err) {
+                console.log(JSON.stringify(ret) + 'xilei');
+                console.log(JSON.stringify(err) + '报错');
+                if (ret) {
+                    $(".loading").hide();
+                    if (ret.code == 1) {
+                        var len = ret.data.result.length;
+                        var html = '';
+                        for (var i = 0; i < len; i++) {
+                            html += '<div class="list"  onclick="specialguide(' + ret.data.result[i]['id'] + ');" >';
+                            if (ret.data.result[i]['list_id'] == 3509) {
+                                html += '<div class="left"><img src="' + ret.data.result[i]['pic'] + '" /><img class="icon" src="../../img/Boutique.png"></div>'
+                            } else {
+                                html += '<div class="left"><img src="' + ret.data.result[i]['pic'] + '" /></div>'
+                            }
+                            html += '<div class="right">' +
+                                '<h5 class="title">' + ret.data.result[i]['name'] + '</h5>' +
+                                '<p >' + ret.data.listinfo['title'] + '</p>'
+                            if (ret.data.result[i]['style'] == 1) {
+                                html += '<p><span class="free">免费</span></p>';
+                            } else if (ret.data.result[i]['style'] == 2) {
+                                html += '<p><span class="free">密码</span></p>';
+                            } else {
+                                if (ret.data.result[i]['limitpaying'] == 1) {
+                                    html += '<p><span style="float:right;"><b  class="freetime">￥' + ret.data.result[i]['price'] + '</b><b class="freebth">限免</b></span></p>';
+                                } else {
+                                    if (viplist.includes(ret.data.result[i]['list_id']) && $api.getStorage('isitamember') != undefined || $api.getStorage('isitsevenamember') != undefined) {
+                                        html += '<p><span style="float:right;"><b  class="freetime">￥' + ret.data.result[i]['price'] + '</b><b class="freebth" >会员免费</b></span></p>';
+                                    } else {
+                                        html += '<p><span class="free">￥' + ret.data.result[i]['price'] + '</span></p>';
+                                    }
+                                }
+                            }
+
+                            html += '</div>' +
+                                '</div>';
+                        }
+                        $api.append($api.byId('Tolist'), html);
+                        if (len < 10) {
+                            var html2 = ' ';
+                            html2 += "<div class='lasttitle'>暂无更多课程</div>";
+                            $api.append($api.byId('Tolist'), html2);
+                            isover = true;
+                            $(".weui-loadmore").hide();
+                        }
+                        api.refreshHeaderLoadDone();
+                    }
+                    loading = false;
+                }
+            });
+        }
+
+    }
+
+    //直播页面详情跳转单课
+    function openguide(id) {
+        api.openWin({
+            name: 'guide',
+            url: '../guide.html',
+            pageParam: {
+                name: 'test',
+                id: id
+            },
+            bgColor: 'rgba(0,0,0,0)',
+            animation: {
+                type: 'none'
+            }
+        })
+    }
+
+    //系列课跳转
+    function specialguide(id) {
+        api.openWin({
+            name: 'specialguide',
+            url: '../special/specialguide.html',
+            pageParam: {
+                id: id
+            },
+            reload: true
+        });
+    }
+</script>
+
+</html>

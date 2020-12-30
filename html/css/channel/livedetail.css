@@ -1,0 +1,33 @@
+.top .right {float: right;margin-right: 15px;position: relative;top: 5px;display: none}
+.top .right img{width: 20px;}
+.middle{background: url(../../img/bg.jpg);min-height: 150px;margin-top:70px;background-size: 100%;padding: 0 20px;display: flex;position: relative;}
+.middle img{width: 60px;border-radius: 50%;border: 2px solid #fff;margin-top: 40px;height: 60px;}
+.middle .right{display: inline-block;margin-top: 30px;vertical-align: top;margin-left: 10px;color: #fff;width: calc(100% - 80px)}
+.middle .right h5{font-size: 16px;color: #fff;height: 20px;overflow: hidden;width: 90%;text-overflow: ellipsis;white-space: nowrap;}
+.middle .right p{font-size: 12px;margin-top: 5px;text-overflow: ellipsis;display: -webkit-box;-webkit-box-orient: vertical;-webkit-line-clamp: 3;overflow: hidden;}
+.middle .right img{margin-top: 0;width: 20px;height: auto;border: 0;position: relative;top: 5px;}
+.middle .right .button{width: 100px;height: 30px;background: #ff9913;color: #fff;border-radius: 30px;text-align: center;line-height: 30px;position: absolute;bottom: 12px;display:block;}
+.middle .right .none{display: none}
+.tab{background: #fff;display: none}
+.tab span{padding: 10px 20px;}
+.tab .select{color: #ff9913;position: relative;}
+.tab .select:after{position: absolute;content: '';width:50%;height: 1px;background: #ff9913;left:25%;bottom: 0}
+.foot{height: 50px;}
+.foot .tab{width: 33%;display: inline-block;}
+.foot .tab p{line-height: 50px;height: 50px;font-size: 16px;}
+.foot .tab img{width: 30px;height: 30px;margin-top: 7px;}
+.foot .tab .add{width: 20px;height: 20px;position: relative;top: 3px;left: 5px;}
+@media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+  .middle{margin-top: 90px;}
+
+}
+/* xr */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) {
+  .middle{margin-top: 90px;}
+
+}
+/* xs max */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) {
+  .middle{margin-top: 90px;}
+
+}

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>我的问答</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="../../res/css/light7.min.css">
+
+  </head>
+  <body>
+    <div class="page-group">
+      <!-- 你的html代码 -->
+      <div class="page no-tabbar" id="wodewenda">
+             <header class="bar bar-nav">
+            <a class="button button-link button-nav pull-left back" href="/app/homenew.html#stuInfo">
+                  <i class="iconfont icon-shangyiye2"></i>
+                  返回
+              </a>
+              <h1 class='title'>我的问答</h1>
+            </header>
+          <div class="content">
+            <div class="buttons-tab">
+              <a href="#tab1" class="tab-link active button" onclick="getwodetiwen()">我的提问</a>
+              <a href="#tab2" class="tab-link button" onclick="getwodehuida()">我的回答</a>
+              <a href="#tab3" class="tab-link button" onclick="getwodeshoucang()">收藏问答</a>
+          </div>
+
+    <div class="tabs">
+      <div id="tab1" class="tab active">
+
+          <center id="wodetiwen" style=" padding: 60px;color: #999;">
+            <img src="../../res/img/none.png" style="width: 70%;" />
+            <p>暂无提问</p>
+          </center>
+
+      </div>
+      <div id="tab2" class="tab">
+          <center id="wodehuida" style=" padding: 60px;color: #999;">
+            <img src="../../res/img/none.png" style="width: 70%;" />
+            <p>暂无提问</p>
+          </center>
+
+      </div>
+      <div id="tab3" class="tab">
+
+          <center id="shoucangwenda" style=" padding: 60px;color: #999;">
+            <img src="../../res/img/none.png" style="width: 70%;" />
+            <p>暂无收藏</p>
+          </center>
+
+      </div>
+    </div>
+  </div>
+
+
+          </div>
+  
+
+
+
+  </div>
+
+   <script type='text/javascript' src='../../res/zepto.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='../../res/js/light7.min.js' charset='utf-8'></script>
+<script src="../../res/js/jquery-1.10.2.min.js" type="text/javascript"></script>
+<link href="../../res/css/webuploader.css" rel="stylesheet" type="text/css" />
+<script src="../../res/js/webuploader.min.js" type="text/javascript"></script>
+<script type='text/javascript' src="../../res/jisupeixun.js"></script>
+<script>
+$.config.autoInit = true;
+apiready = function(){
+  console.log(api.winName);
+
+};
+</script>
+  </body>
+</html>

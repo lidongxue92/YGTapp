@@ -1,0 +1,143 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>问答专栏主页-问题列表</title>
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <link rel="shortcut icon" href="/app/favicon.ico">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="/app/framework/css/light7.min.css">
+    <link rel="stylesheet" type="text/css" href="/app/framework/icon/iconfont.css">
+    <link rel="stylesheet" type="text/css" href="/app/framework/styleApp.css">
+    <style type="text/css">
+
+    </style>
+</head>
+
+ <body >
+
+   <!--系统第一部分，界面组-->
+    <div class="page-groups">
+     <!--单个界面，如果多个界面page-current代表默认显示的-->
+    <div class="page sp_interlocution page-current  no-tabbar" id="sp_interlocution">
+
+           <!--界面标题-->
+           <header class="bar bar-nav">
+               <a class="button button-link button-nav pull-left back" href="/app/home.html#interlocution">
+                         <span class="iconfont icon-shangyiye2"></span>
+                         返回
+                     </a>
+
+                   <a id="tiwenbtn" class="button button-link button-nav pull-right" onclick="$.popup('.popup-interlocution')">
+                         <i class="iconfont" style="font-size: 1.2rem;">&#xe65b;</i>
+                     </a>
+               <h1 class="title" id="zhuanlanming">问答列表</h1>
+           </header>
+           <div class="bar bar-header-secondary" style="background: #39f;color: white;line-height: 2.2rem;text-align: center;" id="interlocution_sosoHide">
+              <div class="row">
+                 <div class="col-33 sp_join" onclick="JoinColumn()"> 申请</div>
+                 <div class="col-33  sp_collection" onclick="collectionCol()"> 关注</div>
+                 <div class="col-33" onclick="showSearch()"> 搜索</div>
+               </div>
+           </div>
+           <div class="bar bar-header-secondary" style="display:none;" id="interlocution_sosoShow">
+               <div class="searchbar">
+               <a class="searchbar-cancel" onclick="hideSearch()">取消</a>
+               <div class="search-input"><form>
+                   <label class="icon  iconfont icon-sousuo1" for="search"></label>
+                   <input type="search" id='interlocutionTxt' placeholder='输入关键字...'/></form>
+               </div>
+               </div>
+            </div>
+
+       <!--界面内容-->
+     <div class="content sp_interlocution pull-to-refresh-content"><!--pull-to-refresh-content"可下拉刷新-->
+         <!-- 默认的下拉刷新层 -->
+           <div class="pull-to-refresh-layer">
+               <div class="preloader"></div>
+               <div class="pull-to-refresh-arrow"></div>
+          </div>
+
+        <div style=" margin-bottom:2.4rem;">
+           <div id="spinterlocution">
+           <div class="list-block" style="margin: -0.1rem 0;">
+
+           </div>
+           <!--分页-->
+           <div id="interlocutionIndex"  style=" display:none;">1</div>
+           <div id="interlocutionLoadMore" style="margin-bottom: 3rem; text-align: center; margin-top: 1rem; display:none;  ">点击加载更多</div>
+          </div>
+     </div>
+   <!--  <div class="bar bar-footer-secondary" style=" bottom:0;position: fixed;">
+     <button class="button button-block" onclick="addQuestion()">我要提问</button>
+   </div>-->
+   </div>
+
+       </div>
+
+       <!-- popup, panel 等放在这里 -->
+   <div class="popup popup-interlocution">
+
+     <header class="bar bar-nav">
+       <button class="button button-link button-nav pull-right close-popup" onclick="">
+       <i class="iconfont">&#xe6b9;</i>
+     </button>
+     <h1 class='title'>交流内容</h1>
+   </header>
+   <div class="content" style="background-color: #eee;    padding-top: 1rem;">
+     <div class="list-block">
+       <ul style="border-top:0;">
+         <!-- Text inputs -->
+         <li>
+           <div class="item-content">
+             <div class="item-inner">
+               <div class="item-title label">标题：</div>
+               <div class="item-input">
+                 <input id="tanchuangtitle" type="text" placeholder="请输入标题">
+               </div>
+             </div>
+           </div>
+         </li>
+         <li class="align-top">
+           <div class="item-content">
+             <div class="item-inner">
+               <div class="item-title label">内容：</div>
+               <div class="item-input">
+                 <textarea id="tanchuangcontent" placeholder="请输入内容"></textarea>
+               </div>
+             </div>
+           </div>
+         </li>
+         <li class="align-top">
+           <div class="item-content">
+             <div class="item-inner">
+               <div class="item-title label">上传附件</div>
+               <div class="item-input">
+                <button class="button pull-right" style="margin: .5rem 0;" onclick="checkFile('FjButton')">选择</button>
+                <span class="questionFJ"></span>
+               </div>
+             </div>
+           </div>
+         </li>
+       </ul>
+     </div>
+     <form id="upload" enctype="multipart/form-data" method="post" style="z-index: 999;position: fixed;right: 0.8rem;width: 2.5rem;overflow: hidden;margin-top: -2rem;opacity: 0;" >
+       <input type="file" name="file" id="FjButton"  onchange="uploadFj('FjButton')"  />
+     </form>
+     <div class="content-block">
+        <p><a class="button button-fill" style="height: 1.5rem;line-height: 1.5rem;" onclick="addQuestion()">提交 </a></p>
+     </div>
+   </div>
+   </div>
+   <!--page1结束-->
+   </div>
+
+<script type='text/javascript' src='/app/framework/zepto.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='/app/framework/js/light7.min.js' charset='utf-8'></script>
+<script src="/images/icon/iconfont.js" type="text/javascript"></script>
+<script type='text/javascript' src="/app/common.js"></script>
+<script type='text/javascript' src="/app/interlocution/interlocution.js"></script>
+</body>
+</html>

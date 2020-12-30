@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1,IE=edge">
+  <title>班级相册</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <!--此页面不会被浏览器缓存-->
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Cache-Control" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <!--此页面不会被浏览器缓存END-->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="/app/framework/css/light7.min.css">
+    <link rel="stylesheet" type="text/css" href="/images/icon/iconfont.css">
+    <link rel="stylesheet" href="/app/framework/swiper.min.css" type="text/css">
+    <link rel="stylesheet" href="/app/framework/css/light7-swiper.css" type="text/css">
+
+    <link rel="stylesheet" href="/app/framework/newapp.css" type="text/css">
+
+</head>
+<body>
+
+<div class="page-group">
+<!-- page 容器 -->
+<div class="page" id="classPicture">
+ <!-- 标题栏 -->
+  <header class="bar bar-nav">
+    <a class=" pull-left back" href='/app/class/picture.html'><i class="icon iconfont icon-shangyiye2"></i>返回</a>
+    <span class=" pull-right">
+      <button class="button iconfont icon-boxremove" onclick="document.getElementById('localpic1').click();">上传</button>
+<input type="file" name="fileToUpload" class="fileToUpload" id="localpic1" style="opacity: 0;width: 30px;width: 30px;    position: absolute;    top: 0;    z-index: 999;"  accept="image/*" />
+    </span>
+     <h1 class='title'>班级相册</h1>
+  </header>
+  <!-- 这里是页面内容区 -->
+  <style>
+
+ </style>
+  <div class="content" >
+       <div id="xiangcelist" class="waterfall" style="padding:5px;"></div>
+       <div class="camera-area uploadbtn">
+             <form enctype="multipart/form-data" method="post">
+                 <div id="uploadprogress" class="upload-progress"><span></span></div>
+             </form>
+      </div>
+ </div>
+</div>
+<!-- popup, panel 等放在这里 -->
+<div class="panel-overlay"></div>
+
+<script src="/app/framework/js/jquery-1.10.2.min.js" type="text/javascript"></script>
+<script type='text/javascript' src='/app/framework/js/light7.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='/app/framework/js/i18n/cn.min.js'></script>
+<script type='text/javascript' src='/app/framework/js/light7-swiper.js' charset='utf-8'></script>
+<script type='text/javascript' src='/app/class/picture.js' charset='utf-8'></script>
+<script>
+  $.config = {
+    autoInit: true //no recommend
+  }
+  $.init();
+</script>
+
+</body>
+</html>

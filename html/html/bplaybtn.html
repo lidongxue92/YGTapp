@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+  <html>
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0"/>
+      <title>bplayui</title>
+      <link rel="stylesheet" type="text/css" href="../res/icon/iconfont.css">
+      <style type="text/css">
+        body {
+         padding: 0px;
+         margin: 0px;
+        }
+  </style>
+  </head>
+  <body onclick="bofang()">
+  <div id="anniu" style="position:absolute;top:50%;left:50%; margin-left:-40px; margin-top:-40px;text-align:center; color:#fff; width:80px; height:80px; line-height:80px; border-radius:50%; background-color:rgba(0,0,0,0.6); color:#fff">
+    <i class="iconfont icon-fanye" style="font-size:30px;"></i>
+  </div>
+  <script type="text/javascript" src="../res/js/jquery-1.10.2.min.js"></script>
+  <script type="text/javascript">
+
+    apiready = function(){
+          api.addEventListener({
+                  name: 'myEvent'
+          }, function(ret, err) {
+                  //alert(JSON.stringify(ret.value));
+                  if(ret.eventType ==  "paused"){
+                      $('#anniu').show();
+                  }
+                  if(ret.eventType ==  "playing"){
+                      $('#anniu').hide();
+                  }
+          });
+
+
+    }
+    function bofang(){
+      api.sendEvent({
+          name: 'tongzhi',
+          extra: {
+              type:'bofang'
+          }
+      });
+    }
+  </script>
+</body>
+  </html>

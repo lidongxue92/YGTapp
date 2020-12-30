@@ -1,0 +1,336 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>医管通APP</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" href="../../css/ygtcommon.css">
+    <link rel="stylesheet" href="../../css/channel/livedetail.css">
+    <script src="../../js/lib/jquery2.js"></script>
+<body >
+    <header class="top" id="header">
+        <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span class="title" ></span>
+            <span  class="right" onclick="Establish()"><img src="../../img/set1.png"></span>
+        </h1>
+    </header>
+    <div class="middle" id="middle">
+        <img class="pic" src="">
+        <div class="right">
+            <h5></h5>
+            <p></p>
+            <div class="order">
+
+            </div>
+
+        </div>
+    </div>
+    <div class="tab" id="tab">
+        <span class="select" data-val='1'>单课</span>
+        <span data-val='2'>系列课</span>
+    </div>
+    <!--主要内容  -->
+    <section>
+
+    </section>
+
+
+</body>
+<script src="../../js/jquery-weui.min.js"></script><script src="../../js/common.js"></script>
+<script type="application/javascript" src="../../js/lib/fastclick.js"></script>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript">
+
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    var page = 1
+    var pagesize = 4;
+    var apihost = $api.getStorage('apihost');
+    var chartid = '';
+    var groupid = '';
+    var title = '';
+    var liveuserid = 2;
+    var liveheadpic = '';
+    var amount ='';
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+        var livelistid = $api.setStorage('livelistid', api.pageParam.id);
+        api.addEventListener({
+            name:'viewappear'
+        }, function(ret, err){
+
+            check();
+        });
+        loaddata();
+        // 上拉刷新 滚动加载
+
+    };
+
+    //
+    function loaddata() {
+        //获取直播间内容
+        api.ajax({
+            url: wtkurl +'classroom/getClassroomByListid',
+            method: 'post',
+            headers: {
+                'TOKEN':ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    uid: ygtuserinfo.id,
+                    listid:api.pageParam.id,
+                    page: 1,
+                    pagesize: 5
+                }
+            }
+        },function(ret, err){
+            console.log(JSON.stringify(ret)+'zhibojianziliao');
+            console.log(JSON.stringify(err));
+            if (ret.data.listinfo) {
+                //alert(JSON.stringify(ret.data));
+                $('#header .title').html(ret.data.listinfo.title);
+                $('.right h5').html(ret.data.listinfo.title);
+                $('.right p').html(ret.data.listinfo.intro);
+
+                if (ret.data.listinfo.pic == "") {
+                    $('.middle .pic').attr('src',ret.data.listinfo.headimage);
+                    liveheadpic = ret.data.listinfo.headimage;
+                }else{
+                    $('.middle .pic').attr('src',ret.data.listinfo.pic);
+                    liveheadpic = ret.data.listinfo.pic;
+                }
+
+                chartid = ret.data.listinfo.id;
+                groupid = ret.data.listinfo.groupid;
+                title = ret.data.listinfo.title;
+                amount = ret.data.listinfo.amount;
+                var ordhtml = ''
+                //判断是否是自己的直播间，是否购买会员
+            }
+        });
+    }
+
+    function check() {
+
+        api.ajax({
+            url: wtkurl +'classroomlist/checkpaylist',
+            method: 'post',
+            headers: {
+                'TOKEN':ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    uid: ygtuserinfo.id,
+                    listid:api.pageParam.id
+                }
+            }
+        },function(rete, err){
+            console.log(JSON.stringify(rete)+'shoufougoumaihuiyuan');
+            console.log(JSON.stringify(err));
+              if (rete.msg == '自己直播间' ) {
+                  $('.middle .right .button').removeClass('ordersure')
+                  $('.middle .right .button').css('display','none');
+                  $('#header .right').css('display','block');
+                  liveuserid = 1
+              }else if (rete.msg == '没有购买会员') {
+                  ordhtml = '<span class="button" onclick="ordersure()">购买会员</span>';
+                  $('.middle .right .order').append(ordhtml);
+                  $('.middle .right .button').css('display','block');
+                  $('#header .right').css('display','none');
+                  if (amount == 0) {
+                      $('.middle .right .button').css('display','none');
+                  }
+              }else if (rete.msg == '已购买过会员') {
+                  $('#header .right').css('display','none');
+                  ordhtml = '<span class="button">您已是会员</span>';
+                  $('.middle .right .order').append(ordhtml);
+                  if (amount == 0) {
+                    $('.middle .right .button').css('display','none');
+                  }
+              }
+              checkclass();
+        });
+    }
+
+    function checkclass() {
+      //判断系列课是否有数据
+      api.ajax({
+          url: wtkurl +'special/getClassroomByListid',
+          method: 'post',
+          headers: {
+              'TOKEN':ygtuserinfo.token
+          },
+          data: {
+              values: {
+                  // uid: ygtuserinfo.id,
+                  listid:api.pageParam.id
+              }
+          }
+      },function(ret, err){
+          console.log(JSON.stringify(ret)+'liebiaoxinx ');
+
+          if (ret.code != 0) {
+              $('#tab').css('display','block')
+              api.ajax({
+                  url: wtkurl +'classroom/getClassroomByListid',
+                  method: 'post',
+                  headers: {
+                      'TOKEN':ygtuserinfo.token
+                  },
+                  data: {
+                      values: {
+                          uid: ygtuserinfo.id,
+                          listid:api.pageParam.id
+                      }
+                  }
+              },function(rete, err){
+                  console.log(JSON.stringify(rete));
+                  if (rete.data.result == '') {
+                      $('#tab').css('display','none');
+                      console.log(JSON.stringify(err));
+                      toph = $api.offset($api.byId('header')).h+$api.offset($api.byId('middle')).h;
+                      api.openFrame({
+                          name: 'livedetailframe',
+                          url: 'livedetailframe.html',
+                          rect: {
+                              marginLeft:0,    //相对父 window 左外边距的距离
+                              marginTop:toph,    //相对父 window 上外边距的距离
+                              marginBottom:0,    //相对父 window 下外边距的距离
+                              marginRight:0
+                          },
+                          pageParam: {
+                              name: 2,
+                              liveuserid:liveuserid
+                          },
+                          bounces: true,
+                          vScrollBarEnabled: false,
+                          hScrollBarEnabled: false
+                      });
+                  }else{
+                      $('#tab').css('display','block');
+                      toph = $api.offset($api.byId('header')).h+$api.offset($api.byId('middle')).h+$api.offset($api.byId('tab')).h+8;
+                      api.openFrame({
+                          name: 'livedetailframe',
+                          url: 'livedetailframe.html',
+                          rect: {
+                              marginLeft:0,    //相对父 window 左外边距的距离
+                              marginTop:toph,    //相对父 window 上外边距的距离
+                              marginBottom:0,    //相对父 window 下外边距的距离
+                              marginRight:0
+                          },
+                          pageParam: {
+                              name: 1,
+                              liveuserid:liveuserid,
+                          },
+                          bounces: true,
+                          vScrollBarEnabled: false,
+                          hScrollBarEnabled: false
+                      });
+                  }
+              });
+          }else{
+              console.log(JSON.stringify(err));
+              toph = $api.offset($api.byId('header')).h+$api.offset($api.byId('middle')).h+$api.offset($api.byId('tab')).h;
+              api.openFrame({
+                  name: 'livedetailframe',
+                  url: 'livedetailframe.html',
+                  rect: {
+                      marginLeft:0,    //相对父 window 左外边距的距离
+                      marginTop:toph,    //相对父 window 上外边距的距离
+                      marginBottom:0,    //相对父 window 下外边距的距离
+                      marginRight:0
+                  },
+                  pageParam: {
+                      name: 1,
+                      liveuserid:liveuserid
+                  },
+                  bounces: true,
+                  vScrollBarEnabled: false,
+                  hScrollBarEnabled: false
+              });
+          }
+      });
+    }
+    function back() {
+        tourl = $api.getStorage('tourl')
+        if (tourl == 'audioclass') {
+            api.addEventListener({
+                name:'viewdisappear'
+            }, function(ret, err){
+               api.closeWin();
+            });
+            index();
+        }else{
+            api.closeWin();
+        }
+    }
+
+
+
+
+    //修改群资料
+    function Establish() {
+        api.openWin({
+          name: 'establish',
+          url: '../my/establish.html',
+          pageParam: {name: 'Establish',id:chartid},
+          bgColor: 'rgba(0,0,0,0)',
+          animation:{
+            type:'none'
+          }
+        })
+    }
+
+    //购买会员
+    function ordersure() {
+        api.openWin({
+          name: 'ordersure',
+          url: '../ordersure.html',
+          pageParam: {id: chartid,type:'livevip'},
+          bgColor: 'rgba(0,0,0,0)',
+          animation:{
+            type:'none'
+          }
+        })
+    }
+
+    $('.tab span').click(function () {
+        $('.tab span').removeClass('select');
+        $(this).addClass('select');
+        api.closeFrame({
+            name: 'livedetailframe'
+        });
+        toph = $api.offset($api.byId('header')).h+$api.offset($api.byId('middle')).h+$api.offset($api.byId('tab')).h+8;
+        api.openFrame({
+            name: 'livedetailframe',
+            url: 'livedetailframe.html',
+            rect: {
+                marginLeft:0,    //相对父 window 左外边距的距离
+                marginTop:toph,    //相对父 window 上外边距的距离
+                marginBottom:0,    //相对父 window 下外边距的距离
+                marginRight:0
+            },
+            pageParam: {
+                name: $('.select').attr('data-val')
+            },
+            bounces: true,
+            vScrollBarEnabled: false,
+            hScrollBarEnabled: false
+        });
+    })
+</script>
+
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, initial-scale=1.0, width=device-width" />
+    <meta name="format-detection" content="telephone=no, email=no, date=no, address=no">
+    <title>Hello APP</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <style>
+        label {
+            margin: 10px;
+            font-size: 24px;
+        }
+
+        ul {
+            margin-bottom: 10px;
+        }
+
+        ul li {
+            margin: 5px 10px;
+            padding: 5px;
+            color: #000;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+
+<body>
+    <label>Hello APP</label>
+    <div id='sys-info'></div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+  var ajpush;
+    apiready = function() {
+        var ver = api.version;
+        var sType = api.systemType;
+        var sVer = api.systemVersion;
+        var id = api.deviceId;
+        var model = api.deviceModel;
+        var name = api.deviceName;
+        var cType = api.connectionType;
+        var winName = api.winName;
+        var winWidth = api.winWidth;
+        var winHeight = api.winHeight;
+        var frameName = api.frameName || '';
+        var frameWidth = api.frameWidth || '';
+        var frameHeight = api.frameHeight || '';
+
+        var str = '<ul>';
+        str += '<li>引擎版本信息: ' + ver + '</li>';
+        str += '<li>系统类型: ' + sType + '</li>';
+        str += '<li>系统版本: ' + sVer + '</li>';
+        str += '<li>设备标识: ' + id + '</li>';
+        str += '<li>设备型号: ' + model + '</li>';
+        str += '<li>设备名称: ' + name + '</li>';
+        str += '<li>网络状态: ' + cType + '</li>';
+        str += '<li>主窗口名字: ' + winName + '</li>';
+        str += '<li>主窗口宽度: ' + winWidth + '</li>';
+        str += '<li>主窗口高度: ' + winHeight + '</li>';
+        str += '<li>子窗口名字: ' + frameName + '</li>';
+        str += '<li>子窗口宽度: ' + frameWidth + '</li>';
+        str += '<li>子窗口高度: ' + frameHeight + '</li>';
+        str += '</ul>';
+
+        $api.byId('sys-info').innerHTML = str;
+
+
+
+        ajpush = api.require('ajpush');
+        ajpush.init(function(ret, err){
+  				if(ret && ret.status){
+  					alert('操作成功!');
+  				}else{
+  					alert('操作失败!');
+  				}
+  			});
+      //  var param = {alias:'张新',tags:['财政部','tag2']};
+        //ajpush.bindAliasAndTags(param,function(ret) {
+      //          var statusCode = ret.statusCode;
+      //  });
+        api.addEventListener({name:'appintent'}, function(ret,err) {
+    			alert('通知被点击，收到数据：\n' + JSON.stringify(ret));//监听通知被点击后收到的数据
+    			if(ret && ret.appParam.ajpush){
+			        var ajpush = ret.appParam.ajpush;
+			        alert(ajpush);
+			        var id = ajpush.id;
+			        alert(id);
+			        var title = ajpush.title;
+			        var content = ajpush.content;
+			        var extra = ajpush.extra;
+			        alert(extra.aaaaa);
+			    }
+	  		 })
+			 api.addEventListener({name:'pause'}, function(ret,err) {
+	    		onPause();//监听应用进入后台，通知jpush暂停事件
+	  		 })
+
+	  	 api.addEventListener({name:'resume'}, function(ret,err) {
+	    		onResume();//监听应用恢复到前台，通知jpush恢复事件
+	  	 })
+       ajpush.getRegistrationId(function(ret) {
+        var registrationId = ret.id;
+        console.log('jpush_id:'+registrationId);
+      });
+      ajpush.setListener(
+          function(ret) {
+               var id = ret.id;
+               var title = ret.title;
+               var content = ret.content;
+               var extra = ret.extra;
+               console.log('jpush_x:'+content);
+          }
+      );
+
+    };
+    //统计-app恢复
+        function onResume(){
+          ajpush.onResume();
+          console.log('JPush onResume');
+          ajpush.setListener(
+              function(ret) {
+                   var id = ret.id;
+                   var title = ret.title;
+                   var content = ret.content;
+                   var extra = ret.extra;
+                   console.log('jpush_c:'+content);
+              }
+          );
+        }
+
+        //统计-app暂停
+        function onPause(){
+          ajpush.onPause();
+          console.log('JPush onPause');
+          ajpush.removeListener();
+        }
+
+</script>
+
+</html>

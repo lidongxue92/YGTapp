@@ -1,0 +1,90 @@
+body{background:#fff;position: relative;height: auto;}
+a:focus, a:hover { color:#fff; text-decoration: none; }
+ #bg{position: absolute;width: 100%;height: 100%;background:rgba(0, 0, 0, 0.5);left:0;top: 0;z-index: 11;display: none;}
+ .button:hover, .button:visited, .button:active{opacity: 1;}
+.top h1 .title{font-size: 2rem;font-weight: 500;}
+.columnHead{text-align: left;}
+.myeventcontent { font-size: 16px; }
+.myeventcontent ul { list-style-type: disc; }
+.myeventcontent ol { list-style-type: decimal!important; }
+.fc-day-grid-event .fc-content { word-wrap: break-word; word-break: break-all; white-space: pre-wrap !important; }
+.fc-more-popover { z-index: 3; width: 450px; }
+.scrollFixed { z-index: 1; }
+.baoMing .modal-dialog { top:0; }
+.pull-right{text-align: left;}
+#myeventcontent{font-size: 16px;}
+ .baoMing .modal-dialog{top: 30px;}
+/*分享*/
+.footer{ bottom: 0px; width: 100%; background: #f5f5f6; border-top: 1px solid #d7d7d9; box-sizing: border-box; display: block; position: fixed; left: 0; right: 0; max-width: 640px; margin: 0 auto; z-index: 15; height: 110px; padding: 0; }
+.footer .enter{ overflow: hidden; padding: 5px; }
+.footer .left{ width: calc(100% - 40px); min-height: 40px; float: left; overflow: hidden; }
+.foot{min-height: 0;display:none;min-height: 190px;padding-top: 10px;}
+.foot h5{font-size: 1.3rem;}
+.foot .right{position: absolute;right: 10px;top: 10px;text-align: center;}
+.foot .right span{display: inline-block;width: 30px;height: 30px;}
+.sh{display: block;}
+.foot .tools{text-align: center;}
+.foot img{width: 4rem;}
+.pull-right .content{margin-top: 0;}
+.loading{height: 150%;}
+.loading span{margin-top: 26rem;}
+/*.content{position: relative;}*/
+.button{ border: 1px solid #ff9913; background: #ff9913; }
+.subbth{ width: 72%; height: 55px; line-height:45px; border-radius: 0; font-weight: 500; }
+ .bth{background: #3e3d3d;color: #fafafa;width: 30%;height: 55px;line-height: 55px;display: inline-block;margin-right: 3px;text-decoration: none;position: absolute;left: 0;z-index: 1111;}
+ .columnHead{padding-right: 0;margin-top: 20px;}
+ .columnHead .item{padding: 0 0 0 15px;width:100%;font-weight: 500;}
+.bgcon{margin-top: 60px;}
+
+/*报名信息*/
+#signupBut{position: fixed;width: 100%;bottom: -1px;}
+#baomingform{text-align: center;padding-bottom: 0;}
+#baomingform  .title{padding: 0;margin:0;background: #ff9913;height: 50px;line-height: 50px;border-radius: 50px;font-weight: normal;font-size:15px;color: #fff!important;display: block;}
+#baomingform .title img{width:30px;margin-right: 10px;}
+#baomingform .title .img{width: auto;height: 10px;}
+#baomingform .dec{line-height: 30px;}
+.bmForm li span{width: auto;display: inline-block;color: #ff9913;}
+.bmForm li input.input_name{display: inline-block;}
+.modal-footer{padding: 0;width: 100%;}
+#baomingform .button{line-height: 50px;border-radius: 0;padding: 0;}
+#baomingform .yzm{padding: 5px 15px;background: #ff9913;border-radius: 3px;color: #fff;line-height: 15px;}
+#baomingform .button-orange{width: 60%;float: right;}
+#baomingform .button-gray{width: 40%;background:#3e3d3d }
+.modal-backdrop{height: 101%;}
+/* 中等屏幕（桌面显示器，小于等于 992px） */
+
+@media (max-width: 992px) {
+    .fc-more-popover {
+        width: 450px;
+    }
+    .signupButb{padding: 0;}
+    /*.content{margin-top: 60px;}*/
+
+}
+/* 小屏幕（平板，小于等于 768px） */
+
+@media (max-width: 768px) {
+    .fc-more-popover {
+        width: 350px;
+    }
+    .bmForm li input.input_name{width: 95%;}
+
+}
+
+@media screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+    header {
+        padding-top: 50px;
+        height: 94px;
+    }
+    /*.content{margin-top: 80px;}*/
+    .baoMing .modal-dialog {
+        top:50px;
+    }
+}
+#audioclick{position: fixed;left: 5%;bottom: 70px;width: 90%;background: rgba(0,0,0,.7);padding: 10px 5%;border-radius: 10px;}
+#audioclick span{display: inline-block;width: 65%;}
+#audioclick .hed{position: relative;width: 60px;vertical-align: top;margin-right: 10px;}
+#audioclick .pic{ width: 60px;height: 36px;border: 1px solid #eee;border-radius: 5px;}
+#audioclick .close{width: 20px;float: right;position: relative;top:8px;}
+#audioclick .pause{position: absolute;left:20px;width:20px;top: 10px;}
+#audioclick b{display: inline-block;width: 100%;overflow: hidden; text-overflow: ellipsis; white-space: nowrap;color: #e4e4e4;font-size: 12px;line-height: 15px;}

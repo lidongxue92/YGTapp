@@ -1,0 +1,221 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>新建作业</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/ygtcommon.css">
+    <link rel="stylesheet" href="../css/index/custom.css">
+<body >
+    <header class="top" id="header">
+        <h1>
+            <span class="left" onclick="cancel()">取消</span>
+            <span class="title">新建作业</span>
+        </h1>
+    </header>
+    <div class="middle">
+        <h5>标题</h5>
+        <input class="title" placeholder="作业标题" />
+        <h5>作业内容</h5>
+        <textarea class="task" placeholder="作业内容"></textarea>
+        <span class="next" onclick="next()">下一步</span>
+    </div>
+</body>
+<script src="../js/lib/jquery-2.1.4.js"></script><script src="../js/common.js"></script>
+<script type="application/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    var workstatus = '';
+    var questionid = '';
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+        //  禁止左右滑动
+        $api.fixStatusBar(header);
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+        $('.title').focus()
+        workdetail();
+    };
+
+    //取消
+    function cancel() {
+        api.confirm({
+            title: '',
+            msg: '是否退出编辑',
+            buttons: ['确定', '取消']
+        }, function(ret, err) {
+            var index = ret.buttonIndex;
+            if (index == 1) {
+                api.closeWin();
+
+            }
+        });
+
+    }
+    //标题
+    function Title() {
+        var title = $('.middle .title').val();
+        if (title.length < 5) {
+            api.alert({
+                title: '',
+                msg: '标题不可以少于5个字',
+            }, function(ret, err){
+                if( ret ){
+
+                     //alert( JSON.stringify( ret ) );
+                }
+            });
+            return false
+        }else{
+            $api.setStorage('tasktitle', title);
+
+        }
+    }
+
+    //作业
+
+    function Task() {
+        var task = $('.middle .task').val();
+        if (task.length < 20) {
+            api.alert({
+                title: '',
+                msg: '作业内容不可以少于20个字',
+            }, function(ret, err){
+                if( ret ){
+                    // alert( JSON.stringify( ret ) );
+                }
+            });
+            return false
+        }
+    }
+    // 作业详情
+  function  workdetail(){
+    console.log(api.pageParam.id)
+      api.ajax({
+          url: wtkurl +'classroomlist/getClassroomTasks',
+          method: 'post',
+          headers: {
+              'TOKEN':ygtuserinfo.token
+          },
+          data: {
+              values: {
+                  uid: ygtuserinfo.id,
+                  classroomid:api.pageParam.id
+              }
+          }
+      }, function(ret, err) {
+        console.log(JSON.stringify(ret))
+        if (ret.data.length >0) {
+          console.log('233')
+          $('.middle .title').val(ret.data[0].question)
+          $('.middle .task').val(ret.data[0].note)
+          workstatus = 1;
+          questionid = ret.data[0].id;
+        }
+        console.log(JSON.stringify(err))
+      });
+    }
+    //创建作业
+    function next() {
+       $api.setStorage('tasktitle',$('.middle .title').val());
+       $api.setStorage('tasknote',$('.middle .task').val());
+        if (Title() != false && Task() != false) {
+          if (api.pageParam.objecttype == 2) {
+            api.openWin({
+                name: 'relation',
+                url: './relation.html',
+                pageParam: {
+                    id: api.pageParam.id
+                },
+                bgColor: 'rgba(0,0,0,0)',
+                animation: {
+                    type: 'none'
+                }
+            })
+          }else{
+            if (workstatus == 1) {
+              api.ajax({
+                  url: wtkurl +'classroomlist/editTask',
+                  method: 'post',
+                  headers: {
+                      'TOKEN':ygtuserinfo.token
+                  },
+                  data: {
+                      values: {
+                          uid: ygtuserinfo.id,
+                          questionid:questionid,
+                          question: $('.middle .title').val(),
+                          note: $('.middle .task').val()
+                      }
+                  }
+              }, function(ret, err) {
+                console.log(JSON.stringify(ret))
+                if (ret) {
+                  api.alert({
+                      title: '',
+                      msg: ret.msg,
+                  }, function(ret, err){
+                      if( ret ){
+                          api.closeWin()
+                      }
+                  });
+                }
+
+                console.log(JSON.stringify(err))
+              });
+            }else{
+              api.ajax({
+                  url: wtkurl +'classroomlist/createTask',
+                  method: 'post',
+                  headers: {
+                      'TOKEN':ygtuserinfo.token
+                  },
+                  data: {
+                      values: {
+                          uid: ygtuserinfo.id,
+                          classroomid:api.pageParam.id,
+                          question: $('.middle .title').val(),
+                          note: $('.middle .task').val()
+                      }
+                  }
+              }, function(ret, err) {
+                console.log(JSON.stringify(ret))
+                if (ret) {
+                  api.alert({
+                      title: '',
+                      msg: ret.msg,
+                  }, function(ret, err){
+                      if( ret ){
+                          api.closeWin()
+                      }
+                  });
+                }
+
+                console.log(JSON.stringify(err))
+              });
+            }
+
+          }
+
+        }
+
+    }
+
+</script>
+
+</html>

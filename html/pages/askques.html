@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>直播间</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/base.css" />
+    <link rel="stylesheet" type="text/css" href="../css/ygtcommon.css" />
+    <link rel="stylesheet" type="text/css" href="../css/swder.css" />
+    <link rel="stylesheet" href="../css/index/askques.css">
+</head>
+
+<body ontouchstart>
+    <header id='header' class="top">
+        <h1>
+            <img onclick="api.closeWin()"  src="../img/back_light.png">
+            <span  class="title">提问</span>
+            <span class="bthright" onclick="loadData()">提交问题</span>
+        </h1>
+    </header>
+    <div class="detail">
+          <textarea class="title" type="" name="" placeholder="请输入问题(1-80字)" maxlength="80"></textarea>
+          <div class="questiontab">
+              <span class="tab"><img src="../img/add3.png">选择问题分类</span>
+              <ul>
+                <li onclick="openList(this);" typeid='1'>质量安全</li>
+                <li onclick="openList(this);" typeid='2'>医务管理</li>
+                <li onclick="openList(this);" typeid='3'>护理管理</li>
+                <li onclick="openList(this);" typeid='4'>运营管理</li>
+                <li onclick="openList(this);" typeid='5'>市场营销</li>
+                <li onclick="openList(this);" typeid='6'>优质服务</li>
+                <li onclick="openList(this);" typeid='7'>财务/成本</li>
+                <li onclick="openList(this);" typeid='8'>后勤管理</li>
+                <li onclick="openList(this);" typeid='9'>人力资源</li>
+                <li onclick="openList(this);" typeid='10'>流程再造</li>
+                <li onclick="openList( this);" typeid='11'>信息化管理</li>
+                <li onclick="openList(this);" typeid='12'>其他</li>
+              </ul>
+          </div>
+          <div class="questioncontent">
+              <p class="tab"><span ><img src="../img/add3.png">添加问题描述</span></p>
+              <textarea class="quescontent" placeholder="对问题补充说明，更快获得优质回答"></textarea>
+          </div>
+      </div>
+    <script src="../js/lib/jquery-2.1.4.js"></script><script src="../js/common.js"></script>
+    <script type="application/javascript" src="../js/lib/fastclick.js"></script>
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript">
+        var apihost = $api.getStorage('apihost');
+        if (apihost == undefined || apihost == '') {
+            apihost = 'http://member.ygt.cm';
+            $api.setStorage('apihost', apihost);
+        }
+        var ygtuserinfo = $api.getStorage('ygtuserinfo');
+        var page = 1;
+        var pagesize = 10;
+        var loading = false;
+        var isover = false;
+        var knowtablist = $api.getStorage('knowtablist');
+        console.log(knowtablist)
+        apiready = function() {
+            var header = $api.byId('header');
+            $api.fixStatusBar(header);
+            //  禁止左右滑动
+            api.setWinAttr({
+                slidBackEnabled : false
+            });
+            //  禁止左右滑动
+        }
+        $('.questiontab .tab').click(function(){
+            $('.questiontab ul').toggleClass('actshow')
+        });
+        //选择问题分类
+        function openList(obj) {
+            $(".questiontab li").removeClass('active')
+            $api.addCls(obj, 'active');
+        }
+        // 问题描述
+      $('.questioncontent .tab').click(function(){
+          console.log('222')
+          $('.questioncontent textarea').toggleClass('textshow');
+          $('.questioncontent textarea').focus();
+          $('html,body').animate({scrollTop: '200px'}, 100);
+      });
+      $('.quescontent').click(function () {
+        $('html,body').animate({scrollTop: '200px'}, 100);
+      })
+      //提交
+      function  loadData(){
+        loading = true;
+        api.ajax({
+              url: askurl +'Question/addQuestion',
+              method: 'post',
+              headers: {
+                  'TOKEN':ygtuserinfo.token
+              },
+              data: {
+                  values: {
+                    uid:ygtuserinfo.uid,
+                    typeid:$('.questiontab .active').attr('typeid'),
+                    title:$('textarea.title').val(),
+                    content:$('textarea.quescontent').val()
+                  }
+              }
+          },function(ret, err) {
+            console.log(JSON.stringify(ret))
+              if (ret.msg == '只有会员才能提问题') {
+                api.alert({
+                  title: '温馨提示',
+                  msg:ret.msg,
+                  buttons:['确认']
+                 },function(ret,err,message){
+                   if(ret.buttonIndex == 1){//点击确定退出应用
+
+            }
+              })
+            }else{
+              if (!$('.questiontab .active').attr('typeid')) {
+                    api.alert({
+                        title: '温馨提示',
+                        msg:'问题分类不能为空',
+                        onOK: function () {
+                            //点击确认
+
+                        },
+                        onCancel: function () {
+                        }
+                    });
+                }else{
+                  retmsg = ret.msg;
+                  api.alert({
+                    title: '温馨提示',
+                    msg: ret.msg,
+                    buttons:[ '确定']
+                    },function(ret,err){
+                      if(ret.buttonIndex == 1){
+                        if (retmsg == '提问成功') {
+                            api.closeWin();
+                        }
+                      }
+                  });
+              }
+            }
+        });
+      }
+    </script>
+</body>
+
+</html>

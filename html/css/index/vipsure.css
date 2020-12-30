@@ -1,0 +1,46 @@
+#header img{width: 10px; float: left;position: relative;top: 10px;left: 10px;}
+body{-webkit-overflow-scrolling:touch;font-size: 15px;background:url(../../img/vipbg.jpg);background-size: 100% 100%;height:auto;}
+.vipdetail{padding: 40px 20px;margin-top: 70px}
+/*会员卡选择*/
+.vipdetail .topcard{height:190px;border-radius:30px;background:linear-gradient(to right, #ffbd45 , #fe6731);box-shadow: 2px 1px 1px #d4bea5;}
+.vipdetail .topcard h5{text-align: center;font-size: 24px;color: #fff;position:relative;top: 40px;font-weight:900;}
+.vipdetail .topcard .price{position:relative;top: 100px;text-align: right;right:30px;color: #fff}
+/*.vipdetail .topcard .price:after{content: '';display:inline-block;position:absolute;width:50px;height: 1px;right:90px;top: 47%;background:#fff;}*/
+.vipdetail .topcard .price span{display:inline-block;padding: 3px 10px;background:#fff4b0;color: #c1761e;border-radius: 30px;margin-left:10px;font-weight:900;}
+/*会员福利*/
+.vipdetail .middlemsg{margin-top:20px;background:#fff9f3;border-radius: 10px;padding: 20px;font-size: 12px;}
+.vipdetail .middlemsg h5{margin-top: 10px;font-size: 14px;color: #c58c13;font-weight:700;}
+.vipdetail .middlelist ul{display:flex;width:100%;margin-top: 20px}
+.vipdetail .middlelist li{display:inline-block;width:30%;background:url(../../img/vipmiddle.png);background-size: 100% 100%;min-height:130px;text-align: center;margin-right:5%;}
+.vipdetail .middlelist li:last-child{margin-right:0;}
+.vipdetail .middlelist li h5{color: #c58c13;font-size: 22px;font-weight:bold;margin-top: 20px;}
+.vipdetail .middlelist li p{font-size: 13px;padding: 0 5px;margin-top:5px;}
+.vipdetail .middledec{margin-top:20px;background:url(../../img/vipbottom.png);background-size: 100% 100%;padding: 30px;}
+.vipdetail .middledec li{margin-top: 20px;border-radius:30px;background:#fdedd2;padding: 15px 20px;font-size: 14px;color: #582f1d}
+.vipdetail .middledec li h5{font-weight:900;font-size:14px;color: #595757}
+.vipdetail .middledec li h5 span{color: #c58c13}
+.vipdetail .middledec li p{font-size: 12px;color: #a8a49e}
+/*会员卡选择*/
+.card{margin-top: 30px;display:flex;width:100%;}
+.card .season{background:url(../../img/season.png);background-size: 100% 100%;display:inline-block;width:49%;margin-right:2%;color: #fff;font-size: 20px;font-weight:900;height:70px;text-align: center;line-height: 70px;}
+.card .year{background:url(../../img/year.png);display:inline-block;width:49%;color: #fff;background-size: 100% 100%;
+font-size: 20px;font-weight:900;height:70px;text-align: center;line-height: 70px;}
+@media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+  .vipdetail {
+      top: 100px;
+  }
+
+}
+/* xr */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) {
+  .vipdetail{
+      top: 100px;
+  }
+
+}
+/* xs max */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) {
+  .vipdetail{
+      top: 100px;
+  }
+}

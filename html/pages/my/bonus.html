@@ -1,0 +1,215 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>我的奖学金</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" href="../../css/base.css">
+    <link rel="stylesheet" href="../../css/ygtcommon.css">
+    <link rel="stylesheet" href="../../css/my/bonus.css">
+<body >
+    <header class="top" id="header">
+        <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span class="title">我的奖学金</span>
+            <span class="right" onclick="bonuslog();">明细</span>
+        </h1>
+    </header>
+    <div class="middle">
+        <h5 class="titlebonus">可用奖学金</h5>
+        <p class="money">0.00</p>
+    </div>
+    <div class="productlist ">
+        <h5 class="tablist">
+            <span class="tab active" datatype="1">微课</span>
+            <span class="tab" datatype="2">系列课</span>
+            <span class="sec">邀请好友赚赏金</span>
+        </h5>
+        <ul id="datalist">
+            <!-- <li class="list">
+                <img class="leftimg" src="../img/classroom.jpg">
+                <div class="decright">
+                    <h5>如何成为健康中国下的健康医院</h5>
+                    <p class="smeta">国际认证辅导的奥秘——追踪方法学在医院管理中的应用</p>
+                    <p class="share">预计收益<span>24.7</span><span class="postershare" onclick="poster();">马上邀请<span></p>
+                </div>
+            </li>
+            <li class="list">
+                <img class="leftimg" src="../img/classroom.jpg">
+                <div class="decright">
+                    <h5>如何成为健康中国下的健康医院</h5>
+                    <p>国际认证辅导的奥秘——追踪方法学在医院管理中的应用</p>
+                    <p class="share">预计收益<span>24.7</span><span class="postershare" onclick="poster();">马上邀请<span></p>
+                </div>
+            </li> -->
+        </ul>
+    </div>
+    <div class="loading">
+        <span>
+            <img src="../../img/loading.gif" />
+        </span>
+    </div>
+</body>
+<script src="../../js/lib/jquery-2.1.4.js"></script><script src="../../js/common.js"></script>
+<script type="application/javascript" src="../../script/api.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    var page = 1;
+    var pagesize = 10;
+    var loading = ''
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+        //  禁止左右滑动
+        $api.fixStatusBar(header);
+       loaddata();
+       $('.loading').show();
+       loadlist();
+       api.addEventListener({
+           name:'viewappear'
+       }, function(ret, err){
+          loaddata()
+       });
+         api.addEventListener({
+             name: 'scrolltobottom',
+             extra: {
+                 threshold: 0 //设置距离底部多少距离时触发，默认值为0，数字类型
+             }
+         }, function(ret, err) {
+             if (loading == true) {
+                 page++; //页数
+                 loadlist();
+             }
+         });
+
+    };
+
+
+
+    function loaddata() {
+        api.ajax({
+            url: wtkurl +'myhome/getCommission',
+            method: 'post',
+            headers: {
+                'TOKEN': ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    uid: ygtuserinfo.id
+                }
+            }
+        }, function(data, err) {
+            console.log(JSON.stringify(data)+'shuju')
+            $('.middle .money').html(data.data.result.money/100)
+        });
+    }
+    function loadlist() {
+        var type = $('.active').attr('datatype')
+        // alert(type);
+        api.ajax({
+            url: wtkurl +'classroom/getpromotion',
+            method: 'post',
+            headers: {
+                'TOKEN': ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    uid: ygtuserinfo.id,
+                    'page': page,
+                    'pagesize': pagesize,
+                    'object_type':type
+                }
+            }
+        }, function(data, err) {
+            console.log(JSON.stringify(data)+'shuju11');
+            console.log(JSON.stringify(err)+'shuju11')
+            var datalist = data.data;
+            var listhtml ='';
+            var thtml = '';
+
+            if (datalist != null) {
+                $('.loading').hide();
+                var len = datalist.length
+                for (var i = 0; i < datalist.length; i++) {
+                    if (type == 2) {
+                        listhtml += '<li class="list" onclick="poster('+datalist[i].id +', 2 );">';
+                       listhtml += '<img class="leftimg" src="' + datalist[i].pic + '">'
+                    }else{
+                        listhtml += '<li class="list" onclick="poster('+datalist[i].id +',1);">';
+                        listhtml += '<img class="leftimg" src="' + datalist[i].thumb + '">'
+                    }
+                    listhtml +='<div class="decright"><h5>'+datalist[i].name+'</h5>'
+                     if (type == 2) {
+                        listhtml +='<p></p>'
+                     }else{
+                         listhtml +='<p>'+datalist[i].smeta+'</p>'
+                     }
+                    listhtml += '<p class="share">预计收益<span>'+Math.floor((datalist[i].promotion_money) * 100) /100+'</span><span class="postershare">马上邀请<span></p>'
+
+                }
+                $('#datalist').append(listhtml);
+                loading = true;
+                if (len < 10) {
+                    var html2 = ' ';
+                    html2 += "<div class='lasttitle'>暂无更多课程</div>";
+                    $api.append($api.byId('datalist'), html2);
+                    loading = false;
+
+                }
+
+            }
+        });
+    }
+    //明细
+    function bonuslog() {
+        api.openWin({
+            name: 'bonuslog',
+            url: './bonuslog.html',
+            pageParam: {
+            },
+            bgColor: 'rgba(0,0,0,0)',
+            animation: {
+                type: 'none'
+            }
+        })
+    }
+
+    //分享海报
+    function poster(classroomid,objecttype) {
+        api.openWin({
+            name: 'poster',
+            url: './poster.html',
+            pageParam: {
+                id: classroomid,
+                objecttype:objecttype
+            },
+            animation: {
+                type: 'none'
+            }
+        });
+    }
+
+    $('.tab').click(function () {
+        $('.tab').removeClass('active');
+        $(this).addClass('active');
+        $('#datalist').html(' ')
+        page = 1;
+        loadlist();
+    })
+</script>
+
+</html>

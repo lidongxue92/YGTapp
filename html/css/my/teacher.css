@@ -1,0 +1,33 @@
+.middle{margin-top: 70px;}
+.middle .headpic{display: flex;font-size: 14px;background: #fff;padding: 30px 10px;}
+.middle .headpic img{width: 80px;height: 80px;border-radius: 50%;margin-left: 30px;}
+.middle .headpic .left{margin-left: 20px;margin-top: 10px;}
+.middle .headpic .left .Settled{border: 1px solid #ff9913;padding: 5px 15px;border-radius: 30px;margin-top: 10px;color: #ff9913;display: inline-block;text-align: center;}
+.middle .headpic .left .personal{text-align: left;margin-top: 10px;color: #666;}
+.middle .headpic .left .personal img{width: 20px;height: auto;margin-left: 0}
+.middle .list{background: #fff;margin-top: 10px;padding: 10px;color: #666;font-size: 12px;}
+.middle .list div {text-align: center;width: 32%;display:none;padding: 10px 0;}
+.middle .list div img{width: 30px;}
+.middle .list div p{margin-top: 10px;}
+.middle .Datatoday{margin-top: 10px;background: #fff;color: #333;display: none;}
+.middle .Datatoday .title{padding-left: 10px;line-height: 40px;position: relative;font-weight: normal;font-size: 14px;border-bottom: 1px solid #eee;}
+.middle .Datatoday .title:after{height: 20px;width: 3px;background: #ff9913;left: 0;position: absolute;content: '';top: 10px;}
+.middle .Datatoday .livelist{padding: 5%;color: #999;display: flex;}
+.middle .Datatoday .livelist div{margin-left: 15px;}
+.middle .Datatoday .livelist div h5{font-size: 16px;color: #333;font-weight: normal;margin-top: 20px;}
+.middle .Datatoday .grop{float: right;margin-right: 10px;color: #ff9913}
+.middle .Datatoday div img{width: 60px;border-radius: 50%;height: 60px;}
+.middle .headpic .left .Settled{display: none}
+@media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+  .middle{margin-top: 90px;}
+
+}
+/* xr */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) {
+  .middle{margin-top: 90px;}
+
+}
+/* xs max */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) {
+  .middle{margin-top: 90px;}
+}

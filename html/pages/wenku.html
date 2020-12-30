@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>文库</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/base.css" />
+    <link rel="stylesheet" type="text/css" href="../css/ygtcommon.css" />
+    <link rel="stylesheet" type="text/css" href="../css/swder.css" />
+    <link rel="stylesheet" href="../css/index/wenku.css">
+</head>
+<body ontouchstart>
+    <header id='header' class="top">
+        <h1>
+            <img onclick="api.closeWin()"  src="../img/back_light.png">
+            <span  class="title">文库</span>
+        </h1>
+    </header>
+      <div class="tabtop" id="allive">
+        <h5>
+          <p class="serach"><input type="search" placeholder="请输入搜索关键字"/>
+            <!-- <span class="toserach">搜索</span> -->
+          </p>
+        </h5>
+        <ul class="selectab">
+            <li class="alllist active">全部</li>
+        </ul>
+        <div class="seleclist">
+
+        </div>
+      </div>
+      <div id="Tolist" >
+          <!--<div class="list" onclick="tishi();" >
+              <div class="left"><img src="http://img1.hmwis.com/memberuploads/2020/09/26/jw43XQNXJE.jpg"><img class="icon" src="../img/pdf.png"></div>
+              <div class="right">
+                  <h5 class="title">测试测试测试测试测试测试</h5>
+                  <p class="mt">上传于2020-08-27 15:21:12</p>
+                  <p>下载0次</p>
+              </div>
+          </div>
+          <div class='lasttitle'>已无更多数据</div>-->
+      </div>
+    <div class="loading">
+        <span>
+            <img src="../img/loading.gif" />
+        </span>
+    </div>
+    <script src="../js/lib/jquery-2.1.4.js"></script><script src="../js/common.js"></script>
+    <script type="application/javascript" src="../js/lib/fastclick.js"></script>
+    <script type="text/javascript" src="../script/api.js"></script>
+    <script type="text/javascript">
+        var apihost = $api.getStorage('apihost');
+        if (apihost == undefined || apihost == '') {
+            apihost = 'http://member.ygt.cm';
+            $api.setStorage('apihost', apihost);
+        }
+        var ygtuserinfo = $api.getStorage('ygtuserinfo');
+        var page = 1;
+        var pagesize = 4;
+        var loading = false;
+        var isover = false;
+        var isvip = '';
+        apiready = function() {
+            var header = $api.byId('header');
+            $api.fixStatusBar(header);
+            //  禁止左右滑动
+            api.setWinAttr({
+                slidBackEnabled : false
+            });
+            //  禁止左右滑动
+            $('.active').attr('data-type')
+            api.addEventListener({
+                name:'scrolltobottom',
+                extra:{
+                    threshold:0            //设置距离底部多少距离时触发，默认值为0，数字类型
+                }
+            }, function(ret, err){
+                if (loading || isover) {return;}
+                page++; //页数
+                loadData();
+            });
+            checkvip();
+            classifiedsearch();
+        }
+      //数据
+      function  loadData(typeid,sontypeid){
+        loading = true;
+        if ($('.serach input').val() !='') {
+            title = $('.serach input').val();
+        }else{
+            title =''
+        }
+        api.ajax({
+                url: wenkuurl +'wkfile/getList',
+                method: 'post',
+                headers: {
+                    'TOKEN':ygtuserinfo.token
+                },
+                data: {
+                    values: {
+                      uid: ygtuserinfo.uid,
+                      page: page,
+                      pagesize: '20',
+                      title:title,
+                      typeid:typeid,
+                      sontypeid:sontypeid
+                    }
+                }
+            },function(ret, err) {
+              $('.loading').hide();
+                if (ret) {
+                    console.log(JSON.stringify(ret));
+                    if (ret.data.result.length > 0) {
+                        var len = ret.data.result.length;
+                        var html = '';
+                        for (var i = 0; i < len; i++) {
+                          if (isvip == 1) {
+                            html += '<div class="list" onclick="wenkudetail('+ ret.data.result[i]['id'] + ');" >'
+                          }else{
+                            html += '<div class="list" onclick="tishi();" >'
+                          }
+                          html += '<div class="left"><img src="' + ret.data.result[i]['thumb'] + '"><img class="icon" src="../img/pdf.png"></div>' +
+                              '<div class="right">' +
+                              '<h5 class="title">' + ret.data.result[i]['title'] + '</h5>'
+                              html +='<p class="mt">上传于'+format(ret.data.result[i]['create_time']*1000)+'</p>'
+                              html +='<p>下载'+ret.data.result[i]['downcount']+'次</p>'
+                              html += '</div>' +
+                              '</div>';
+                        }
+                        $api.append($api.byId('Tolist'), html);
+                        if (len < 10) {
+                            var html2 = ' ';
+                            html2 += "<div class='lasttitle'>已无更多数据</div>";
+                            $api.append($api.byId('Tolist'), html2);
+                            isover = true;
+                        }
+                  }else{
+                    var html2 = ' ';
+                    html2 += "<div class='lasttitle'>已无更多数据</div>";
+                    $api.append($api.byId('Tolist'), html2);
+                    isover = true;
+                  }
+                  api.refreshHeaderLoadDone();
+                  loading = false;
+              }
+            });
+      }
+      //打开单课音频
+      function wenkudetail(id) {
+        api.openWin({
+            name: 'wenkudetail',
+            url: './wenkudetail.html',
+            pageParam: {
+                id: id
+            },
+            animation: {
+                type: 'none'
+            },
+            reload: true
+        });
+
+      }
+      //首页
+      function index() {
+          api.addEventListener({
+              name:'viewdisappear'
+          }, function(ret, err){
+             api.closeWin();
+          });
+          api.openWin({
+              name: 'root',
+              url: '../index.html',
+              pageParam: {
+                  name: 'test'
+              },
+              bgColor: 'rgba(0,0,0,0)',
+              animation: {
+                  type: 'none'
+              }
+          })
+      }
+      // 时间戳转日期
+      function add0(m){return m<10?'0'+m:m };
+      function format(shijianchuo){
+          //shijianchuo是整数，否则要parseInt转换
+          var time = new Date(shijianchuo);
+          var y = time.getFullYear();
+          var m = time.getMonth()+1;
+          var d = time.getDate();
+          var h = time.getHours();
+          var mm = time.getMinutes();
+          var s = time.getSeconds();
+          return y+'-'+add0(m)+'-'+add0(d)+' '+add0(h)+':'+add0(mm)+':'+add0(s);
+      }
+      // 模糊查询
+    //   $('.toserach').click(function(){
+    //     $('#Tolist').html('');
+    //     page = 1;
+    //     loadData()
+    // })
+
+    // 查询是否是会员
+    function checkvip() {
+      api.ajax({
+          url:wtkurl +'classroom/checkvip',
+          method: 'post',
+          headers: {
+              'TOKEN': ygtuserinfo.token
+          },
+          data: {
+              values: {
+                  uid: ygtuserinfo.uid,
+                  listid:5
+              },
+          }
+      },function(ret, err){
+        console.log(JSON.stringify(ret));
+        console.log(JSON.stringify(err));
+          if (ret) {
+            $('.loading').show();
+            isvip = ret.data.isvip
+            loadData()
+          }
+      });
+    }
+    // 提示
+    function tishi(){
+      api.alert({
+             title: '温馨提示',
+             msg:'只有会员才可以看文档详情，请购买会员',
+             buttons:['确认']
+        },function(ret,err,message){
+          if (ret.buttonIndex == 1) {
+            api.openWin({
+                name: 'vipsure',
+                url: './vipsure.html',
+                pageParam: {
+                    name: 'test'
+                },
+                animation: {
+                    type: 'none'
+                }
+            });
+          }
+        })
+    }
+    // 键盘
+    $(document).keyup(function(event){
+    if(event.keyCode ==13){
+      $('#Tolist').html('');
+      $('#Tolist').css('top','175px')
+      $('.seleclist span').removeClass('active');
+      $('.selectab li').removeClass('active');
+      $('.seleclist').html('')
+      loading = false;
+      isover = false;
+      page = 1;
+      loadData()
+      $('html,body').animate({scrollTop: 0});
+    }
+  });
+
+  // 二级联动
+  function classifiedsearch(){
+    var selecthtml = '';
+    var seleclisthtml ='';
+    var selectlist = [
+        {'selectvalue':'courseware','selectname':'课件','selectarry':['服务','质量','绩效','运营','认证']},
+        {'selectvalue':'form','selectname':'表单','selectarry':['服务','质量','绩效','运营','认证']},
+        {'selectvalue':'system','selectname':'制度','selectarry':['服务','质量','绩效','运营','认证']},
+        {'selectvalue':'policy','selectname':'政策','selectarry':['政策']}
+    ]
+    for (var i = 0; i < selectlist.length; i++) {
+        selecthtml +='<li datatype= 1'+i+' datavalue="'+selectlist[i].selectvalue+'">'+selectlist[i].selectname+'</li>'
+    }
+    $('.selectab').append(selecthtml);
+    $('.selectab li').click(function(){
+        $('.selectab li').removeClass('active');
+        $(this).addClass('active');
+        seleclisthtml = '';
+        $('.seleclist').html('')
+        for (var i = 0; i < selectlist.length; i++) {
+            if ($(this).attr('datavalue') == selectlist[i].selectvalue) {
+                for (var a = 0; a < selectlist[i].selectarry.length; a++) {
+                    seleclisthtml +='<span valueid="100'+(a+1)+'">'+selectlist[i].selectarry[a]+'</span>'
+                }
+                $('#Tolist').css('top','235px')
+            }
+        }
+
+        $('.seleclist').append(seleclisthtml)
+    })
+  }
+  $('.seleclist').on("click",' span',function(){
+      typeid = $('.selectab .active').attr('datatype')
+      sontypeid = $(this).attr('valueid');
+      $('.seleclist span').removeClass('active')
+      $(this).addClass('active');
+      console.log('fu'+typeid +'z子'+sontypeid)
+      if (typeid != '' && sontypeid !='') {
+        console.log('分类搜索')
+        $('#Tolist').html('');
+
+        page = 1;
+        loading = true;
+        isover = true;
+        loadData(typeid,sontypeid);
+      }
+
+  });
+  $('.alllist').click(function(){
+      $('#Tolist').html('');
+      $('#Tolist').css('top','175px')
+      page = 1;
+      loading = true;
+      loadData();
+  })
+    </script>
+</body>
+
+</html>

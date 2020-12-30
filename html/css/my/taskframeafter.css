@@ -1,0 +1,6 @@
+.Datatoday .homeafter{padding: 10px 20px;border-bottom: 1px dotted #ddd;position: relative;}
+.Datatoday .homeafter h5{font-size: 16px;font-weight: normal;width: 96%;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;padding: 0;}
+.Datatoday .homeafter p{font-size: 13px;color: #999}
+.Datatoday .homeafter .scroe{color: #ff9913;}
+.Datatoday .homeafter img{position: absolute;width: 10px;height: auto;right: 15px;top: 42%;}
+.lasttitle { text-align: center; color: #999; margin-top: 20px; padding-bottom: 10px; }

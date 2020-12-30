@@ -1,0 +1,324 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>线上课</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../css/base.css" />
+    <link rel="stylesheet" type="text/css" href="../css/ygtcommon.css" />
+    <link rel="stylesheet" href="../css/index/specialcolumn.css">
+</head>
+<body>
+    <!-- 头部 -->
+    <header class="top" id="header">
+        <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span class="title" ></span>
+            <!-- <span class='titleright' onclick="openLive();">直播间</span> -->
+        </h1>
+    </header>
+    <!-- 中间切换tab -->
+    <div class="middletab" id="headernav">
+        <span class="tab active tab1" onclick="openList(0, this);">
+            <p>全部</p>
+        </span>
+        <span class="buth" onclick="nav();">
+            <img src="../img/back_light.png" />
+        </span>
+    </div>
+    <div class="hidenav" id="hidenav">
+        <span class="tab active tab1" onclick="openList(0, this);">
+            <p>全部</p>
+        </span>
+        <span class="buth" onclick="closenav();">
+            <img src="../img/back_light.png" />
+        </span>
+    </div>
+    <!--主要内容  -->
+    <section>
+
+    </section>
+    <!-- 底部导航栏 -->
+    <!-- <footer class="foot" id="footer">
+        <span class="tab" tapmode onclick="index()">
+            <img src='../img/home.png'/>
+            <p >首页</p>
+        </span>
+        <span class="tab">
+            <img src='../img/video_fill.png'/>
+            <p class='c-2577e3'>线上课</p>
+        </span>
+        <span class="tab" tapmode onclick="openclass()">
+            <img src='../img/fire.png'/>
+            <p>公开课</p>
+        </span>
+        <span class="tab" tapmode onclick="my()">
+            <img src='../img/people.png'/>
+            <p>我的</p>
+        </span>
+    </footer> -->
+</body>
+<script src="../js/lib/jquery-2.1.4.js"></script><script src="../js/common.js"></script>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = '';
+    var toph = 0;
+    var bottomh = 0;
+    var liveid = '';
+    apiready = function() {
+        //判断是否登录
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+        console.log(JSON.stringify(ygtuserinfo));
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled: false
+        });
+        // 设置状态栏
+        api.setStatusBarStyle({
+            style: 'dark'
+        });
+        // 获取类型
+        getteactype();
+        // 上拉刷新 滚动加载
+        liveid = api.pageParam.id;
+        var tourl = $api.getStorage('tourl');
+        if (liveid != 0 ) {
+            $('#headernav').hide();
+            toph = parseInt($api.offset($api.byId('header')).h)
+            $api.rmStorage('tourl')
+            classification = api.pageParam.classification;
+            //alert(classification);
+            $("#header .title").html(classification);
+        }else{
+            toph = parseInt($api.offset($api.byId('header')).h) + parseInt($api.offset($api.byId('headernav')).h);
+            $("#header .title").html('系列课');
+            liveid = 0;
+        }
+
+        api.openFrame({
+            name: 'specialcolumnframe',
+            url: './specialcolumnframe.html',
+            rect: {
+                marginLeft: 0, //相对父 window 左外边距的距离
+                marginTop: toph, //相对父 window 上外边距的距离
+                marginBottom: 0, //相对父 window 下外边距的距离
+                marginRight: 0
+            },
+            pageParam: {
+                name: 'test',
+                typeid:liveid
+            }
+        });
+
+
+        // 上拉刷新 滚动加载
+
+        //判断是否登录
+        if (!ygtuserinfo || !ygtuserinfo.id) {
+            api.openWin({
+                name: 'login',
+                url: '../login.html',
+                animation: {
+                    type: 'none'
+                }
+            });
+        }
+        //判断是否登录
+    };
+
+
+    function nav() {
+        $('#hidenav').show();
+        $('#headernav').addClass('sh')
+        $("#hidenav .tab").removeClass('active')
+        $('#hidenav .tab1').addClass('active')
+        toph = parseInt($api.offset($api.byId('header')).h) +parseInt($api.offset($api.byId('hidenav')).h);
+        api.closeFrame({
+            name: 'management'
+        });
+        api.closeFrame({
+            name: 'specialcolumnframe'
+        });
+        api.openFrame({
+            name: 'specialcolumnframe',
+            url: './specialcolumnframe.html',
+            rect: {
+                marginLeft: 0, //相对父 window 左外边距的距离
+                marginTop: toph, //相对父 window 上外边距的距离
+                marginBottom: bottomh, //相对父 window 下外边距的距离
+                marginRight: 0
+            },
+            pageParam: {
+                name: 'test',
+                typeid: '0'
+            }
+        });
+    }
+    function closenav() {
+        $('#hidenav').hide();
+        $('#headernav').removeClass('sh')
+        $('#headernav .tab1').addClass('active')
+        toph = parseInt($api.offset($api.byId('header')).h) + parseInt($api.offset($api.byId('headernav')).h);
+        api.closeFrame({
+            name: 'specialcolumnframe'
+        });
+        api.openFrame({
+            name: 'specialcolumnframe',
+            url: './specialcolumnframe.html',
+            rect: {
+                marginLeft: 0, //相对父 window 左外边距的距离
+                marginTop: toph, //相对父 window 上外边距的距离
+                marginBottom: bottomh, //相对父 window 下外边距的距离
+                marginRight: 0
+            },
+            pageParam: {
+                name: 'test',
+                typeid: '0'
+            }
+        });
+    }
+    function getteactype() {
+        api.ajax({
+            url: wtkurl +'classroom/getTeachType',
+            method: 'post',
+            headers: {
+                'TOKEN': ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    uid: ygtuserinfo.id
+                }
+            }
+        }, function(ret, err) {
+            console.log(JSON.stringify(ret));
+            if (ret) {
+                if (ret.code == 1) {
+                    var len = ret.data.result.length;
+                    var barhtml = '';
+                    for (var i = 0; i < len; i++) {
+                        barhtml += '<span class="tab" onclick="openList(' + ret.data.result[i]['id'] + ', this);">' +
+                            '<p>' + ret.data.result[i]['name'] + '</p>' +
+                            '</span>';
+                    }
+                    $api.append($api.byId('headernav'), barhtml);
+                    $api.append($api.byId('hidenav'), barhtml);
+                } else {
+                    alert('类型请求错误');
+                }
+
+            } else {
+                // alert( JSON.stringify( err ) );
+                alert(err.msg);
+            }
+        });
+
+    }
+    // 跳转全部直播间页面
+    function openLive() {
+        api.openWin({
+            name: 'lives',
+            url: './live2.html',
+            pageParam: {
+                name: 'test'
+            },
+            animation: {
+                type: 'none'
+            }
+        });
+
+    }
+
+    //直播页面详情跳转
+    function opnew(id) {
+        api.openWin({
+            name: 'classroom',
+            url: './classroom.html',
+            pageParam: {
+                name: 'test',
+                id: id
+            },
+            bgColor: 'rgba(0,0,0,0)',
+            animation: {
+                type: 'none'
+            }
+        })
+    }
+
+    function openguide(id) {
+        api.openWin({
+            name: 'guide',
+            url: './guide.html',
+            pageParam: {
+                name: 'test',
+                id: id
+            },
+            animation: {
+                type: 'none'
+            }
+        });
+    }
+    // 管理/护理课程
+    function openList(id, obj) {
+        api.closeFrame({
+            name: 'specialcolumnframe'
+        });
+        $api.removeCls($api.dom('.active'), 'active');
+        $("#hidenav .tab").removeClass('active')
+        $api.addCls(obj, 'active');
+        api.openFrame({
+            name: 'specialcolumnframe',
+            url: './specialcolumnframe.html',
+            rect: {
+                marginLeft: 0, //相对父 window 左外边距的距离
+                marginTop: toph, //相对父 window 上外边距的距离
+                marginBottom: bottomh, //相对父 window 下外边距的距离
+                marginRight: 0
+            },
+            pageParam: {
+                typeid: id
+            },
+            bounces: true,
+            vScrollBarEnabled: false,
+            hScrollBarEnabled: false
+        });
+
+    }
+    function goback() {
+        tourl = $api.getStorage('tourl')
+        if (tourl == 'audioclass') {
+            api.addEventListener({
+                name:'viewdisappear'
+            }, function(ret, err){
+               api.closeWin();
+            });
+            index();
+        }else{
+            api.closeWin();
+        }
+    }
+
+    //首页
+    function index() {
+        api.openWin({
+            name: 'root',
+            url: '../index.html',
+            pageParam: {
+                name: 'test'
+            },
+            bgColor: 'rgba(0,0,0,0)',
+            animation: {
+                type: 'none'
+            }
+        })
+    }
+</script>

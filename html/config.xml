@@ -1,0 +1,44 @@
+ <widget id="A6086234408520"  version="4.1.1">
+    <name>医管通</name>
+    <description>
+        Example For APICloud.
+    </description>
+    <author email="developer@apicloud.com" href="http://www.apicloud.com">
+        Developer
+    </author>
+    <content src="index.html" />
+    <access origin="*" />
+    <preference name="pageBounce" value="false"/>
+	<preference name="appBackground" value="rgba(0,0,0,0.0)"/>
+	<preference name="windowBackground" value="rgba(0,0,0,0.0)"/>
+	<preference name="frameBackgroundColor" value="rgba(0,0,0,0.0)"/>
+	<preference name="hScrollBarEnabled" value="false"/>
+	<preference name="vScrollBarEnabled" value="false"/>
+	<preference name="autoLaunch" value="true"/>
+	<preference name="fullScreen" value="false"/>
+	<preference name="autoUpdate" value="true" />
+	<preference name="smartUpdate" value="true" />
+	<preference name="debug" value="true"/>
+	<preference name="statusBarAppearance" value="true"/>    	<preference name="softInputMode" value="pan"/>
+	<permission name="readPhoneState" />
+	<permission name="camera" />
+	<permission name="record" />
+	<permission name="location" />
+	<permission name="fileSystem" />
+	<permission name="internet" />
+	<permission name="bootCompleted" />
+	<permission name="hardware" />    <access origin="*"/>    <!-- <preference name="customRefreshHeader" value="UIPullRefresh"/> -->    <!-- <preference name="backgroundMode" value="audio"/> -->  <feature name="wx">
+    <param name="urlScheme" value="wxb25e845c7f45c26e"/>
+    <param name="apiKey" value="wxb25e845c7f45c26e"/>
+    <param name="apiSecret" value="3a312676dfcac1c18a27565393c5cc71"/>
+  </feature>
+  <feature name="wxPay">
+    <param name="urlScheme" value="wxb25e845c7f45c26e"/>
+    <param name="apiKey" value="wxb25e845c7f45c26e"/>
+    <param name="apiSecret" value="3a312676dfcac1c18a27565393c5cc71"/>
+  </feature>
+  <feature name="ajpush">
+    <param name="app_key" value="2609b78c5b5565835fa968ba" />
+    <param name="channel" value="jisupeixun" />
+  </feature>
+</widget>

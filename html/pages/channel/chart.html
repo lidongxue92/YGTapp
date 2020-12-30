@@ -1,0 +1,181 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>医管通APP</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/ygtcommon.css">
+
+    <style type ="text/css">
+    .top .right {float: right;margin-right: 15px;}
+    .top .right img{width: 20px;}
+    .middle{text-align: center;margin-top: 90px;position: relative;}
+    .middle .list {overflow-y: scroll;}
+    .middle .list li{text-align: left;padding: 10px;display: flex;margin-bottom: 10px;}
+    .middle .list li .head{width: 40px;border-radius: 50%;height: 40px;}
+    .middle .list li div h5{padding-left: 10px;line-height: 15px;color: #999;font-weight: normal;}
+    .middle .list li div span{display: inline-block;color: #333;background-position: left;background: #eee;border-radius: 5px;margin-left: 10px;position: relative;padding: 5px;}
+    .middle .list li div span b{font-weight: normal;}
+    .middle .list li div span img{position: absolute;width: 10px;top: 3px;left: -9px;}
+    .middle .chart{width: 100%;line-height: 60px;height: 60px;background: #eee;}
+    .middle .chart input{width: 80%;background: #fff;border-radius: 30px;height: 40px;padding-left: 2%;}
+    .middle .chart img{width: 30px;}
+   </style>
+
+
+<body >
+    <header class="top" id="header">
+        <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span class="title"></span>
+
+        </h1>
+    </header>
+    <div class="middle">
+         <ul class="list">
+             <!-- <li>
+                 <img class="head" src="../img/noavatar1.png" />
+                 <div>
+                     <h5>医管通小师妹</h5>
+                     <span>
+                         <img class="dialogue" src="../img/dialogue1.png" />
+                         <b>
+                             事实上帝豪斯很低很低很低的黑丝都是到时候ID熟地黄东四环四十多哈迪斯会底很多四十度hi大时代hi是的换地说道嘶吼声的士速递hi很低是滴是滴十滴水
+                         </b>
+                    </span>
+                 </div>
+             </li>
+             <li>
+                 <img class="head" src="../img/noavatar1.png" />
+                 <div>
+                     <h5>医管通小师妹</h5>
+                     <span>
+                         <img class="dialogue" src="../img/dialogue1.png" />
+                         <b>
+                             事实上帝豪斯很低很低很低的黑丝都是到时候ID熟地黄东四环四十多哈迪斯会底很多四十度hi大时代hi是的换地说道嘶吼声的士速递hi很低是滴是滴十滴水
+                         </b>
+                    </span>
+                 </div>
+             </li> -->
+         </ul>
+        <div class="chart">
+            <input class="chartcontent"  />
+            <img class="send" onclick='sendMsg()' src="../img/go.png" />
+        </div>
+    </div>
+</body>
+<script src="../js/lib/jquery-2.1.4.js"></script><script src="../js/common.js"></script>
+<script type="application/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+        //  禁止左右滑动
+        $api.fixStatusBar(header);
+        api.addEventListener({name: 'viewappear'}, function(ret, err){
+               loaddata();
+         })
+         $('.title').html(api.pageParam.title)
+         var h = $(window).height()-90-60
+         $('.list').css('height',h)
+    };
+
+
+    function loaddata() {
+        api.ajax({
+            url: wtkurl +'classroom/getchatlist',
+            method: 'post',
+            headers: {
+                'TOKEN':ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    classroomid: api.pageParam.chartid,
+                    time: parseInt(new Date().getTime()/1000),
+                    posarg: '1',
+                    page: 1,
+                    isall: 1,
+                    object_type:2,
+                    uid:ygtuserinfo.id
+                },
+            }
+        }, function(data, err) {
+            console.log(JSON.stringify(data));
+            var charthtml = '';
+            if (data.data != '') {
+                var chartlist = data.data
+                for (var i = 0; i < chartlist.length; i++) {
+                    charthtml +='<li><img class="head" src="'+chartlist[i].pic+'" />'+'<div><h5>'+chartlist[i].username+'</h5>'+'<span><img class="dialogue" src="../img/dialogue1.png" />'+
+                                '<b>'+chartlist[i].content['content']+'</b></span>'+'</div></li>'
+                }
+                $('.middle .list').append(charthtml);
+            } else {
+                console.log('接口错误信息getchatlist：');
+                console.log(JSON.stringify(err));
+            }
+        });
+    }
+
+
+    //发送消息
+    function sendMsg() {
+        api.ajax({
+            url: wtkurl +'classroom/sendMsg',
+            method: 'post',
+            headers: {
+                'TOKEN':ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    classroomid: api.pageParam.chartid,
+                    groupid:api.pageParam.groupid,
+                    content:$('.chartcontent').val(),
+                    objectName:'RC:TxtMsg',
+                    object_type:2,
+                    uid:ygtuserinfo.id
+                },
+            }
+        }, function(data, err) {
+            //alert(JSON.stringify(data));
+            if (data) {
+                $('.chartcontent').val('');
+                if (data.code == 1) {
+                    $('.middle .list').html('');
+                    loaddata()
+                }
+            } else {
+                console.log('接口错误信息getchatlist：');
+                console.log(JSON.stringify(err));
+            }
+        });
+    }
+    // 设置群资料
+    function chartdetail() {
+        api.openWin({
+          name: 'chartdetail',
+          url: './chartdetail.html',
+          bgColor: 'rgba(0,0,0,0)',
+          animation:{
+            type:'none'
+          }
+        })
+    }
+</script>
+
+</html>

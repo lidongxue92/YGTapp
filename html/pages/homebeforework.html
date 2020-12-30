@@ -1,0 +1,222 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>课前作业</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/ygtcommon.css">
+    <link rel="stylesheet" href="../css/index/homebeforework.css">
+<body >
+    <header class="top" id="header">
+        <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span class="title">课前作业</span>
+        </h1>
+    </header>
+    <div class="middle">
+        <div class="nodata">
+            <img src="../img/homework.png" />
+            <p>还没有布置作业哦~</p>
+        </div>
+        <div class="ex">
+            <h5 class="infor">wdrewrewrewrwer</h5>
+            <p class="content">sdfdsfdsfdsfdsfsdfsdfdsfs</p>
+            <p class="button" onclick="comment()">写作业</p>
+        </div>
+        <div class="editwork">
+          <h5>答：</h5>
+          <textarea class="ediranswer" ></textarea>
+          <p class="button" onclick="editwork()">提交</p>
+       </div>
+    </div>
+    <div class="answer">
+      <div class="answertoast">
+        <textarea class="answerdec" placeholder="请输入答案"></textarea>
+        <span class="subth" onclick="subth()">提交</span>
+        <span class="cancl" onclick="cancl()">取消</span>
+      </div>
+    </div>
+    <div class="loading">
+        <span>
+            <img src="../img/loading.gif" />
+        </span>
+    </div>
+</body>
+<script src="../js/lib/jquery-2.1.4.js"></script><script src="../js/common.js"></script>
+<script type="application/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    var questiontitle = '';
+    var questionid = '';
+    var listtitle = '';
+    var answerid= '';
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        var header = $api.byId('header');
+        var wh = $(window).height();
+        $('.answer').css('height',wh);
+        $api.fixStatusBar(header);
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+        //  禁止左右滑动
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+        $('.loading').show();
+        api.addEventListener({name: 'viewappear'}, function(ret, err){
+            $('.answerlist').html('');
+            Arrangement();
+         })
+    };
+    function Arrangement() {
+        api.ajax({
+            url: wtkurl +'classroomlist/getTaskByClassroomid',
+            method: 'post',
+            headers: {
+                'TOKEN':ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    classroomid:api.pageParam.id,
+                    uid:ygtuserinfo.id
+                },
+            }
+        }, function(data, err) {
+            console.log(JSON.stringify(data));
+            if (data.data.length >0) {
+              $('.middle .nodata').css('display','none')
+              $('.middle .ex .infor').html(data.data[0].question)
+              $('.middle .ex .content').html(data.data[0].note)
+              questiontitle = data.data[0].question;
+              questionid = data.data[0].id;
+              api.ajax({
+                  url: wtkurl +'classroomlist/getMyAnswersByquestionid',
+                  method: 'post',
+                  headers: {
+                      'TOKEN':ygtuserinfo.token
+                  },
+                  data: {
+                      values: {
+                          questionid:questionid,
+                          uid:ygtuserinfo.id
+                      },
+                  }
+              }, function(ret, err) {
+                console.log(JSON.stringify(ret));
+                if (ret.data.length > 0) {
+                    $('.middle .ex .button').css('display','none')
+			        		  answerid = ret.data[0].id
+			        		  $('.work .button').hide();
+			        		  $('.editwork textarea').val(ret.data[0].answers)
+			        	}else{
+			        		$('.editwork').hide();
+			        	}
+              });
+              $('.loading').hide();
+            }else{
+              $('.loading').hide();
+              $('.middle .nodata').css('display','block');
+              $('.middle .ex').css('display','none');
+              $('.middle .editwork').css('display','none');
+              $('.middle .answer').css('display','none');
+            }
+        });
+    }
+    function comment() {
+      $('.answer').css('display','block')
+    }
+    // 关闭答题框
+    function cancl() {
+      $('.answer').css('display','none')
+    }
+    // 提交答案
+    function subth() {
+      //alert(questionid+'&emsp;'+$('.answerdec').val()+'&emsp;'+questiontitle+'&emsp;'+ygtuserinfo.id)
+      if ($('.answerdec').val() != '') {
+        api.ajax({
+            url:apihost +  wtkurl +'classroomlist/createAnswer',
+            method: 'post',
+            headers: {
+                'TOKEN':ygtuserinfo.token
+            },
+            data: {
+                values: {
+                    uid:ygtuserinfo.id,
+                    questionid:questionid,
+      	            answer:$('.answerdec').val(),
+      	            atitle:questiontitle
+                },
+            }
+        },function(ret, err){
+            if (ret) {
+                // alert( JSON.stringify( ret.msg ) );
+                api.alert({
+                    title: '提示',
+                    msg:ret.msg,
+                }, function(ret, err){
+                    if( ret ){
+                         api.closeWin();
+                    }
+                });
+
+            } else {
+                alert( JSON.stringify( err ) );
+            }
+        });
+
+      }else{
+        api.alert({
+            title: '提示',
+            msg:'答案不能为空',
+        }, function(ret, err){
+            if( ret ){
+
+            }
+        });
+      }
+    }
+    // 修改作业答案
+    function editwork() {
+      //alert(answerid+'&emsp;'+$('.ediranswer').val()+'&emsp;'+questiontitle+'&emsp;'+ygtuserinfo.id)
+      api.ajax({
+          url:wtkurl +'classroomlist/editAnswer',
+          method: 'post',
+          headers: {
+              'TOKEN':ygtuserinfo.token
+          },
+          data: {
+              values: {
+                answerid:answerid,
+                atitle:questiontitle,
+                answer:$('.ediranswer').val(),
+                uid:ygtuserinfo.id
+              },
+          }
+      },function(ret, err){
+          if (ret) {
+            api.alert({
+                title: '提示',
+                msg:ret.msg,
+            }, function(ret, err){
+                if( ret ){
+                     api.closeWin();
+                }
+            });
+          } else {
+              console.log( JSON.stringify( err ) );
+          }
+      });
+    }
+</script>
+
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>直播间</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/base.css" />
+
+    <link rel="stylesheet" type="text/css" href="../../css/ygtcommon.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/swder.css" />
+    <link rel="stylesheet" href="../../css/my/myquestion.css">
+</head>
+<body ontouchstart>
+    <header id='header' class="top">
+        <h1>
+            <img onclick="api.closeWin()"  src="../../img/back_light.png">
+            <span  class="title">我的问题</span>
+        </h1>
+    </header>
+      <div id="Tolist" >
+          <!-- <div class="list">
+              <img src="../img/classroom.jpg" />
+              <div class="right">
+                  <h5 class="title">88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888</h5>
+                  <p>2019-08-05</p>
+                  <p>2019-08-05</p>
+              </div>
+          </div>
+          <div class="list">
+              <img src="../img/classroom.jpg" />
+              <div class="right">
+                  <h5 class="title">88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888</h5>
+                  <p>2019-08-05</p>
+                  <p>2019-08-05</p>
+              </div>
+          </div>
+          <div class='lasttitle'>已无更多数据</div> -->
+      </div>
+    <div class="bg"></div>
+    <div class="loading">
+        <span>
+            <img src="../../img/loading.gif" />
+        </span>
+    </div>
+    <script src="../../js/lib/jquery-2.1.4.js"></script><script src="../../js/common.js"></script>
+    <script type="application/javascript" src="../../js/lib/fastclick.js"></script>
+    <script type="text/javascript" src="../../script/api.js"></script>
+    <script type="text/javascript">
+        var apihost = $api.getStorage('apihost');
+        if (apihost == undefined || apihost == '') {
+            apihost = 'http://member.ygt.cm';
+            $api.setStorage('apihost', apihost);
+        }
+        var ygtuserinfo = $api.getStorage('ygtuserinfo');
+        var page = 1;
+        var pagesize = 10;
+        var loading = false;
+        var isover = false;
+        var knowtablist = $api.getStorage('knowtablist');
+        console.log(knowtablist)
+        apiready = function() {
+            var header = $api.byId('header');
+            $api.fixStatusBar(header);
+            //  禁止左右滑动
+            api.setWinAttr({
+                slidBackEnabled : false
+            });
+            //  禁止左右滑动
+            api.addEventListener({
+                name:'scrolltobottom',
+                extra:{
+                    threshold:0            //设置距离底部多少距离时触发，默认值为0，数字类型
+                }
+            }, function(ret, err){
+                if (loading || isover) {return;}
+                page++; //页数
+                loadData();
+            });
+            $('.loading').show();
+            api.addEventListener({name: 'viewappear'}, function(ret, err){
+                loading = false;
+                isover = false;
+                page = 1;
+                $api.html($api.byId('Tolist'), '');
+                loadData();
+             });
+
+        }
+      //数据
+      function  loadData(){
+        loading = true;
+        api.ajax({
+                url: askurl +'Question/getMyQuestion',
+                method: 'post',
+                headers: {
+                    'TOKEN':ygtuserinfo.token
+                },
+                data: {
+                    values: {
+                        page: page,
+                        pagesize: pagesize,
+                        uid: ygtuserinfo.uid
+                    }
+                }
+            },function(ret, err) {
+                if (ret) {
+                    $('.loading').hide();
+                    console.log(JSON.stringify(ret));
+                    if (ret.data.result.length > 0) {
+                        var len = ret.data.result.length;
+                        var html = '';
+                        for (var i = 0; i < len; i++) {
+                          if (ret.data.result[i]['answercount'] == 0) {
+                            html += '<div class="list" onclick="knowdetail('+ ret.data.result[i]['id'] + ');" >'
+                          }else{
+                            html += '<div class="list active" onclick="knowdetail('+ ret.data.result[i]['id'] + ');" >'
+                          }
+                          html +='<div class="left"><img src="' + ret.data.result[i]['avatar'] + '">'+
+                                  '<div class="right"><p> '+ret.data.result[i]['username']+'</p><p>'+format(ret.data.result[i].create_time*1000).split(' ')[0]+'</p></div>'+
+                                '</div>'
+                          html +='<div><h5 class="title">'+ret.data.result[i]['title']+'</h5>'+'<p>'
+                          html +='<span>'+knowtablist[ret.data.result[i].typeid -1]+'</span><span class="icon"></span>'+'<span>'+ret.data.result[i].followcount+'人收藏</span>'
+                                +'<span class="icon"></span><span>'+ret.data.result[i].topcount+'人推荐</span>'
+                                +'</div><img class="hadimg" src="../../img/had.png"></div>'
+                        }
+                        $api.append($api.byId('Tolist'), html);
+                        $('.loading').hide();
+                        if (len < 10) {
+                            var html2 = ' ';
+                            html2 += "<div class='lasttitle'>已无更多数据</div>";
+                            $api.append($api.byId('Tolist'), html2);
+                            isover = true;
+                        }
+                        api.refreshHeaderLoadDone();
+                    }else{
+                      var html2 = ' ';
+                      html2 += "<div class='lasttitle'>已无更多数据</div>";
+                      $api.append($api.byId('Tolist'), html2);
+                      isover = true;
+                    }
+                  loading = false;
+              }
+            });
+      }
+      //打开单课音频
+      function knowdetail(id) {
+        api.openWin({
+            name: 'knowdetail',
+            url: '../knowdetail.html',
+            pageParam: {
+                id: id
+            },
+            animation: {
+                type: 'none'
+            },
+            reload: true
+        });
+
+      }
+
+      // 时间戳转日期
+        function add0(m){return m<10?'0'+m:m };
+        function format(shijianchuo){
+            //shijianchuo是整数，否则要parseInt转换
+            var time = new Date(shijianchuo);
+            var y = time.getFullYear();
+            var m = time.getMonth()+1;
+            var d = time.getDate();
+            var h = time.getHours();
+            var mm = time.getMinutes();
+            var s = time.getSeconds();
+            return y+'-'+add0(m)+'-'+add0(d)+' '+add0(h)+':'+add0(mm)+':'+add0(s);
+        }
+    </script>
+</body>
+
+</html>

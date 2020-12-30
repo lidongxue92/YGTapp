@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1,IE=edge">
+  <title>行程住宿</title>
+   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <!--此页面不会被浏览器缓存-->
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Cache-Control" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <!--此页面不会被浏览器缓存END-->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="/app/framework/css/light7.min.css">
+    <link rel="stylesheet" type="text/css" href="/images/icon/iconfont.css">
+    <link rel="stylesheet" href="/app/framework/swiper.min.css" type="text/css">
+    <link rel="stylesheet" href="/app/framework/newapp.css" type="text/css">
+</head>
+<body>
+
+<div class="page-group">
+<!-- page 容器 -->
+<div class="page" id="scheduling">
+ <!-- 标题栏 -->
+  <header class="bar bar-nav">
+    <a class="icon iconfont icon-shangyiye2 pull-left back" href='/app/class/scheduling.html'></a>
+     <h1 class='title'>出行住宿</h1>
+  </header>
+  <!-- 这里是页面内容区 -->
+  <div class="content" style="margin: 0.5rem;">
+  <div class="list-block">
+    <ul style="border-radius: 3px;">
+      <!-- Switch (Checkbox) -->
+      <li>
+        <div class="item-content">
+          <div class="item-inner">
+            <div class="item-title label">是否接送：</div>
+            <div class="item-input">
+              <label class="label-switch"  style="float: right;">
+                <input id="scheduling_jiesong" type="checkbox" checked="checked">
+                <div class="checkbox"></div>
+              </label>
+            </div>
+          </div>
+        </div>
+      </li>
+      <li class="jiesongzhan">
+        <div class="item-content">
+          <div class="item-inner">
+           <div class="item-title label"  style=" color:#39f;">
+               <select id="jiezhan">
+                <option value ="0">接站点</option>
+              </select><input type="text" placeholder="车次或航班" id="starttime-checi" value="" style="width: 4rem;float:  left;font-size: 13px;">
+            </div>
+            <div class="item-input">
+
+                <input type="text" placeholder="接站日期" value=""  id='starttime-picker'  style="font-size:14px">
+            </div>
+          </div>
+        </div>
+      </li>
+      <li class="jiesongzhan">
+        <div class="item-content">
+          <div class="item-inner">
+            <div class="item-title label" style=" color:#39f;">
+              <select id="songzhan">
+               <option value ="0">送站点</option>
+             </select><input type="text" placeholder="车次或航班" id="endtime-checi" value="" style="width: 4rem;float:  left;font-size: 13px;">
+           </div>
+            <div class="item-input" >
+                <input type="text" placeholder="送站日期" value=""  id='endtime-picker'  style="font-size:14px">
+            </div>
+          </div>
+        </div>
+      </li>
+
+    </ul>
+    <ul style="border-radius: 3px;margin-top:.5rem;">
+    <li>
+        <div class="item-content">
+          <div class="item-inner">
+            <div class="item-title label"  style="font-size:14px">是否食宿：</div>
+            <div class="item-input">
+              <label class="label-switch" style="float: right;">
+                <input type="checkbox" id="scheduling_shisu"  style="font-size:14px">
+                <div class="checkbox"></div>
+              </label>
+            </div>
+          </div>
+        </div>
+      </li>
+      <li class="align-top shisuanpai">
+        <div class="item-content">
+          <div class="item-inner">
+              <textarea id="shisubeizhu"  placeholder="再此填写食宿备注，例如：忌口、回民等" style="font-size:14px"></textarea>
+          </div>
+        </div>
+      </li>
+    </ul>
+     <ul style="border-radius: 3px; margin-top:.5rem;">
+         <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title label" style=" color:#39f;">住宿地址：</div>
+                <div class="item-input" id="zhusufangjian">
+                    未分配
+                </div>
+              </div>
+            </div>
+          </li>
+     </ul>
+  </div>
+   <div class="content-block" style=" padding:0;">
+    <p><a href="#" class="button button-fill" onclick="schedulingsave()" style=" height:2rem; line-height:2rem;">提交 </a></p>
+   </div>
+</div>
+</div>
+<!-- popup, panel 等放在这里 -->
+<div class="panel-overlay"></div>
+
+<script src="/app/framework/js/jquery-1.10.2.min.js" type="text/javascript"></script>
+<script type='text/javascript' src='/app/framework/js/light7.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='/app/framework/js/i18n/cn.min.js'></script>
+<script type='text/javascript' src='/app/framework/swiper.min.js' charset='utf-8'></script>
+<script type='text/javascript' src='/app/class/scheduling.js' charset='utf-8'></script>
+<script>
+  $.config = {
+    autoInit: true //no recommend
+  }
+  $.init();
+</script>
+
+</body>
+</html>

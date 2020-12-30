@@ -1,0 +1,28 @@
+.middle{margin-top: 80px;}
+.middle h5{padding: 10px 0;background: #fff;}
+.middle em{font-style: normal;color:#ddd;}
+.middle .tab{display: inline-block;margin: 0 20px;color:#666;font-weight: normal;padding: 5px 0;font-size: 14px;}
+.middle .active{color:#ff9913;border-bottom: 1px solid #ff9913;}
+.middle .datalist{margin-top: 10px;background: #fff;padding: 15px;background: #f8f8f8;padding-top:0;}
+.middle .datalist .title{text-align: center;background: #f8f8f8;position: relative;top: 20px;display: none;}
+.middle .datalist li{padding: 10px;list-style: none;background: #fff;border-radius: 5px;margin-top: 10px;}
+.middle .datalist li img{width: 60px;border-radius: 50%;}
+.middle .datalist li  h5{margin:0;padding: 0;white-space: nowrap;text-overflow: ellipsis;overflow: hidden;font-size:14px }
+.middle .datalist li  p{font-size: 13px;color:#999;line-height: 25px;min-height: 25px;}
+.middle .datalist li  p .right{float: right}
+.middle .datalist li .money{float:right;position: relative;top: 15px;}
+.middle .datalist li .money em{color:#ff9913;}
+.lasttitle{text-align: center;color: #999;margin-top: 10px;padding-bottom: 20px;background: #fff;padding-top: 20px;}
+@media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+  .middle{margin-top: 90px;}
+
+}
+/* xr */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) {
+  .middle{margin-top: 90px;}
+
+}
+/* xs max */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) {
+  .middle{margin-top: 90px;}
+}

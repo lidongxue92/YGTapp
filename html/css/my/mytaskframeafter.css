@@ -1,0 +1,13 @@
+.middle .nodata{text-align: center;top: 50px;position: relative;display: none}
+.middle .nodata img{width: 60px;}
+.middle .nodata p{color: #999;line-height: 30px;font-size: 12px;}
+.middle .Datatoday{background: #fff}
+.middle .Datatoday img{width: 40px;border-radius: 50%;height: 40px;margin-top: 10px;}
+.middle  .Datatoday{margin-top: 10px;}
+.middle  .Datatoday .work{padding: 10px;border-bottom: 1px dotted #ddd;position: relative;}
+.middle  .Datatoday .work h5{color: #666;font-size: 16px;margin-bottom: 5px;width: 90%;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+.middle  .Datatoday .work p{color: #666;font-size: 12px;line-height: 20px;}
+.middle  .Datatoday .work  .c-ff9913{color: #ff9913}
+.middle  .Datatoday .work .classname{width: 90%;white-space: nowrap;text-overflow: ellipsis;overflow: hidden;}
+.middle  .Datatoday .work img{width: 10px;height: auto;position: absolute;right: 15px;top: 30%}
+.lasttitle{text-align: center;color: #999;margin-top: 20px;margin-bottom: 20px;background: #f8f8f8;}

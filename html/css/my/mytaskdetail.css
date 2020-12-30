@@ -1,0 +1,41 @@
+body{padding: 10px;width: calc(100% - 20px);position: relative;}
+.work{text-align: center;}
+body .worktitle{background: #fff;position: relative;}
+body .worktitle h5{line-height: 40px;font-weight:normal;font-size: 16px;background:#fff;margin-bottom: 10px;text-align: left;width: 81%;
+  text-overflow: ellipsis;white-space:nowrap;overflow: hidden;}
+body .worktitle .score{position:absolute;right: 30px;top: 8px;color: #ff9913;font-size:20px;font-weight: 900;}
+.middle{margin-top: 70px;}
+.dec{font-size: 14px}
+.dec li{list-style: none;color: #666;background:#fff;padding:15px 0 0 0;text-align: left;}
+.dec li img{width: 60%;display: block;}
+.dec li p{line-height: 30px;padding: 0 15px;}
+.dec li p .radio{width:12px;height:12px;border-radius: 50%;border: 1px solid #999;display: inline-block;position: relative;top: 3px;margin-right: 10px;}
+.dec .check p .radio{border-radius:3px;}
+.dec li .active .radio{border:1px solid #ff9913;}
+.dec li .active .radio .seclected{position: absolute;width:8px;height: 8px;background:#ff9913;border-radius: 50%;left: 2px;top: 2px;}
+.dec .check p .radio .seclected{position: absolute;width:90%;background:url('../../img/selectedactive.png');border-radius: 50%;left:5%;top: 2px;background-size: 100%;}
+.dec li .red{background:#ab2000;}
+.dec li .red img{float:right;width: 20px;position:relative;top: 5px;}
+.dec li .green{background: #257505;color: #fff}
+.dec li .green img{float:right;width: 20px;position:relative;top: 5px;}
+.dec li p span{color: #fff;}
+/*课前作业*/
+.question{font-size:18px;color: #333;font-weight:900;}
+.dec li .myanswer{border-top: 1px dotted #ddd;padding: 10px 15px;}
+.dec li .username{border-top: 1px dotted #ddd;text-align: right;}
+@media screen and (min-width: 800px){
+    .dec li img{width: 20%;display: block;}
+}
+@media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+  .middle{margin-top: 90px;}
+
+}
+/* xr */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) {
+  .middle{margin-top: 90px;}
+
+}
+/* xs max */
+@media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) {
+  .middle{margin-top: 90px;}
+}

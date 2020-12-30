@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1,IE=edge">
+    <title>首页</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <!--此页面不会被浏览器缓存-->
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Cache-Control" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <!--此页面不会被浏览器缓存END-->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="../res/css/light7.min.css">
+    <link rel="stylesheet" type="text/css" href="../res/icon/iconfont.css">
+    <link rel="stylesheet" href="../res/swiper.min.css" type="text/css">
+    <link rel="stylesheet" href="../res/css/light7-swiper.css" type="text/css">
+    <link rel="stylesheet" href="../css/ypynewapp.css" type="text/css">
+    <link rel="stylesheet" href="../css/newapp.css" type="text/css">
+    <link rel="stylesheet" type="text/css" href="../res/styleApp.css">
+
+</head>
+<style>
+    .ypytitle{line-height: 2.2rem;font-size: .85rem;text-align: center;position:fixed;background: #f8f8f8;width: 100%;z-index: 111111;top: -10px;margin-top: 40px;}
+    .ypyclose{
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        color: #fff;
+        font-size: 12px;
+        z-index: 111;
+        width: 1rem;
+        height: 1rem;
+        background: url(../img/ypyclose.png);
+        background-size: 100%;
+    }
+    /* x xs */
+    @media only screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) {
+       .ypytitle{margin-top: 40px;}
+    }
+    /* xr */
+  @media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) {
+      .ypytitle{margin-top: 40px;}
+  }
+  /* xs max */
+  @media only screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) {
+      .ypytitle{margin-top: 40px;}
+  }
+</style>
+<body>
+
+    <div class="page-group">
+        <!-- 工具栏 -->
+        <nav class="bar bar-tab">
+            <a class="tab-item no-transition active" onClick="gohome()">
+                <span class="icon iconfont icon-shouyeshouye2"></span>
+                <span class="tab-label">首页</span>
+            </a>
+            <a class="tab-item no-transition" onclick="openURL('/html/peixun/course.html',true)">
+                <span class="icon iconfont icon-monikaoshi"></span>
+                <span class="tab-label">选课中心</span>
+            </a>
+            <a class="tab-item no-transition" onclick="openURL('/html/peixun/train.html',true)">
+                <span class="icon iconfont icon-artboard38"></span>
+                <span class="tab-label">学习任务</span>
+            </a>
+            <a class="tab-item no-transition" onclick="openURL('/html/peixun/buylist.html',true)">
+                <span class="icon iconfont icon-qiye"></span>
+                <span class="tab-label">我的班级</span>
+            </a>
+            <!--  <a class="tab-item no-transition" onclick="openURL('/html/interlocution/spectailcolnum.html',true)">
+      <span class="icon iconfont icon-25"></span>
+      <span class="tab-label">问答</span>
+    </a>-->
+            <a class="tab-item no-transition" onclick="openURL('/html/geren/index.html',true)">
+                <span class="icon iconfont icon-05lianxiren"></span>
+                <span class="tab-label">个人中心</span>
+            </a>
+        </nav>
+
+        <!-- page 容器 -->
+        <div class="page" id="newhome" style="margin-top:80px; height:100%">
+            <div class="ypytitle">
+                <span class="ypyclose" onclick="closeypy()"></span>
+                医培云
+            </div>
+            <!-- 这里是页面内容区 -->
+            <div class="content pull-to-refresh-content">
+                <div class="pull-to-refresh-layer">
+                    <div class="preloader"></div>
+                    <div class="pull-to-refresh-arrow"></div>
+                </div>
+                <div class="swiper-container" style="height:230px; text-align: center; ">
+
+                    <div class="swiper-wrapper" id="appad">
+                        <div class="swiper-slide"><img src="framework/czb/banner-1.png" height="180" alt=""></div>
+                    </div>
+                    <div class="swiper-pagination"></div>
+                </div>
+                <div class="newhome_menu">
+                    <div class="newhome_menu_icon"><a onclick="openURL('/html/peixun/course.html',false)"><span><img src="framework/czb/icon-1.png"></span>课程中心</a></div>
+                    <div class="newhome_menu_icon"><a onclick="openURL('/html/peixun/train.html',false)"><span><img src="framework/czb/icon-2.png"></span>学习任务</a></div>
+                    <!-- <div class="newhome_menu_icon"><a onclick="openlive()"><span><img src="framework/czb/icon-3.png"></span>直播课程</a></div> -->
+                    <div class="newhome_menu_icon"><a onclick="openURL('/html/peixun/buylist.html',false)"><span><img src="framework/czb/icon-6.png"></span>我的班级</a></div>
+                    <div class="newhome_menu_icon"><a onclick="openURL('/html/peixun/questionnaire.html',false)"><span><img src="framework/czb/icon-4.png"></span>问卷调研</a></div>
+                    <!-- <div class="newhome_menu_icon"><a onclick="saomiao()"><span><img src="framework/czb/icon-5.png"></span>扫码签到</a></div> -->
+
+                    <!-- <div class="newhome_menu_icon" style="position: relative"><a onclick="xiaoxizhongxinopen()"><span><img src="framework/czb/icon-7.png"></span>消息中心</a>
+                        <span id="Tmessagesnumber" class="badge" style="position: absolute;top:0;right:18px;background: red;font-size: .6rem;min-width: .8rem;height: .8rem; width:.8rem; overflow: hidden;line-height: .8rem;text-align:center;padding:0; color: white; display:none ">1</span></div>
+                    <div class="newhome_menu_icon"><a onclick="openURL('/html/class/helplist.html',false)"><span><img src="framework/czb/icon-8.png"></span>使用帮助</a></div> -->
+
+
+                </div>
+                <div class="newhome_newlist" style="">
+                    <div class="newlist_title">公告</div>
+                    <div class="newlist_text" id="rollText">
+                        <div>
+                            <a href="#">暂无公告</a><br />
+                        </div>
+                    </div>
+                    <div class="newlist_more"><a href="#" onclick="openURL('/html/class/notice.html',true)">更多</a></div>
+                </div>
+                <div class="content-block" style="margin: 0.25rem 0; padding: 0;">
+                    <h4 onclick="openURL('/html/geren/studyhistory.html',true)"><span>最近学习</span></h4>
+                    <div class="row" id="xuexilishi">
+                        <center>正在查询中</center>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style=" position: absolute; top:30%; width:100%; text-align:center;" id="loading">
+            <center><img src="../images/loading_more.gif" /><br />正在载入</center>
+        </div>
+    </div>
+    <!-- popup, panel 等放在这里 -->
+    <div class="panel-overlay"></div>
+    <!--这是班级动态详情，和公告的弹框-->
+    <div class="popup popup-services" style="z-index:999999">
+        <a class="pull-right close-popup" data-popup=".popup-services" style="padding: .5rem;" onclick="">
+            <i class="iconfont">&#xe6b9;</i>
+        </a>
+        <div class="content-block" style=" margin-top:2.5rem;">
+            <p style=" text-align:center;" class="msg_title"></p>
+            <p style=" text-align:right;">
+                <a class="msg_date"></a>
+            </p>
+            <p class="msg_content" style="white-space: pre;white-space: pre-wrap;word-wrap: break-word;"></p>
+            <p class="msg_button_baoming close-popup" data-popup=".popup-services" style=" display:none;">
+                <a href="#" class="button button-fill" style="height: 1.5rem;line-height: 1.5rem;">立即报名 </a>
+            </p>
+        </div>
+    </div>
+    <div class="popup popup-interlocution2">
+        <header class="bar bar-nav">
+            <button class="button button-link button-nav pull-right close-popup" onclick="">
+    <i class="iconfont">&#xe6b9;</i>
+  </button>
+            <h1 class='title'>提问</h1>
+        </header>
+        <div class="content" style="background-color: #eee;    padding-top: 1rem;">
+            <div class="list-block">
+                <ul style="border-top:0;">
+                    <!-- Text inputs -->
+                    <li>
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title label">标题：</div>
+                                <div class="item-input">
+                                    <input id="tanchuangtitle2" type="text" placeholder="请输入标题名称">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="align-top">
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title label">内容：</div>
+                                <div class="item-input">
+                                    <textarea id="tanchuangcontent2" placeholder="请输入内容"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="align-top">
+                        <div class="item-content">
+                            <div class="item-inner">
+                                <div class="item-title label">上传附件</div>
+                                <div class="item-input">
+                                    <button class="button pull-right" style="margin: .5rem 0;" onclick="checkFile('FjButton1')">选择</button>
+                                    <span class="questionFJ1"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <form id="upload" enctype="multipart/form-data" method="post" style="z-index: 999;position: fixed;right: 0.8rem;width: 2.5rem;overflow: hidden;margin-top: -2rem;opacity: 0;">
+                <input type="file" name="file" id="FjButton1" onchange="uploadFj2('FjButton1')" />
+            </form>
+            <div class="content-block">
+                <p><a class="button button-fill" style="height: 1.8rem;line-height: 1.8rem; background:red;" onclick="addQuestion1()">提交 </a></p>
+            </div>
+        </div>
+    </div>
+    <script src="../res/zepto.min.js" type="text/javascript"></script>
+    <script type='text/javascript' src='../res/js/light7.min.js' charset='utf-8'></script>
+    <script type='text/javascript' src='../res/js/i18n/cn.min.js'></script>
+    <script type='text/javascript' src='../res/swiper.min.js' charset='utf-8'></script>
+    <!--<script type='text/javascript' src='../res/js/light7-swiper.js' charset='utf-8'></script>-->
+    <script src="../res/js/jquery-1.10.2.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src='../res/pdf2/Base64.js' charset='urf-8'></script>
+    <!--<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=83f0062b970c05a64e80e0a93a5cbb21"></script>-->
+    <script type='text/javascript' src="../res/config.js"></script>
+    <script type="text/javascript" src='../res/common.js' charset='urf-8'></script>
+    <script type="text/javascript" src='../res/HomeApiReady.js' charset='urf-8'></script>
+
+    <script src="../res/icon/iconfont.js" type="text/javascript"></script>
+
+    <script type='text/javascript' src="geren/index.js"></script>
+    <script type='text/javascript' src="geren/jifen.js"></script>
+    <script type='text/javascript' src="geren/paiming.js"></script>
+    <script type='text/javascript' src="interlocution/interlocution.js"></script>
+    <script type='text/javascript' src="peixun/buylist.js"></script>
+    <script type='text/javascript' src="peixun/train.js"></script>
+    <script type='text/javascript' src="peixun/course.js"></script>
+    <!--<script type='text/javascript' src="peixun/detail.js"></script>-->
+    <script type='text/javascript' src="../res/AppStudy.js"></script>
+    <script type='text/javascript' src="peixun/questionnaire.js"></script>
+    <script type='text/javascript' src="class/notice.js"></script>
+    <script type='text/javascript' src="class/kaoqin.js"></script>
+    <script type='text/javascript' src="class/baodao.js"></script>
+    <script type='text/javascript' src="class/help.js"></script>
+    <script type='text/javascript' src='class/classdynamics.js' charset='utf-8'></script>
+    <script type='text/javascript' src="wenjian/index.js"></script>
+    <script type='text/javascript' src="../script/chatroom.js"></script>
+    <script type='text/javascript' src="honor/honor.js"></script>
+
+
+    <script type='text/javascript' src="../res/player/cyberplayer.js"></script>
+    <script>
+        $.config = {
+            autoInit: true //no recommend
+        }
+        var fanzhuan; //循环反转
+
+        function openURL(url, bol, replace) {
+            clearInterval(fanzhuan);
+            if (replace == undefined) {
+                replace = false;
+            } else {
+                replace = true;
+            }
+            $.router.loadPage(api.wgtRootDir + url, bol, replace);
+        }
+        $(function() {
+
+            //禁止回退会登录页
+            if (window.history && window.history.pushState) {　　
+                $(window).on('popstate', function() {　　
+                    window.history.pushState('forward', null, '#');　　
+                    window.history.forward(1);　　
+                });　　
+            }　　
+            window.history.pushState('forward', null, '#'); //在IE中必须得有这两行
+            　　
+            window.history.forward(1);
+
+
+            document.getElementById('loading').style.display = 'none';
+
+
+            setTimeout(function() {
+                loadpagebind();
+            }, 200);
+
+        })
+
+        function loadpagebind() {
+            $.showPreloader();
+            sysUserInfo = getUserInfo();
+            console.log(JSON.stringify(sysUserInfo));
+            if (sysUserInfo == null) {
+
+                window.location = "../ypylogin.html";
+                return false;
+            }
+            var UserOrgInfoObj = GetlocalStorage("UserOrgInfoObj");
+
+            var CurrentOrgid = ""; //企业ID
+            if (UserOrgInfoObj != null) {
+                CurrentOrgid = UserOrgInfoObj.organization_ID + "";
+            }
+            if (sysUserInfo != null) {
+                CurrentOrgid = sysUserInfo.organization_ID + "";
+            }
+            //******************************广告载入********************************************//
+            var homead = "";
+            getAjax(javaserver + "/advertisement/findAppAdvert", {
+                orgid: CurrentOrgid,
+                number: 10
+            }, function(data) {
+                data = strToJson(data);
+                if (data.errorcode == "0") {
+                    $.each(data.datas, function(i, item) {
+                        if (item.advertisementPosition == "1") { //欢迎页
+                            //  huanyingad = item.advertisementPath;
+                        } else {
+                            //console.log('AD:'+item.advertisementPath);
+                            homead += "<div class=\"swiper-slide\"><img src=\"" + item.advertisementPath + "\" alt=\"" + item.advertisementName + "\" height='180'></div>";
+                        }
+                    });
+                    if (homead != "") {
+                        //  console.log("AD:"+homead);
+                        $("#appad").html(homead);
+                    }
+                    //载入轮播
+                    var swiper = new Swiper('.swiper-container', {
+                        height: 180,
+                        autoplay: true,
+                        pagination: {
+                            el: '.swiper-pagination',
+                        }
+                    });
+                }
+            });
+            //*********************************广告结束***************************************************//
+            //*********************************公告结束***************************************************//
+            getAjax(javaserver + "/Operate/findStudentNotice", {
+                orgid: CurrentOrgid,
+                pageSize: 5
+            }, function(rs) {
+
+                rs = eval("(" + rs + ")");
+                if (rs.errorcode == "0") {
+                    var noticeStr = "";
+
+                    if (rs.datas.length > 0) {
+
+                        for (var i = 0; i < rs.datas.length; i++) {
+
+                            // console.log(JSON.stringify(rs.datas[i].noticeId));
+                            var obj = rs.datas[i];
+                            //try{
+                            var jinji = "",
+                                jinjitext = "";
+
+                            if (obj.pubCritical) {
+                                //console.log(JSON.stringify(obj));
+                                jinji = "style='color:Red'";
+                                jinjitext = "[紧急]";
+                            }
+                            if (obj.pubTitle.length > 13) {
+                                obj.pubTitle = obj.pubTitle.substring(0, 13) + '..'
+                            }
+                            noticeStr += "<a href='#' " + jinji + " onClick=\"getnoticeinfo('" + obj.noticeId + "','" + obj.pubTitle + "','" + escape(obj.pubContent) + "','" + obj.pubDate + "')\" >" + jinjitext;
+                            noticeStr += "                        " + obj.pubTitle + "";
+                            noticeStr += "                </a><br />";
+                            //}catch(e){
+                            //continue;
+                            //}
+                        }
+                    } else {
+                        noticeStr += "暂无公告";
+                    }
+                    $("#rollText div").html(noticeStr);
+
+                    //新闻翻转
+                    $("#rollText div").each(function(aindex) {
+                        var diva = $(this).find("a");
+                        var index = 0;
+                        if (diva.length > 2) {
+                            console.log('开始反转初始化!----');
+                            if (fanzhuan != undefined) {
+                                clearInterval(fanzhuan);
+                            }
+                            fanzhuan = setInterval(function() {
+                                //console.log(aindex);
+                                if (diva.length - 1 > index) {
+                                    index++;
+                                    jq("#rollText div").eq(aindex).animate({
+                                        "top": -25 * index + "px"
+                                    });
+                                } else {
+                                    index = 0;
+                                    jq("#rollText div").eq(aindex).animate({
+                                        "top": -25 * index + "px"
+                                    });
+                                }
+                                console.log('反转啦!----');
+                            }, 4000);
+                        }
+                    });
+                }
+            });
+
+            //*********************************公告结束***************************************************//
+
+            //************************************学习记录**************************************************//
+
+            getAjax(javaserver + "/exampaper/studyCourseTopThree", {
+                userid: sysUserInfo.user_ID,
+                pageSize: 6
+            }, function(data) {
+
+                data = strToJson(data);
+                if (data.errorcode == 0) {
+                    var block = "";
+                    if (data.datas.length > 0) {
+                        for (var i = 0; i < data.datas.length; i++) {
+                            if (data.datas[i].courseImg.indexOf("http") == -1) {
+                                data.datas[i].courseImg = staticimgserver + data.datas[i].courseImg;
+                            }
+                            //console.log(JSON.stringify(data.datas[i]));
+                            var jindu = "<div class=\"card-footer\"><div class=\"jindutiao\"><div class=\"jindu\" style=\"width: " + data.datas[i].learningProgress + ";background-color: #39f\"></div></div></div>";
+                            block += "<div class=\"col-50\"><div class=\"card\"><a href='#' onClick=\"openKe_collection('" + data.datas[i].courseId + "'," + null + ",'" + data.datas[i].arrangeId +
+                                "')\"><div valign=\"bottom\" class=\"card-header color-white no-border no-padding\"><img src='" + data.datas[i].courseImg +
+                                "' class=\"card-cover\"  ></div><div class='card-content'><div class='card-content-inner'><p style='white-space:nowrap;word-break:break-all;'>" + data.datas[i].courseName + "</p></div></div>" + jindu +
+                                "</div></a></div>";
+                        }
+
+                        if (block != "") {
+                            $("#xuexilishi").html(block);
+                        } else {
+                            $("#xuexilishi").html("<center><br />暂无学习记录</center>");
+                        }
+                    } else {
+                        $("#xuexilishi").html("<center><br />暂无学习记录</center>");
+                    }
+                } else if (data.errorcode == 35) {
+
+                    window.location = "../ypylogin.html";
+                } else {
+                    $("#xuexilishi").html("<center><br />[" + data.errorcode + "]" + data.errormsg + "</center>");
+                }
+                $.hidePreloader();
+            }, function(err) {
+                //alert("x");
+                $("#xuexilishi").html("<center><br />查询失败</center>");
+                $.hidePreloader();
+            });
+            //************************************学习记录结束**************************************************//
+
+            //*********************************未读动态消息中心数两***************************************************//
+            getAjax(javaMsg + "/MessageCenter/findUnreadNun", {
+                    recipientId: sysUserInfo.user_ID
+                },
+                function(data) {
+                    //alert(data);
+                    data = strToJson(data);
+                    if (data.errorcode == "0") {
+                        if (data.data > 0) {
+                            if (data.data > 99) {
+                                data.data = 99;
+                            }
+                            $("#Tmessagesnumber").text(data.data).show();
+                        } else {
+                            $("#Tmessagesnumber").hide();
+                        }
+                        $.hidePreloader();
+                    }
+
+                },
+                function(err) {
+                    $("#Tmessagesnumber").hide();
+                    $.hidePreloader();
+                });
+            //*********************************动态菜单结束***************************************************//
+
+
+        }
+        //下啦刷新
+        $(document).on('refresh', '.pull-to-refresh-content', function(e) {
+            $.toast('刷新成功！');
+            loadpagebind();
+            $.pullToRefreshDone('.pull-to-refresh-content');
+        });
+
+        function xiaoxizhongxinopen() {
+            $("#Tmessagesnumber").hide();
+            openURL('/html/class/classdynamics.html', false);
+        }
+
+        function openlive() {
+            clearInterval(fanzhuan);
+            api.openWin({
+                name: 'livelist',
+                url: 'livelist.html'
+            });
+        }
+
+        function gohome() {
+            $.router.loadPage("#newhome", true);
+            loadpagebind();
+        }
+
+        $(document).on("pageInit", function(e, pageId, $page) {
+            console.log(pageId);
+        });
+
+        function closeypy() {
+            api.closeToWin({
+                name: 'root'
+            });
+
+            api.openWin({
+                name: 'root',
+                url: './index.html',
+                pageParam: {
+                    name: 'test'
+                },
+                bgColor: 'rgba(0,0,0,0)',
+                reload:true,
+                animation: {
+                    type: 'none'
+                }
+            })
+        }
+    </script>
+
+</body>
+
+</html>

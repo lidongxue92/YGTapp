@@ -1,0 +1,24 @@
+{
+    "code": 1,
+    "msg": "查询成功",
+    "time": "1586500535",
+    "data": [{
+        "id": 15,
+        "classroom_id": 406,
+        "classroom_name": "等待布置不管是不规范是办公发生变更方式办公方式表示该的方式",
+        "teacher_id": 0,
+        "teacher_name": "",
+        "list_id": 4,
+        "list_title": "微吐课测试号",
+        "uid": 6,
+        "pic": "http://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTI8AVbIyeXhYpUialibvo2BhMzJnmI6msgQZwDhkicHiaibUsP1qMOTnIiaS23yAQsN1D6THSGicaCGibiazGQ/132",
+        "username": "🌲Aily🌲🍒",
+        "question": "vfdavfda",
+        "note": "vfsavdsaaddad111111111111111111111111111111",
+        "answernum": 1,
+        "topnum": 0,
+        "create_time": 1575022706,
+        "update_time": "2019-11-29 18:19:56"
+    }]
+}
+at homebeforework.html: 122

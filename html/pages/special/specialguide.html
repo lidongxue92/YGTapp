@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>专栏引导页</title>
+    <link rel="stylesheet" href="../../css/base.css">
+    <link rel="stylesheet" href="../../css/ygtcommon.css">
+    <link rel="stylesheet" href="../../css/special/specialguide.css">
+    <script src="../../js/lib/jquery-2.1.4.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../script/api.js"></script>
+</head>
+
+<body class="wkshow" data-url='Specialguide'>
+    <header class="top" id="header">
+        <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span class="title">课程详情</span>
+            <span class="share"  id="share"></span>
+            <span class="distribution" id="sharepromotion">
+                分享赚￥1117.33
+                <img src="../../img/icontop.png">
+            </span>
+        </h1>
+    </header>
+    <div class="banner">
+        <img id="bannerimg" src="" />
+    </div>
+    <section id="section">
+        <div class="freelist" id="freelist">
+            <span class="Limit">￥<b>19.9</b></span>
+            <span class="oldprice">
+                <b class="price">￥19.9</b>
+                <b class="freebth">限时免费</b>
+            </span>
+            <div class="right">
+                <b>距离活动结束仅剩</b>
+                <p id="divname"><span id="countdown"></span></p>
+            </div>
+        </div>
+        <ul class="attributes">
+
+            <li>
+                <h1 id="titleh1"></h1></li>
+            <li class="price" id='coursepricehide'><b id="courseprice"></b></li>
+            <li class="people" id="people">&ensp;<span id="classroomusercounts"></span></li>
+
+        </ul>
+
+    </section>
+    <div class="middle">
+        <h5>
+            <span class="tab tab2 active" onclick="classlistadd();">课程列表</span>
+            <span class="tab tab1 " onclick="introdivadd();">课程详情</span>
+        </h5>
+        <div class="class" id="introdiv">
+            <p class="introp"></p>
+        </div>
+
+        <div class="classlist" id="classlist">
+            <h5 class="title">+ len[i].name + </h5>
+            <!-- <ul>
+            <li class="active"><p class="videodetail" activeid ="' + activeid + '" classtype ="' + ret.data.info.type + '"><span class="title"> +
+                prename + </span><span> + coursename + </span><span class="listen">试听</span></p><img class="status" src="../../img/less.png" ></li></ul>; -->
+        </div>
+        <span class="creatwork" onclick="creatwork()">布置课前作业</span>
+    </div>
+    <div class="dev">
+        <!-- 直播间头像 -->
+        <img src="" id="listimg" />
+        <div class="right">
+            <!-- 直播间名称 -->
+            <h5 id="listname"></h5>
+            <span><b id="listfollowcount"></b></span>
+        </div>
+        <span class="button" isfollow=0 id="followbutton">关注</span>
+    </div>
+    <footer class="footer" id="footer">
+
+        <p class="buyone" onclick="order(this);"><b class="buy"></b></p>
+        <p class="buyall" onclick="order(this);">
+            <span class="big"></span>
+        </p>
+    </footer>
+    <div class='sharetoast'>
+        <h5>邀请好友一起来听课吧~</h5>
+        <ul>
+            <li id='share_friend' onclick="sharefriend();">
+                <a href="javascript:void(0)" id="shareFriends">
+                    <img src="../../img/frend.png" />
+                    <p>微信好友</p>
+                </a>
+            </li>
+            <li id="share" onclick="sharefriends();">
+                <a href="javascript:void(0)" id="shareCFriends">
+                    <img src="../../img/frends.png" />
+                    <p>朋友圈</p>
+                </a>
+            </li>
+            <li id="share_poster">
+                <a href="javascript:void(0)" id="Invitation">
+                    <span class="msg">高收益</span>
+                    <img src="../../img/Invitation.png" />
+                    <p>邀请卡</p>
+                </a>
+            </li>
+        </ul>
+        <p id='opentool'>取消
+            <p>
+    </div>
+    <div class="bg" id="bg"></div>
+    <div class="loading">
+        <span>
+            <img src="../../img/loading.gif" />
+        </span>
+    </div>
+    <script type="application/javascript" src="../../js/lib/fastclick.js"></script>
+    <script type="text/javascript">
+        //开课倒计时
+        var interval = 1000;
+        var specialid = 0;
+        var starttime = '0';
+        var endtime = '0';
+        var now = '0';
+        var limitend = '';
+        var systemtype = '';
+        var iswxpay = $api.getStorage('iswxpay');
+        var apihost = $api.getStorage('apihost');
+        if (apihost == undefined || apihost == '') {
+            apihost = 'http://trade.ygt.cm';
+            $api.setStorage('apihost', apihost);
+        }
+        var ygtuserinfo = '';
+        var sharetitle = '';
+        var sharedesc = '';
+        var shareicon = '';
+        var shareurl = '';
+
+        var clasroominfo = '';
+        var listid = '';
+        var livserstaus = '';
+        var isygtlist = '';
+        apiready = function() {
+            $('.loading').show();
+            var header = $api.byId('header');
+            $api.fixStatusBar(header);
+            systemtype = api.systemType;
+            specialid = api.pageParam.id;
+            ygtuserinfo = $api.getStorage('ygtuserinfo');
+            //  禁止左右滑动
+            api.setWinAttr({
+                slidBackEnabled: false
+            });
+
+            api.addEventListener({
+                name: 'viewappear'
+            }, function(ret, err) {
+                loadguideData();
+            });
+
+            // 付费入场
+            $(".loading").show();
+        }
+
+        // 判断是否是自己的直播间
+        function payenter(obj) {
+            console.log(obj);
+            specialid = api.pageParam.id;
+            var wx = api.require("wx");
+            wx.isInstalled(function(ret, err) {
+                if (ret.installed) {
+                    api.ajax({
+                        url: wtkurl + 'special/buyspecialinfo',
+                        method: 'post',
+                        headers: {
+                            'TOKEN': ygtuserinfo.token
+                        },
+                        data: {
+                            values: {
+                                uid: ygtuserinfo.id,
+                                classroomid: specialid,
+                            }
+                        }
+                    }, function(ret, err) {
+                        if (ret) {
+
+                            console.log(JSON.stringify(ret));
+                            var wxPay = api.require("wxPay");
+                            wxPay.payOrder({
+                                apiKey: ret.data.appid,
+                                orderId: ret.data.prepayid,
+                                mchId: ret.data.partnerid,
+                                nonceStr: ret.data.noncestr,
+                                timeStamp: ret.data.timestamp,
+                                package: ret.data.package,
+                                sign: ret.data.sign
+                            }, function(payret, payerr) {
+                                if (payret.status) {
+
+                                    api.openWin({
+                                        name: 'classroom',
+                                        url: './classroom.html',
+                                        pageParam: {
+                                            id: specialid
+                                        }
+                                    });
+
+                                } else {
+                                    if (payerr.code == -2) {
+                                        api.toast({
+                                            msg: '您取消了支付！',
+                                            duration: 3000,
+                                            location: 'middle'
+                                        });
+                                    } else {
+                                        $api.toast('警告', '支付失败', 5000);
+                                    }
+                                }
+                            });
+
+                        } else {
+                            alert(JSON.stringify(err) + 'sssss');
+                            console.log(JSON.stringify(err));
+                        }
+                    });
+                } else {
+                    //alert('当前设备未安装微信客户端');
+                }
+            });
+
+
+
+        }
+        // 付费入场
+        function passenter(obj) {
+            //api.toast({msg:'您取消了支付！', duration:3000, location:'middle'});
+            var code = $api.val($api.byId('checkcode'));
+            if (code == '') {
+                $api.byId('checkcode').focus();
+                return false;
+            }
+            specialid = api.pageParam.id;
+            api.ajax({
+                url: wtkurl + 'classroom/secret',
+                method: 'post',
+                headers: {
+                    'TOKEN': ygtuserinfo.token
+                },
+                data: {
+                    values: {
+                        key: code,
+                        classroomid: specialid,
+                        uid: ygtuserinfo.id
+                    }
+                }
+            }, function(ret, err) {
+                if (ret) {
+                    console.log(JSON.stringify(ret))
+                    if (ret.code == 1) {
+                        api.openWin({
+                            name: 'classroom',
+                            url: '../classroom.html',
+                            pageParam: {
+                                id: specialid
+                            }
+                        });
+
+                    } else {
+                        api.toast({
+                            msg: ret.msg,
+                            duration: 3000,
+                            location: 'middle'
+                        });
+                        //$.toast(ret.msg, 'forbidden');
+                    }
+                    // alert( JSON.stringify( ret ) );
+                } else {
+                    // alert( JSON.stringify( err ) );
+                    api.toast({
+                        msg: ret.msg,
+                        duration: 3000,
+                        location: 'middle'
+                    });
+                    //$.toast(err.msg, 'forbidden');
+                }
+            });
+
+
+        }
+
+        //var leftsecond = parseInt(starttime)-parseInt(now);
+
+        function ShowCountDown(leftsecond, divname) {
+            var cc = document.getElementById(divname);
+            var day1 = Math.floor(leftsecond / (60 * 60 * 24));
+            var hour = Math.floor((leftsecond - day1 * 24 * 60 * 60) / 3600);
+            var minute = Math.floor((leftsecond - day1 * 24 * 60 * 60 - hour * 3600) / 60);
+            var second = Math.floor(leftsecond - day1 * 24 * 60 * 60 - hour * 3600 - minute * 60);
+            //leftsecond--;
+            if (day1 > 0) {
+                cc.innerHTML = "<i>" + day1 + "</i>天<i>" + hour + "</i>时<i>" + minute + "</i>分<i>" + second + "</i>秒";
+            } else if (hour > 0) {
+                cc.innerHTML = "<i>" + hour + "</i>时<i>" + minute + "</i>分<i>" + second + "</i>秒";
+            } else if (minute > 0) {
+                cc.innerHTML = "<i>" + minute + "</i>分<i>" + second + "</i>秒";
+            } else if (second > 0) {
+                cc.innerHTML = "<i>" + second + "</i>秒";
+            } else {
+                cc.innerHTML = '活动已结束';
+                return;
+            }
+        };
+        var inter = '';
+        // 数据
+        function loadguideData() {
+            api.ajax({
+                    url: wtkurl + 'special/guide',
+                    method: 'post',
+                    headers: {
+                        'TOKEN': ygtuserinfo.token
+                    },
+                    data: {
+                        values: {
+                            id: specialid,
+                            uid: ygtuserinfo.id
+                        }
+                    }
+                }, function(ret, err) {
+                    console.log('special gudie data:');
+                    console.log(JSON.stringify(ret));
+                    console.log(JSON.stringify(err));
+                    $(".loading").hide();
+                    if (ret) {
+                        if (ret.code == 1) {
+                            clasroominfo = ret.data.info;
+                            listid = ret.data.listinfo.id;
+                            if (ret.data.titles == undefined || ret.data.titles == '') {
+                                sharetitle = ret.data.info.name;
+                                shareurl = 'http://trade.ygt.cm/index/special/guide?id=' + specialid;
+                                shareicon = ret.data.info.smeta;
+                            } else {
+                                sharetitle = ret.data.titles.title;
+                                shareurl = ret.data.titles.shareurl;
+                                shareicon = ret.data.titles.description;
+                            }
+
+                            if (ret.data.info.pic != '') {
+                                $api.attr($api.byId('bannerimg'), 'src', ret.data.info.pic);
+
+                            } else {
+                                $api.attr($api.byId('bannerimg'), 'src', '../../img/classroom.jpg');
+
+                            };
+                            // alert(ret.data.info.pic);
+                            // 专栏名称
+                            $api.html($api.byId('titleh1'), ret.data.info.name);
+                            // 学习专栏人数
+                            if (ret.data.learncount > 300) {
+                                $api.html($api.byId('classroomusercounts'), ret.data.learncount);
+                                $('#people').show();
+                            }
+                            // 专栏价格
+                            if (ret.data.info.style == 3) {
+                                $api.html($api.byId('courseprice'), '￥' + ret.data.info.price);
+                            } else {
+                                $api.remove($api.byId('courseprice'));
+                            }
+                            // 专栏简介
+                            if (ret.data.info.smeta != '') {
+                                $api.html($api.dom('.introp'), ret.data.info.smeta);
+                            } else {
+                                $api.remove($api.byId('introdiv'));
+                            }
+                            // 直播间信息
+                            $api.attr($api.byId('listimg'), 'src', ret.data.listinfo.pic);
+                            $api.html($api.byId('listname'), ret.data.listinfo.title);
+                            $api.html($api.byId('listfollowcount'), ret.data.followcount);
+                            if (ret.data.isfollow == 0) {
+                                $api.html($api.byId('followbutton'), '关注');
+                                $api.addEvt($api.byId('followbutton'), 'click', function() {
+                                    api.ajax({
+                                        url: wtkurl + 'classroom/follow',
+                                        method: 'post',
+                                        headers: {
+                                            'TOKEN': ygtuserinfo.token
+                                        },
+                                        data: {
+                                            values: {
+                                                uid: ygtuserinfo.id,
+                                                listid: ret.data.listinfo.id
+                                            }
+                                        }
+                                    }, function(ret, err) {
+                                        if (ret) {
+                                            $api.html($api.byId('followbutton'), '已关注');
+                                            $api.rmEvt($api.byId('followbutton'), 'click');
+                                        } else {
+                                            alert(err.body.msg+'关注');
+                                            // alert( JSON.stringify( err ) );
+                                        }
+                                    });
+
+                                });
+
+                            } else {
+                                $api.html($api.byId('followbutton'), '已关注');
+                            }
+                            if (ret.data.info.is_promotion == 1) {
+                                $(".sharetoast h5").html('邀请好友听课，赚取<span style="color:#ff9913;">￥' + ret.data.info.price * ret.data.info.promotion_cut / 100 + '</span>奖学金');
+                                $('#sharepromotion').html('分享赚￥' + ret.data.info.price * ret.data.info.promotion_cut / 100 +
+                                    '<img src="../../img/icontop.png">');
+                            } else {
+                                $('#share_poster .msg').hide();
+                                $('#sharepromotion').hide();
+                            }
+                            //课程列表
+                            //跳转 音频 onclick="openaudioclass(' + ret.data.result[a]['id'] + ');"
+                            var len = ret.data.info.detailJSON;
+                            var audiohtml = '';
+                            var activeid = 0;
+                            if (len && len.length > 0) {
+                                $("#classlist").html('');
+                                for (var i = 0; i < len.length; i++) {
+                                    audiohtml += '<h5 class="title">' + len[i].name + '</h5><ul>';
+                                    var classdetail = len[i].content;
+                                    if (classdetail.length > 0) {
+                                        let classroomdetailarr = {};
+                                        // 数据重构
+                                        for (var j = 0; j < classdetail.length; j++) {
+                                            let cid = 0;
+                                            if (classdetail[j]['datatype'] == 1) {
+                                                cid = classdetail[j]['task'].classroom_id;
+                                                if (undefined == classroomdetailarr[cid]) {
+                                                    classroomdetailarr[cid] = {};
+                                                }
+                                                if (undefined == classroomdetailarr[cid].task) {
+                                                    classroomdetailarr[cid].task = {
+                                                        0: classdetail[j]
+                                                    };
+                                                } else {
+                                                    classroomdetailarr[cid].task.push(classdetail[j]);
+                                                }
+                                            } else if (classdetail[j]['datatype'] == 2) {
+                                                cid = classdetail[j]['courses'].id;
+                                                if (undefined == classroomdetailarr[cid]) {
+                                                    classroomdetailarr[cid] = {};
+                                                }
+                                                classroomdetailarr[cid]['courses'] = classdetail[j];
+                                            } else if (classdetail[j]['datatype'] == 3) {
+                                                cid = classdetail[j]['task'].classroom_id;
+                                                if (undefined == classroomdetailarr[cid]) {
+                                                    classroomdetailarr[cid] = {};
+                                                }
+
+                                                if (undefined == classroomdetailarr[cid].aftertask) {
+                                                    classroomdetailarr[cid].aftertask = {
+                                                        0: classdetail[j]
+                                                    };
+                                                } else {
+                                                    classroomdetailarr[cid].aftertask.push(classdetail[j]);
+                                                }
+                                            }
+                                        }
+                                        classroomdetailarr = Object.values(classroomdetailarr)
+                                            //console.log(JSON.stringify(classroomdetailarr))
+                                            for(var p=0; p<classroomdetailarr.length; p++) {
+                                        let prename = classroomdetailarr[p].courses.prename;
+                                        let coursename = classroomdetailarr[p].courses.name;
+                                        let dateshijainchuo = new Date(classroomdetailarr[p].courses.courses.begintime*1000);
+                                        if (ret.data.isenter == 0) {
+                                            if ( ret.data.info.is_limitpay == 1) {
+                                                limitend = ret.data.info.limitend;
+                                                starttime = ret.data.info.limitstart;
+                                                now = ret.time;
+                                                leftTime =  parseInt(starttime)-parseInt(now);
+                                                leftsecond = parseInt(limitend)-parseInt(now);
+
+                                                if(leftsecond <= 0 || leftTime >= 0){
+                                                    // 限免没开始 试听
+                                                    if (classroomdetailarr[p].courses.courses.istry == 1) {
+                                                        if (classroomdetailarr[p].courses.courses.endtime == 0 || classroomdetailarr[p].courses.courses.endtime >ret.time) {
+                                                            audiohtml += '<li class="active"><p class="videobegin" classroomid ="'+classroomdetailarr[p].courses.courses.id+'"><span class="title">'
+                                                            +prename+'、</span><span>'+coursename+'</span><span class="listen">试听</span></p>';
+                                                            audiohtml +='<p>'+dateFormat('YYYY-mm-dd HH:MM W',dateshijainchuo)+'开始</p>'
+                                                        }else{
+                                                           audiohtml += '<li class="active"><p class="videodetail" activeid ="'+activeid+'" classtype ="'+ret.data.info.type+'"><span class="title">'
+                                                            +prename+'、</span><span>'+coursename+'</span><span class="listen">试听</span></p>';
+                                                            audiohtml +='<p>'+dateFormat('YYYY-mm-dd HH:MM',dateshijainchuo)+'时长'+classroomdetailarr[p].courses.courses.durationInSecond+'</p>'
+                                                        }
+                                                        if (classroomdetailarr[p].aftertask == undefined && classroomdetailarr[p].task == undefined) {
+                                                            audiohtml +='<div class="work"><p>暂无数据</p></div>'
+                                                        }else{
+                                                            audiohtml +='<div class="work">'
+
+                                                            if (classroomdetailarr[p].task && classroomdetailarr[p].task[0].datatype == 1) {
+                                                               audiohtml += '<p onclick="Homeworkbefore('+classroomdetailarr[p].task[0].task.classroom_id+')">'+
+                                                               '<img style="width:20px;" src="../../img/worktask.png" >&emsp;课前作业:'+classroomdetailarr[p].task[0].name+'</p>'
+                                                            }
+                                                            if (classroomdetailarr[p].aftertask && classroomdetailarr[p].aftertask[0].datatype == 3) {
+                                                                audiohtml += '<p onclick="Homeworkafter('+classroomdetailarr[p].aftertask[0].task.classroom_id+','+classroomdetailarr[p].aftertask[0].task.id+')">'+
+                                                                '<img style="width:20px;" src="../../img/worktask.png" >&emsp;课后自我评测:'+classroomdetailarr[p].aftertask[0].name+'</p>'
+                                                            }
+                                                            audiohtml +='</div>'
+                                                        }
+                                                        audiohtml +='<img class="status" src="../../img/less.png" ></li>'
+                                                    }else{
+                                                        if (classroomdetailarr[p].courses.courses.endtime == 0 || classroomdetailarr[p].courses.courses.endtime >ret.time) {
+                                                            audiohtml += '<li class="active"><p><span class="title">'
+                                                            +prename+'、</span><span>'+coursename+'</span></p>';
+                                                            audiohtml +='<p>'+dateFormat('YYYY-mm-dd HH:MM W',dateshijainchuo)+'开始</p>'
+                                                        }else{
+                                                           audiohtml += '<li class="active"><p><span class="title">'
+                                                            +prename+'、</span><span>'+coursename+'</span></p>';
+                                                            audiohtml +='<p>'+dateFormat('YYYY-mm-dd HH:MM',dateshijainchuo)+'时长'+classroomdetailarr[p].courses.courses.durationInSecond+'</p>'
+                                                        }
+                                                        if (classroomdetailarr[p].aftertask == undefined && classroomdetailarr[p].task == undefined) {
+                                                            audiohtml +='<div class="work"><p>暂无数据</p></div>'
+                                                        }else{
+                                                            audiohtml +='<div class="work">'
+
+                                                            if (classroomdetailarr[p].task && classroomdetailarr[p].task[0].datatype == 1) {
+                                                               audiohtml += '<p>'+
+                                                               '<img style="width:20px;" src="../../img/worktask.png" >&emsp;课前作业:'+classroomdetailarr[p].task[0].name+'</p>'
+                                                            }
+                                                            if (classroomdetailarr[p].aftertask && classroomdetailarr[p].aftertask[0].datatype == 3) {
+                                                                audiohtml += '<p>'+
+                                                                '<img style="width:20px;" src="../../img/worktask.png" >&emsp;课后自我评测:'+classroomdetailarr[p].aftertask[0].name+'</p>'
+                                                            }
+                                                            audiohtml +='</div>'
+                                                        }
+                                                        audiohtml +='<img class="status" src="../../img/less.png" ></li>'
+                                                    }
+                                                }else{
+                                                    // 限免开始
+                                                    if (classroomdetailarr[p].courses.courses.endtime == 0 || classroomdetailarr[p].courses.courses.endtime >ret.time) {
+                                                        audiohtml += '<li class="active"><p class="videobegin" classroomid ="'+classroomdetailarr[p].courses.courses.id+'"><span class="title">'
+                                                        +prename+'、</span><span>'+coursename+'</span></p>';
+                                                        audiohtml +='<p>'+dateFormat('YYYY-mm-dd HH:MM W',dateshijainchuo)+'开始</p>'
+                                                    }else{
+                                                        audiohtml += '<li ><p class="videodetail" activeid ="'+activeid+'" classtype ="'+ret.data.info.type+'"><span class="title">'
+                                                        +prename+'、</span><span>'+coursename+'</span></p>'
+                                                        audiohtml +='<p>'+dateFormat('YYYY-mm-dd HH:MM',dateshijainchuo)+'时长'+classroomdetailarr[p].courses.courses.durationInSecond+'</p>'
+                                                    }
+                                                    if (classroomdetailarr[p].aftertask == undefined && classroomdetailarr[p].task == undefined) {
+                                                        audiohtml +='<div class="work"><p>暂无数据</p></div>'
+                                                    }else{
+                                                        audiohtml +='<div class="work">'
+
+                                                        if (classroomdetailarr[p].task && classroomdetailarr[p].task[0].datatype == 1) {
+                                                           audiohtml += '<p onclick="Homeworkbefore('+classroomdetailarr[p].task[0].task.classroom_id+')">'+
+                                                           '<img style="width:20px;" src="../../img/worktask.png" >&emsp;课前作业:'+classroomdetailarr[p].task[0].name+'</p>'
+                                                        }
+                                                        if (classroomdetailarr[p].aftertask && classroomdetailarr[p].aftertask[0].datatype == 3) {
+                                                            audiohtml += '<p onclick="Homeworkafter('+classroomdetailarr[p].aftertask[0].task.classroom_id+','+classroomdetailarr[p].aftertask[0].task.id+')">'+
+                                                            '<img style="width:20px;" src="../../img/worktask.png" >&emsp;课后自我评测:'+classroomdetailarr[p].aftertask[0].name+'</p>'
+                                                        }
+                                                        audiohtml +='</div>'
+                                                    }
+                                                    audiohtml +='<img class="status" src="../../img/less.png" ></li>'
+                                                }
+                                            }else{
+                                                // 收钱 试听
+                                                if (classroomdetailarr[p].courses.courses.istry == 1) {
+                                                    if (classroomdetailarr[p].courses.courses.endtime == 0 || classroomdetailarr[p].courses.courses.endtime >ret.time) {
+                                                        audiohtml += '<li class="active"><p class="videobegin" classroomid ="'+classroomdetailarr[p].courses.courses.id+'"><span class="title">'
+                                                        +prename+'、</span><span>'+coursename+'</span><span class="listen">试听</span></p>';
+                                                        audiohtml +='<p>'+dateFormat('YYYY-mm-dd HH:MM W',dateshijainchuo)+'开始</p>'
+                                                    }else{
+                                                        audiohtml += '<li class="active"><p class="videodetail" activeid ="'+activeid+'" classtype ="'+ret.data.info.type+'"><span class="title">'
+                                                        +prename+'、</span><span>'+coursename+'</span><span class="listen">试听</span></p>'
+                                                        audiohtml +='<p>'+dateFormat('YYYY-mm-dd HH:MM',dateshijainchuo)+'时长'+classroomdetailarr[p].courses.courses.durationInSecond+'</p>'
+                                                    }
+                                                    if (classroomdetailarr[p].aftertask == undefined && classroomdetailarr[p].task == undefined) {
+                                                        audiohtml +='<div class="work"><p>暂无数据</p></div>'
+                                                    }else{
+                                                        audiohtml +='<div class="work">'
+
+                                                        if (classroomdetailarr[p].task && classroomdetailarr[p].task[0].datatype == 1) {
+                                                           audiohtml += '<p onclick="Homeworkbefore('+classroomdetailarr[p].task[0].task.classroom_id+')">'+
+                                                           '<img style="width:20px;" src="../../img/worktask.png" >&emsp;课前作业:'+classroomdetailarr[p].task[0].name+'</p>'
+                                                        }
+                                                        if (classroomdetailarr[p].aftertask && classroomdetailarr[p].aftertask[0].datatype == 3) {
+                                                            audiohtml += '<p onclick="Homeworkafter('+classroomdetailarr[p].aftertask[0].task.classroom_id+','+classroomdetailarr[p].aftertask[0].task.id+')">'+
+                                                            '<img style="width:20px;" src="../../img/worktask.png" >&emsp;课后自我评测:'+classroomdetailarr[p].aftertask[0].name+'</p>'
+                                                        }
+                                                        audiohtml +='</div>'
+                                                    }
+                                                    audiohtml +='<img class="status" src="../../img/less.png" ></li>'
+                                                }else{
+                                                    audiohtml += '<li ><p ><span class="title">'+prename+'、</span><span>'
+                                                    +coursename+'</span></p>'
+                                                    if (classroomdetailarr[p].aftertask == undefined && classroomdetailarr[p].task == undefined) {
+                                                        audiohtml +='<div class="work"><p>暂无数据</p></div>'
+                                                    }else{
+                                                        audiohtml +='<div class="work">'
+
+                                                        if (classroomdetailarr[p].task && classroomdetailarr[p].task[0].datatype == 1) {
+                                                           audiohtml += '<p>'+
+                                                           '<img style="width:20px;" src="../../img/worktask.png" >&emsp;课前作业:'+classroomdetailarr[p].task[0].name+'</p>'
+                                                        }
+                                                        if (classroomdetailarr[p].aftertask && classroomdetailarr[p].aftertask[0].datatype == 3) {
+                                                            audiohtml += '<p>'+
+                                                            '<img style="width:20px;" src="../../img/worktask.png" >&emsp;课后自我评测:'+classroomdetailarr[p].aftertask[0].name+'</p>'
+                                                        }
+                                                        audiohtml +='</div>'
+                                                    }
+                                                    audiohtml +='<img class="status" src="../../img/less.png" ></li>'
+                                                }
+                                            }
+                                        }else{
+                                            // 免费
+                                            if (classroomdetailarr[p].courses.courses.endtime == 0 || classroomdetailarr[p].courses.courses.endtime >ret.time) {
+                                                audiohtml += '<li><p class="videobegin" classroomid ="'+classroomdetailarr[p].courses.courses.id+'"><span class="title">'
+                                                +prename+'、</span><span>'+coursename+'</span></p>';
+
+                                                audiohtml +='<p>'+dateFormat('YYYY-mm-dd HH:MM W',dateshijainchuo)+'开始</p>'
+                                            }else{
+                                                audiohtml += '<li><p class="videodetail" activeid ="'+activeid+'" classtype ="'+ret.data.info.type+'"><span class="title">'
+                                                +prename+'、</span><span>'+coursename+'</span></p>'
+                                                audiohtml +='<p>'+dateFormat('YYYY-mm-dd HH:MM',dateshijainchuo)+'时长'+classroomdetailarr[p].courses.courses.durationInSecond+'</p>'
+                                            }
+                                            if (classroomdetailarr[p].aftertask == undefined && classroomdetailarr[p].task == undefined) {
+                                                audiohtml +='<div class="work"><p>暂无数据</p></div>'
+                                            }else{
+                                                audiohtml +='<div class="work">'
+
+                                                if (classroomdetailarr[p].task && classroomdetailarr[p].task[0].datatype == 1) {
+                                                   audiohtml += '<p onclick="Homeworkbefore('+classroomdetailarr[p].task[0].task.classroom_id+')">'+
+                                                   '<img style="width:20px;" src="../../img/worktask.png" >&emsp;课前作业:'+classroomdetailarr[p].task[0].name+'</p>'
+                                                }
+                                                if (classroomdetailarr[p].aftertask && classroomdetailarr[p].aftertask[0].datatype == 3) {
+                                                    audiohtml += '<p onclick="Homeworkafter('+classroomdetailarr[p].aftertask[0].task.classroom_id+','+classroomdetailarr[p].aftertask[0].task.id+')">'+
+                                                    '<img style="width:20px;" src="../../img/worktask.png" >&emsp;课后自我评测:'+classroomdetailarr[p].aftertask[0].name+'</p>'
+                                                }
+                                                audiohtml +='</div>'
+                                            }
+                                            audiohtml +='<img class="status" src="../../img/less.png" ></li>'
+                                           activeid++
+                                        }
+                                    }
+                                }
+                                audiohtml += '</ul>';
+                            }
+                            $("#classlist").append(audiohtml);
+                        }
+                        var footerhtml = '';
+
+                        api.ajax({
+                            url: wtkurl + 'classroomlist/checkpaylist',
+                            method: 'post',
+                            headers: {
+                                'TOKEN': ygtuserinfo.token
+                            },
+                            data: {
+                                values: {
+                                    uid: ygtuserinfo.id,
+                                    listid: listid
+                                }
+                            }
+                        }, function(rete, err) {
+                            console.log(JSON.stringify(rete) + 'shoufougoumaihuiyuan');
+                            console.log(JSON.stringify(err));
+                            livserstaus = rete.msg;
+                            isygtlist = rete.data.isygtlist;
+                            if (rete.msg == '自己直播间') {
+                                $('.middle .creatwork').css('display', 'inline-block');
+                                $('#footer').removeClass('footer');
+                                footerhtml = ''
+                            } else {
+
+                                if (ret.data.info.style == 2 && ret.data.isenter == 0) {
+                                    footerhtml = '<div class="pwdtext"><input type="text" placeholder="请输入密码" id="checkcode"  /></div>' +
+                                        '<a href="#" taomode  onclick="passenter(this);" title="" class="enter pwdenter">进入</a>';
+                                } else if (ret.data.info.style == 3 && ret.data.isenter == 0) {
+                                    if (ret.data.info.islimitbuy == 1 && ret.data.info.limitbuyendtime < ret.time) {
+                                        footerhtml = '<p class="buyone" style="background:#999;width:100%;color:#fff">活动已结束</p>'
+                                    } else {
+                                        if (isygtlist == 0 && livserstaus == '该直播间免费') {
+                                            if (ret.data.listinfo.isjoinvip > 0 && $api.getStorage('isitamember') == 1) {
+                                                footerhtml = '<p class="buyone" onclick="orderone();" style="width:100%;background:#ff9913">会员价<b class="buy">' + ret.data.info.joinvipprice +
+                                                    '</b><b style="font-size:12px;">（' + (ret.data.listinfo.joinenter) / 10 + '折）</b></p>'
+                                            } else {
+                                                footerhtml = '<p class="buyone" onclick="orderone();" style="width:100%;background:#ff9913">专栏购买<b class="buy">' + ret.data.info.price + '</b></p>'
+                                            }
+
+                                        } else {
+                                            footerhtml = '<p class="buyone" onclick="orderone();">专栏购买<b class="buy">' + ret.data.info.price + '</b></p>' +
+                                                '<p class="buyall" onclick="ordervip();">' +
+                                                '<span class="big">加入会员免费听</span>' +
+                                                '</p>';
+                                        }
+                                    }
+                                } else {
+                                    // 如果已经购买就隐藏
+                                    $('#footer').removeClass('footer');
+                                    footerhtml = '';
+                                }
+                            }
+                            $api.html($api.byId('footer'), footerhtml);
+                        });
+                        //限免
+                        if (ret.data.info.is_limitpay == 1) {
+                            // 限免倒计时
+                            limitend = ret.data.info.limitend;
+                            starttime = ret.data.info.limitstart;
+                            now = ret.time;
+                            var leftTime = parseInt(starttime) - parseInt(now);
+                            var leftsecond = parseInt(limitend) - parseInt(now);
+                            //alert(starttime);
+
+                            if (leftsecond <= 0 || leftTime >= 0) {
+                                $('#freelist').remove();
+                            } else {
+                                $(".sharetoast .msg").hide();
+                                $(".sharetoast h5").html('邀请好友一起来听课吧~')
+                                $('.distribution').hide();
+                                $("#coursepricehide").hide();
+                                $('#freelist').show();
+                                $(".Limit b").html('0.00')
+                                $(".oldprice .price").html('￥' + ret.data.info.price)
+                                inter = setInterval(function() {
+                                    ShowCountDown(leftsecond, 'countdown');
+                                    leftsecond--;
+                                }, 1000);
+                                footerhtml = '<a id="enter" taomode onclick="openaudioclass(0);"  title="" class="enter">进入课堂</a>';
+                            }
+                        }
+
+                        $api.html($api.byId('footer'), footerhtml);
+
+                    } else {
+                        // 错误提示
+                        alert('cuowurtishi')
+                        api.alert({
+                            title: '提示',
+                            msg: err.msg,
+                        }, function(ret, err) {
+                            if (ret) {
+                                api.closeWin({
+                                    name: 'specialguide',
+                                    animation: {
+                                        type: 'none'
+                                    }
+                                });
+
+                            } else {
+                                // alert( JSON.stringify( err ) );
+                            }
+                        });
+
+                    }
+                } else {
+                    if (err.statusCode == 401) {
+                        // 没有登录
+                    }
+                }
+            });
+
+        }
+
+        function orderone() {
+            if (ygtuserinfo.id == -1) {
+                // 游客
+                api.confirm({
+                    title: '提示信息',
+                    msg: '登录后充值，可跨平台享受权益，游客模式充值只限于本设备使用',
+                    buttons: ['登录购买', '游客模式购买', '取消']
+                }, function(ret, err) {
+                    if (ret) {
+                        if (ret.buttonIndex == 1) {
+                            api.openWin({
+                                name: 'loginframe',
+                                url: '../loginframe.html',
+                                pageParam: {},
+                                animation: {
+                                    type: 'none'
+                                }
+                            });
+                        } else if (ret.buttonIndex == 2) {
+
+                            api.ajax({
+                                url: memberurl + 'tourist/getCoin',
+                                method: 'post',
+                                headers: {
+                                    'UUID': ygtuserinfo.deviceid
+                                },
+                                data: {
+                                    values: {
+                                        uuid: ygtuserinfo.deviceid
+                                    }
+                                }
+                            }, function(ret, err) {
+                                console.log('getcoin:');
+                                console.log(JSON.stringify(ret));
+                                console.log(JSON.stringify(err));
+                                if (ret) {
+                                    if (ret.data.result == null) {
+                                        api.openWin({
+                                            name: 'niupay',
+                                            url: './niupay.html',
+                                            animation: {
+                                                type: 'none'
+                                            }
+                                        });
+                                    } else {
+                                        if (ret.data.result.coin > clasroominfo.price * 100) {
+                                            api.openWin({
+                                                name: 'ordersure',
+                                                url: '../ordersure.html',
+                                                pageParam: {
+                                                    id: specialid,
+                                                    type: 'special'
+                                                },
+                                                animation: {
+                                                    type: 'none'
+                                                }
+                                            });
+                                        } else {
+                                            api.openWin({
+                                                name: 'niupay',
+                                                url: './niupay.html',
+                                                animation: {
+                                                    type: 'none'
+                                                }
+                                            });
+                                        }
+
+                                    }
+                                    //alert( JSON.stringify( ret ) );
+                                } else {
+                                    api.openWin({
+                                        name: 'niupay',
+                                        url: './niupay.html',
+                                        animation: {
+                                            type: 'none'
+                                        }
+                                    });
+
+                                }
+                            });
+                        }
+                        //  alert( JSON.stringify( ret ) );
+                    } else {
+                        //  alert( JSON.stringify( err ) );
+                    }
+                });
+
+            } else {
+                api.openWin({
+                    name: 'ordersure',
+                    url: '../ordersure.html',
+                    pageParam: {
+                        id: specialid,
+                        type: 'special'
+                    }
+                });
+            }
+
+        }
+
+        function order(obj) {
+            var buy = $api.dom(obj, 'b');
+            var price = $api.html(buy);
+        }
+
+        // 音频播放
+        function openaudioclass(index) {
+            var url = $('.wkshow').attr('data-url')
+            $api.setStorage('url', url);
+            ygtuserinfo = $api.getStorage('ygtuserinfo');
+            if (ygtuserinfo.id == -1) {
+                api.openWin({
+                    name: 'loginframe',
+                    url: '../loginframe.html',
+                    animation: {
+                        type: 'none'
+                    }
+                });
+
+            } else {
+                api.openWin({
+                    name: 'audioclass',
+                    url: './audioclass.html',
+                    pageParam: {
+                        index: index,
+                        specialid: specialid
+                    },
+                    animation: {
+                        type: "movein", //动画类型（详见动画类型常量）
+                        subType: "from_bottom", //动画子类型（详见动画子类型常量）
+                        duration: 300
+                    },
+                    reload: true
+                });
+            }
+
+        }
+
+        //视频
+        function openvideo(index) {
+            if (ygtuserinfo.id == -1) {
+                api.openWin({
+                    name: 'loginframe',
+                    url: '../loginframe.html',
+                    animation: {
+                        type: 'none'
+                    }
+                });
+
+            } else {
+                api.openWin({
+                    name: 'speciavideo',
+                    url: './speciavideo.html',
+                    pageParam: {
+                        index: index,
+                        specialid: specialid
+                    },
+                    animation: {
+                        type: "movein", //动画类型（详见动画类型常量）
+                        subType: "from_bottom", //动画子类型（详见动画子类型常量）
+                        duration: 300
+                    },
+                    reload: true
+                });
+            }
+        }
+        //分享
+        $('#share').bind('click', function() {
+
+            $('#bg').show();
+            $(".sharetoast").addClass('sh');
+        });
+        //分享关闭
+        $('#opentool').bind('click', function(e) {
+            $('#bg').hide();
+            $(".sharetoast").removeClass('sh');
+        });
+
+        $('#bg').bind('click', function(e) {
+            $('#bg').hide();
+            $(".sharetoast").removeClass('sh');
+            $('#bg').hide();
+        });
+
+        //分享朋友
+        function sharefriend() {
+            if (shareurl == undefined) {
+                shareurl = '/index/special/guide?id=' + specialid
+            }
+            var wx = api.require('wx');
+            //
+            wx.shareWebpage({
+                apiKey: '',
+                scene: 'session',
+                title: sharetitle,
+                description: shareicon,
+                thumb: 'widget://img/shareicon.png', //shareicon,//http://img1.wtk.so/2016/08/19/57b6dbc29e7cc.png
+                contentUrl: shareurl
+            }, function(ret, err) {
+                if (ret.status) {
+                    alert('分享成功');
+                    $('#bg').hide();
+                    $(".sharetoast").removeClass('sh')
+                } else {
+                    alert('分享失败');
+                    console.log(JSON.stringify(err));
+                }
+            });
+        }
+
+        //分享朋友圈
+        function sharefriends() {
+            if (shareurl == undefined) {
+                shareurl = '/index/special/guide?id=' + specialid
+            }
+            var wx = api.require('wx');
+            wx.shareWebpage({
+                apiKey: '',
+                scene: 'timeline',
+                title: sharetitle,
+                description: shareicon,
+                thumb: 'widget://img/shareicon.png', // shareicon,//http://img1.wtk.so/2016/08/19/57b6dbc29e7cc.png
+                contentUrl: shareurl
+            }, function(ret, err) {
+                if (ret.status) {
+                    alert('分享成功');
+                    $('#bg').hide();
+                    $(".sharetoast").removeClass('sh')
+                } else {
+                    alert('分享失败');
+                    console.log(JSON.stringify(err));
+                }
+            });
+        }
+
+
+        //邀请卡
+        $('#share_poster').click(function() {
+
+            api.openWin({
+                name: 'poster',
+                url: '../my/poster.html',
+                pageParam: {
+                    id: specialid,
+                    objecttype: 2
+                },
+                animation: {
+                    type: 'none'
+                }
+            });
+        })
+
+        function introdivadd() {
+            $(".middle .tab").removeClass('active');
+            $(".middle .tab1").addClass('active');
+            $('#introdiv').show();
+            $('#classlist').hide();
+        }
+
+        function classlistadd() {
+            $(".middle .tab").removeClass('active');
+            $(".middle .tab2").addClass('active');
+            $('#introdiv').hide();
+            $('#classlist').show();
+        }
+
+        function control(obj) {
+            $(".classlist li").removeClass('active');
+            $api.addCls(obj, 'active');
+        }
+
+        // 会员
+        function ordervip() {
+            api.openWin({
+                name: 'vipsure',
+                url: '../vipsure.html',
+                pageParam: {
+                    id: listid
+                },
+                animation: {
+                    type: 'none'
+                }
+            });
+            // if (isygtlist == 0) {
+            //     if (livserstaus == '没有购买会员') {
+            //         api.openWin({
+            //             name: 'ordersure',
+            //             url: '../ordersure.html',
+            //             pageParam: {
+            //                 id: listid,
+            //                 type: 'livevip'
+            //             },
+            //             bgColor: 'rgba(0,0,0,0)',
+            //             animation: {
+            //                 type: 'none'
+            //             }
+            //         })
+            //     } else {
+            //         alert('该直播间没有设置会员，请购买课程')
+            //     }
+            // } else {
+            //     api.openWin({
+            //         name: 'vipsure',
+            //         url: '../vipsure.html',
+            //         pageParam: {
+            //             id: listid
+            //         },
+            //         animation: {
+            //             type: 'none'
+            //         }
+            //     });
+            // }
+        }
+
+        // 创建课前作业
+        function creatwork() {
+            api.openWin({
+                name: 'custom',
+                url: '../custom.html',
+                pageParam: {
+                    id: specialid,
+                    objecttype: 2
+                },
+                bgColor: 'rgba(0,0,0,0)',
+                animation: {
+                    type: 'none'
+                }
+            })
+        }
+        // 课前作业跳转
+        function homebeforwork(id) {
+            api.openWin({
+                name: 'homebeforework',
+                url: '../homebeforework.html',
+                pageParam: {
+                    id: id
+                },
+                bgColor: 'rgba(0,0,0,0)',
+                animation: {
+                    type: 'none'
+                }
+            })
+        }
+
+        // 课后作业
+        function Homeworkafter(id, taskid) {
+            api.openWin({
+                name: 'homeworkafter',
+                url: '../homeworkafter.html',
+                pageParam: {
+                    id: id,
+                    taskid: taskid,
+                    typeid: 2
+                },
+                bgColor: 'rgba(0,0,0,0)',
+                animation: {
+                    type: 'none'
+                }
+            })
+        }
+        $('.classlist').on('click', '.status', function(event) {
+                if ($(this).attr('src') == '../../img/less.png') {
+                    $(this).attr('src', '../../img/lessdown.png')
+                } else {
+                    $(this).attr('src', '../../img/less.png')
+                }
+                $(this).siblings('.work').toggle();
+                event.stopPropagation();
+            })
+            // 已结束系列课跳转
+        $('.classlist').on('click', '.videodetail', function() {
+            if ($(this).attr('classtype') == 3) {
+                api.openWin({
+                    name: 'speciavideo',
+                    url: './speciavideo.html',
+                    pageParam: {
+                        index: $(this).attr('activeid'),
+                        specialid: specialid
+                    },
+                    animation: {
+                        type: "movein", //动画类型（详见动画类型常量）
+                        subType: "from_bottom", //动画子类型（详见动画子类型常量）
+                        duration: 300
+                    },
+                    reload: true
+                });
+            } else {
+                api.openWin({
+                    name: 'audioclass',
+                    url: './audioclass.html',
+                    pageParam: {
+                        index: $(this).attr('activeid'),
+                        specialid: specialid
+                    },
+                    animation: {
+                        type: "movein", //动画类型（详见动画类型常量）
+                        subType: "from_bottom", //动画子类型（详见动画子类型常量）
+                        duration: 300
+                    },
+                    reload: true
+                });
+            }
+        });
+        // 未开始或直播中系列课跳转
+        $('.classlist').on('click', '.videobegin', function() {
+            id = $(this).attr('classroomid');
+            api.openWin({
+                name: 'classroomvide',
+                url: '../classroomvide.html',
+                pageParam: {
+                    id: id,
+                    specialid: specialid
+                },
+                animation: {
+                    type: "movein", //动画类型（详见动画类型常量）
+                    subType: "from_bottom", //动画子类型（详见动画子类型常量）
+                    duration: 300
+                },
+                reload: true
+            });
+        });
+
+        function dateFormat(fmt, date) {
+            let ret;
+            //let date = new Date(shijianchuo);
+            let Week = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+            const opt = {
+                "Y+": date.getFullYear().toString(), // 年
+                "m+": (date.getMonth() + 1).toString(), // 月
+                "d+": date.getDate().toString(), // 日
+                "H+": date.getHours().toString(), // 时
+                "M+": date.getMinutes().toString(), // 分
+                "S+": date.getSeconds().toString(), // 秒
+                'W+': Week[date.getDay()]
+                    // 有其他格式化字符需求可以继续添加，必须转化成字符串
+            };
+            for (let k in opt) {
+                ret = new RegExp("(" + k + ")").exec(fmt);
+                if (ret) {
+                    fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
+                };
+                //console.log(ret)
+            };
+            return fmt;
+        }
+    </script>
+</body>
+
+</html>

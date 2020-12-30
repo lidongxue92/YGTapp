@@ -1,0 +1,223 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,initial-scale=1.0,width=device-width" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>医管通APP</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" href="../../css/base.css">
+    <link rel="stylesheet" href="../../css/ygtcommon.css">
+    <link rel="stylesheet" href="../../css/my/identity.css">
+<body >
+    <header class="top" id="header">
+        <h1>
+            <span class="back" onclick="api.closeWin();"></span>
+            <span class="title">身份认证</span>
+        </h1>
+    </header>
+    <div class="middle">
+        <div class="status">
+            <span class="circle"></span>
+            <span class="line "></span>
+            <span class="circle "></span>
+            <span class="line op"></span>
+            <span class="circle op"></span>
+        </div>
+        <div class="dec">
+            <h5>真实姓名</h5>
+            <input class="realname" placeholder="请输入真实姓名" onblur="realname()"  maxlength="10"/>
+            <p class="msg namemsg">姓名不能为空</p>
+            <h5>任职单位</h5>
+            <input class="Company" placeholder="请输入任职单位" onblur="Company()" maxlength="20" />
+            <p class="msg Companymsg">任职单位不能为空</p>
+            <h5>所在部门</h5>
+            <input class="department" placeholder="请输入所在部门" onblur="department()" maxlength="20" />
+            <p class="msg departmentmsg">部门不能为空</p>
+            <h5>职位</h5>
+            <input class="position" placeholder="请输入职位" onblur="position()"  maxlength="20"/>
+            <p class="msg positionmsg">职位不能为空</p>
+            <!-- <div class="select">
+                <span class="button  selected" onclick="openList(this)">中国身份证</span>
+                <span class="button" onclick="openList(this)">国外护照</span>
+            </div>
+            <input class="card" placeholder="请输入证件号码"  onblur="card()" />
+            <p class="msg cardmsg">证件号不能为空</p> -->
+            <h5>证件照</h5>
+            <div class="photo">
+                <div class="left">
+                    <img class="bgimg" src="../../img/workcard.png" />
+                    <img  src="../../img/add2.png" />
+                    <input type="file" name="" id="file" value="" />
+                    <p class="msg photomsg">证件不能为空</p>
+                </div>
+                <div class="right">
+                    <!-- <img src=""> -->
+                    <p>1.拍照时仅拍上半身<span>手持工作证</span>;</p>
+                    <p>2.证件照内容必须清晰无遮挡，且真实有效;</p>
+                    <p>3.<span>请勿使用自拍方式</span>;</p>
+                    <p>4.文件支持png、jpg格式，文件不大于10M;</p>
+                </div>
+            </div>
+        </div>
+
+
+        <button class="gonext" onclick="gonext();">下一步</button>
+    </div>
+
+</body>
+<script src="../../js/lib/jquery-2.1.4.js"></script><script src="../../js/common.js"></script>
+<script type="application/javascript" src="../../script/api.js"></script>
+ <script src="http://gosspublic.alicdn.com/aliyun-oss-sdk-4.4.4.min.js"></script>
+ <script type="text/javascript" src="../../js/moxie.js"></script>
+ <script type="text/javascript" src="../../js\plupload.dev.js"></script>
+ <script type="text/javascript" src="../../js/upload.js?{:time()}"></script>
+<script type="text/javascript">
+    var apihost = $api.getStorage('apihost');
+    if (apihost == undefined || apihost == '') {
+        apihost = 'http://member.ygt.cm';
+        $api.setStorage('apihost', apihost);
+    }
+    var ygtuserinfo = $api.getStorage('ygtuserinfo');
+    var client ='';
+    var uploadurl = '';
+    var uploadimg = '';
+    var rand = '';
+    apiready = function() {
+        //输出Log，Log将显示在APICloud Studio控制台
+        console.log("Hello World! Hello APICloud!");
+        var header = $api.byId('header');
+        $api.fixStatusBar(header);
+        //  禁止左右滑动
+        api.setWinAttr({
+            slidBackEnabled : false
+        });
+
+          api.ajax({
+              url:wtkurl +'classroomlist/getOssToken',
+              method: 'post',
+              headers: {
+                  'TOKEN': ygtuserinfo.token
+              },
+              data: {
+                  values: {
+                      uid: ygtuserinfo.id
+                  }
+              }
+          }, function(data, err) {
+              console.log(JSON.stringify(data.data));
+              client = new OSS.Wrapper({
+                 region:'oss-cn-hangzhou',
+                 accessKeyId:data.data.accessid,
+                 accessKeySecret:data.data.accesskeysecret,
+                 signature:data.data.signature,
+                 bucket:data.data.putbucket
+               });
+              uploadimg ='ygt_IDPhoto/'+data.data.expire;
+              uploadurl = data.data.bucketosshost;
+
+          });
+        //  禁止左右滑动
+        $api.fixStatusBar(header);
+        ygtuserinfo = $api.getStorage('ygtuserinfo');
+    };
+
+    $("#file").change(function(){
+        console.log("change");
+        $api.getStorage('img');;
+        var img = $api.getStorage('img')
+        uploadimg = uploadimg+'.jpg'
+        client.multipartUpload(uploadimg, this.files[0]).then(function (result) {
+            console.log(JSON.stringify(result));
+
+            if (result) {
+                var picname = uploadurl+'/'+result.name;
+                $('.bgimg').attr('src', picname);
+                $api.setStorage('frontcardimg1', picname);
+                uploadimg = uploadimg.toString().split('.')['0']+parseInt(1);
+            }
+          }).catch(function (err) {
+            console.log(err+'错误');
+          });
+      });
+    //真实姓名
+    function realname() {
+        var realname = $(".realname").val();
+        if (realname == '') {
+            $(".namemsg").css('display','block');
+            return false
+        }else{
+            $api.setStorage('truename', realname);
+            $(".namemsg").css('display','none');
+        }
+    }
+
+    //任职单位
+    function Company() {
+        var Company = $(".Company").val();
+        if (Company == '') {
+            $(".Companymsg").css('display','block');
+            return false
+        }else{
+            $api.setStorage('hospital', Company);
+            $(".Companymsg").css('display','none');
+        }
+    }
+    //部门
+    function department() {
+        var department = $(".department").val();
+        if (department == '') {
+            $(".departmentmsg").css('display','block');
+            return false
+        }else{
+            $api.setStorage('department', department);
+            $(".departmentmsg").css('display','none');
+        }
+    }
+    //职位
+    function position() {
+        var position = $(".position").val();
+        if (position == '') {
+            $(".positionmsg").css('display','block');
+            return false
+        }else{
+            $api.setStorage('position', position);
+            $(".positionmsg").css('display','none');
+        }
+    }
+
+    //上传图片
+    function photo() {
+        var imgurl = $('.bgimg').attr('src')
+        if (imgurl == '../img/workcard.png') {
+            $(".photomsg").css('display','block');
+            return false
+        }else{
+            $(".photomsg").css('display','none');
+        }
+    }
+    //下一步
+    function gonext() {
+        if (realname() !=false && Company() !=false && department() !=false && position() !=false && photo() !=false) {
+            api.addEventListener({
+                name:'viewdisappear'
+            }, function(ret, err){
+               api.closeWin();
+            });
+            api.openWin({
+                name: 'other',
+                url: './other.html',
+                pageParam: {
+                    name: 'test'
+                },
+                bgColor: 'rgba(0,0,0,0)',
+                animation: {
+                    type: 'none'
+                }
+            })
+        }
+    }
+</script>
+
+</html>
